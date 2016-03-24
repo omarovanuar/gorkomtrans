@@ -3,6 +3,9 @@ package com.epam.anuar.gorkomtrans.entity;
 import org.joda.money.Money;
 import org.joda.time.DateTime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Contract extends BaseEntity {
     private Customer customer;
     private String customerName;
@@ -11,6 +14,8 @@ public class Contract extends BaseEntity {
     private DateTime providingTerm;
     private DateTime signDate;
     private String customerBank;
+
+    private static Logger log = LoggerFactory.getLogger(Customer.class.getName());
 
     public Contract() {
     }
@@ -35,6 +40,7 @@ public class Contract extends BaseEntity {
 
     public Customer getCustomer() {
         if (customer == null) {
+            log.debug("No customer object for Contract object");
             throw new NullPointerException();
         }
         return customer;
