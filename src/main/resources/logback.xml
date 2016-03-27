@@ -1,0 +1,28 @@
+<configuration>
+    <!--<property name="DEV_HOME" value="C:/logs" />-->
+
+    <!--<appender name="FILE" class="ch.qos.logback.core.FileAppender">-->
+        <!--&lt;!&ndash; "application-name" is a variable &ndash;&gt;-->
+        <!--<File>${DEV_HOME}/info.log</File>-->
+        <!--<encoder>-->
+            <!--<Pattern>%d [%thread] %level %logger{10} - %m%n</Pattern>-->
+        <!--</encoder>-->
+    <!--</appender>-->
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>%d [%thread] %level %logger{10} - %m%n</Pattern>
+        </encoder>
+    </appender>
+
+    <!--<root level="info">-->
+        <!--<appender-ref ref="FILE" />-->
+    <!--</root>-->
+
+    <logger name="com.epam.anuar.gorkomtrans" level="debug"
+            additivity="false">
+        <!--<appender-ref ref="FILE" />-->
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+</configuration>

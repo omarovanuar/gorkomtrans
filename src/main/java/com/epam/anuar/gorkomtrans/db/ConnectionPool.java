@@ -13,6 +13,7 @@ import java.util.concurrent.BlockingQueue;
 public class ConnectionPool {
     private static Logger log = LoggerFactory.getLogger(ConnectionPool.class.getName());
     public static final String PROPERTIES_FILE = "connection";
+    private static final String DEFAULT_DRIVER = "org.h2.Driver";
     public static final int DEFAULT_POOL_SIZE = 10;
     /** single instance */
     private static ConnectionPool instance;
@@ -27,14 +28,29 @@ public class ConnectionPool {
             String user = rb.getString("db.user");
             String password = rb.getString("db.password");
             String poolSizeStr = rb.getString("db.poolsize");
-            int poolSize = (poolSizeStr != null) ? Integer.parseInt(poolSizeStr) : DEFAULT_POOL_SIZE;
+            int poolSize;
             try {
-                log.info("Trying to create pool of connections...");
+                poolSize = Integer.parseInt(poolSizeStr);
+                if (poolSize < 1){
+                    poolSize = DEFAULT_POOL_SIZE;
+                }
+            } catch (NumberFormatException e) {
+                log.warn("Not valid size of the pool", e);
+                poolSize = DEFAULT_POOL_SIZE;
+            }
+            try {
+                log.debug("Trying to create pool of connections...");
                 instance = new ConnectionPool (driver, url, user, password, poolSize);
-                log.info("Connection pool succesfully initialized");
+                log.debug("Connection pool succesfully initialized");
             } catch (ClassNotFoundException e) {
-                log.debug("Driver " + driver + " not found");
-                throw new RuntimeException (e);
+                log.info("Driver " + driver + " not found.");
+                try {
+                    instance = new ConnectionPool (DEFAULT_DRIVER, url, user, password, poolSize);
+                    log.info("org.h2.Driver used as default");
+                } catch (ClassNotFoundException e1) {
+                    log.error("Default driver not found.", e1);
+                    throw new RuntimeException();
+                }
             }
         }
     }
@@ -43,7 +59,7 @@ public class ConnectionPool {
         if (instance != null) {
             instance.clearConnectionQueue();
             instance = null;
-            log.info("Connection pool succesfully disposed");
+            log.debug("Connection pool succesfully disposed");
         }
     }
 
@@ -60,12 +76,17 @@ public class ConnectionPool {
         }
     }
 
-    public Connection takeConnection () {
+    public Connection takeConnection () throws SQLException {
         Connection connection = null;
         try {
             connection = connectionQueue.take();
         } catch (InterruptedException e) {
-            log.debug("Free connection waiting interrupted. Returned `null` connection", e);
+            if (takeConnection().isValid(10000)) {
+                takeConnection();
+            } else {
+                log.warn("Free connection waiting interrupted.", e);
+                throw new RuntimeException();
+            }
         }
         return connection;
     }
@@ -74,13 +95,13 @@ public class ConnectionPool {
         try {
             if (!connection.isClosed ()) {
                 if (!connectionQueue.offer(connection)) {
-                    log.info("Connection not added. Possible `leakage` of connections");
+                    log.warn("Connection not added. Possible `leakage` of connections");
                 }
             } else {
                 log.info("Trying to release closed connection. Possible leakage` of connections");
             }
         } catch (SQLException e) {
-            log.debug("SQLException at conection isClosed () checking. Connection not added", e);
+            log.warn("SQLException at connection isClosed() checking. Connection not added", e);
         }
     }
 
