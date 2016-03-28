@@ -6,31 +6,29 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+
+import static java.util.concurrent.TimeUnit.*;
 
 public class ConnectionPool {
     private static Logger log = LoggerFactory.getLogger(ConnectionPool.class.getName());
     public static final String PROPERTIES_FILE = "connection";
     private static final String DEFAULT_DRIVER = "org.h2.Driver";
     public static final int DEFAULT_POOL_SIZE = 10;
-    /** single instance */
     private static ConnectionPool instance;
-    /** free connections queue */
     private BlockingQueue<Connection> connectionQueue;
+    private static Map<String, String> connectionParameters;
 
     public static void init () throws SQLException {
         if (instance == null) {
-            ResourceBundle rb = ResourceBundle.getBundle(PROPERTIES_FILE);
-            String driver = rb.getString("db.driver");
-            String url = rb.getString("db.url");
-            String user = rb.getString("db.user");
-            String password = rb.getString("db.password");
-            String poolSizeStr = rb.getString("db.poolsize");
+            readConnectionProperties();
             int poolSize;
             try {
-                poolSize = Integer.parseInt(poolSizeStr);
+                poolSize = Integer.parseInt(connectionParameters.get("poolSize"));
                 if (poolSize < 1){
                     poolSize = DEFAULT_POOL_SIZE;
                 }
@@ -40,12 +38,18 @@ public class ConnectionPool {
             }
             try {
                 log.debug("Trying to create pool of connections...");
-                instance = new ConnectionPool (driver, url, user, password, poolSize);
+                instance = new ConnectionPool (connectionParameters.get("driver"),
+                        connectionParameters.get("url"),
+                        connectionParameters.get("user"),
+                        connectionParameters.get("password"), poolSize);
                 log.debug("Connection pool succesfully initialized");
             } catch (ClassNotFoundException e) {
-                log.info("Driver " + driver + " not found.");
+                log.info("Driver " + connectionParameters.get("driver") + " not found.");
                 try {
-                    instance = new ConnectionPool (DEFAULT_DRIVER, url, user, password, poolSize);
+                    instance = new ConnectionPool (DEFAULT_DRIVER,
+                            connectionParameters.get("url"),
+                            connectionParameters.get("user"),
+                            connectionParameters.get("password"), poolSize);
                     log.info("org.h2.Driver used as default");
                 } catch (ClassNotFoundException e1) {
                     log.error("Default driver not found.", e1);
@@ -77,16 +81,13 @@ public class ConnectionPool {
     }
 
     public Connection takeConnection () throws SQLException {
-        Connection connection = null;
+
+        Connection connection;
         try {
-            connection = connectionQueue.take();
+            connection = connectionQueue.poll(30, SECONDS);
         } catch (InterruptedException e) {
-            if (takeConnection().isValid(10000)) {
-                takeConnection();
-            } else {
-                log.warn("Free connection waiting interrupted.", e);
-                throw new RuntimeException();
-            }
+            log.warn("Free connection waiting interrupted.", e);
+            throw new RuntimeException();
         }
         return connection;
     }
@@ -98,23 +99,48 @@ public class ConnectionPool {
                     log.warn("Connection not added. Possible `leakage` of connections");
                 }
             } else {
-                log.info("Trying to release closed connection. Possible leakage` of connections");
+                connectionQueue.offer(newConnection());
+                log.info("Created new connection instead of closed one");
             }
         } catch (SQLException e) {
             log.warn("SQLException at connection isClosed() checking. Connection not added", e);
         }
     }
 
+    private static void readConnectionProperties() {
+        ResourceBundle rb = ResourceBundle.getBundle(PROPERTIES_FILE);
+        connectionParameters = new HashMap<>();
+        connectionParameters.put("driver", rb.getString("db.driver"));
+        connectionParameters.put("url", rb.getString("db.url"));
+        connectionParameters.put("user", rb.getString("db.user"));
+        connectionParameters.put("password", rb.getString("db.password"));
+        connectionParameters.put("poolSize", rb.getString("db.poolSize"));
+    }
+
+    private Connection newConnection() {
+        Connection connection;
+        try {
+            connection = DriverManager.getConnection(
+                    connectionParameters.get("url"),
+                    connectionParameters.get("user"),
+                    connectionParameters.get("password"));
+        } catch (SQLException e) {
+            log.warn("New connection can't be created");
+            throw new RuntimeException();
+        }
+        return connection;
+    }
+
     private void clearConnectionQueue () throws SQLException {
         Connection connection;
         while ((connection = connectionQueue.poll ()) != null) {
-            /* see java.sql.Connection#close () javadoc */
             if (!connection.getAutoCommit()) {
                 connection.commit();
             }
             connection.close();
         }
     }
+
 }
 
 
