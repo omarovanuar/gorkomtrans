@@ -11,4 +11,8 @@
         <servlet-name>ControllerServlet</servlet-name>
         <url-pattern>/test</url-pattern>
     </servlet-mapping>
+
+    <listener>
+        <listener-class>com.epam.anuar.gorkomtrans.servlet.ContextListener</listener-class>
+    </listener>
 </web-app>

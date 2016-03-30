@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -38,7 +39,8 @@ public class ConnectionPool {
             }
             try {
                 log.debug("Trying to create pool of connections...");
-                instance = new ConnectionPool (connectionParameters.get("driver"),
+                instance = new ConnectionPool (
+                        connectionParameters.get("driver"),
                         connectionParameters.get("url"),
                         connectionParameters.get("user"),
                         connectionParameters.get("password"), poolSize);
@@ -59,11 +61,12 @@ public class ConnectionPool {
         }
     }
 
-    public static void dispose () throws SQLException {
+    public static void dispose () throws SQLException, ClassNotFoundException {
         if (instance != null) {
             instance.clearConnectionQueue();
             instance = null;
             log.debug("Connection pool succesfully disposed");
+            org.h2.Driver.unload();
         }
     }
 
@@ -78,6 +81,7 @@ public class ConnectionPool {
             Connection connection = DriverManager.getConnection(url, user, password);
             connectionQueue.offer(connection);
         }
+
     }
 
     public Connection takeConnection () throws SQLException {
@@ -140,7 +144,6 @@ public class ConnectionPool {
             connection.close();
         }
     }
-
 }
 
 

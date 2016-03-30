@@ -91,6 +91,9 @@ footer {
 
 nav a {
     text-decoration: none;
+    list-style-position: inside;
+    font: 14px 'Oswald', sans-serif;
+    padding: 10px;
 }
 
 nav ul {
@@ -104,19 +107,27 @@ nav li {
     padding: 10px;
 }
 
-.top-menu li {
+/*.top-menu li {*/
+    /*display: inline-block;*/
+    /*padding: 10px 30px;*/
+    /*margin: 0;*/
+/*}*/
+
+
+/*.top-menu li:hover {*/
+    /*background: #29c5e6;*/
+/*}*/
+
+.top-menu a {
     display: inline-block;
     padding: 10px 30px;
     margin: 0;
+    color: #b2b2b2;
 }
 
-.top-menu li.active {
+.top-menu a:hover {
     background: #29c5e6;
     color: #fff;
-}
-
-.top-menu a {
-    color: #b2b2b2;
 }
 
 .aside-menu li {
@@ -135,6 +146,14 @@ nav li {
 
 .aside-menu a {
     color: #8f8f8f;
+}
+
+.aside-menu li:hover {
+    color: #29c5e6;
+}
+
+.aside-menu a:hover {
+    color: #29c5e6;
 }
 
 blockquote {

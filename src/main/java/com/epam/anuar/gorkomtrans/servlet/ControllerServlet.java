@@ -1,8 +1,10 @@
 package com.epam.anuar.gorkomtrans.servlet;
 
+import com.epam.anuar.gorkomtrans.db.ConnectionPool;
 import com.epam.anuar.gorkomtrans.db.DbcpStart;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -28,7 +30,8 @@ public class ControllerServlet extends HttpServlet {
 //        String contextPath = getServletContext().getContextPath();
 //        resp.sendRedirect(contextPath + "/greeting.jsp");
 
-        String result = DbcpStart.start();
+        ConnectionPool poolAttribute = (ConnectionPool) getServletContext().getAttribute("db.pool");
+        String result = DbcpStart.start(poolAttribute);
 
         HttpSession session = req.getSession();
         session.setAttribute("dbcp", result);

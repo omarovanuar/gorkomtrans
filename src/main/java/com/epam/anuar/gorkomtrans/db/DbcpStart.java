@@ -13,16 +13,12 @@ import static com.epam.anuar.gorkomtrans.db.ConnectionPool.*;
 public class DbcpStart {
     private static Logger log = LoggerFactory.getLogger(DbcpStart.class.getName());
 
-    public static String start() {
-        ConnectionPool pool;
+    public static String start(ConnectionPool pool) {
         Connection con;
         Statement st = null;
         ResultSet rs = null;
         StringBuilder result = new StringBuilder();
         try {
-
-            init();
-            pool = getInstance();
 
             con = pool.takeConnection();
 
@@ -40,16 +36,18 @@ public class DbcpStart {
             }
 
             pool.releaseConnection(con);
-            dispose();
         } catch (SQLException e) {
             log.warn("SQLException", e);
+            throw new RuntimeException();
         } finally{
             try {
                 if (st != null) st.close();
                 if (rs != null) rs.close();
             } catch (SQLException e1) {
-                log.warn("Statement and ResultSet can't be closed. ", e1);
+                log.warn("Statement and ResultSet can't be closed.", e1);
+
             }
+
         }
 
         return result.toString();
