@@ -33,6 +33,8 @@ public class ContextListener implements ServletContextListener {
         } catch (SQLException e) {
             log.error("Connection pool can't be disposed");
             throw new RuntimeException();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 }
