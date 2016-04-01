@@ -1,9 +1,11 @@
 package com.epam.anuar.gorkomtrans.servlet;
 
+import com.epam.anuar.gorkomtrans.action.Action;
+import com.epam.anuar.gorkomtrans.action.ActionFactory;
+import com.epam.anuar.gorkomtrans.action.ActionResult;
 import com.epam.anuar.gorkomtrans.dao.DaoFactory;
 import com.epam.anuar.gorkomtrans.dao.DaoService;
 import com.epam.anuar.gorkomtrans.dao.UserDao;
-import com.epam.anuar.gorkomtrans.db.ConnectionPool;
 import com.epam.anuar.gorkomtrans.entity.User;
 
 import javax.servlet.ServletException;
@@ -12,14 +14,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.crypto.dsig.DigestMethod;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-@WebServlet("/testing")
 public class ControllerServlet extends HttpServlet {
+    private ActionFactory actionFactory;
+
+    @Override
+    public void init() throws ServletException {
+        actionFactory = new ActionFactory();
+    }
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -36,8 +40,7 @@ public class ControllerServlet extends HttpServlet {
 //        resp.sendRedirect(contextPath + "/greeting.jsp");
 
 
-        DaoFactory daoFactory = DaoFactory.newInstance();
-        UserDao userDao = daoFactory.createUserDao();
+//        UserDao userDao = DaoFactory.getInstance().getUserDao();
         //create
 //        List<User> userList = new ArrayList<>();
 //        User user = new User(6, "NEWgg-poster1@mail.ru", "NEWuser1", "NEWpass1");
@@ -59,7 +62,7 @@ public class ControllerServlet extends HttpServlet {
 //        List<User> allUsers = userDao.findAll();
 
 //        HttpSession session = req.getSession();
-//        session.setAttribute("userById", userById.getLogin() + " " + userById.getEmail());
+//        session.setAttribute("userById", DaoService.viewUser(userById));
 //        session.setAttribute("userByLogin", userByLogin.getLogin() + " " + userByLogin.getEmail());
 //        session.setAttribute("userByAllParameters", userByAllParameters.getLogin() + " " + userByAllParameters.getEmail());
 //        session.setAttribute("allUsers", DaoService.viewAllUsers(allUsers));
@@ -69,13 +72,33 @@ public class ControllerServlet extends HttpServlet {
 //        userDao.update(userList);
 
         //delete
-        User user = new User();
-        user.setEmail("NEWgg-poster1@mail.ru");
-        userDao.delete(user);
+//        User user = new User();
+//        user.setEmail("NEWgg-poster1@mail.ru");
+//        userDao.delete(user);
 //        userDao.delete(userList);
+//
+//        String contextPath = getServletContext().getContextPath();
+//        resp.sendRedirect(contextPath + "/dbcp.jsp");
+        String actionName = req.getMethod() + req.getPathInfo();
+        Action action = actionFactory.getAction(actionName);
 
-        String contextPath = getServletContext().getContextPath();
-        resp.sendRedirect(contextPath + "/dbcp.jsp");
+        if (action == null) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Not found");
+            return;
+        }
 
+        ActionResult result = action.execute(req, resp);
+
+        doForwardOrRedirect(result, req, resp);
+    }
+
+    private void doForwardOrRedirect(ActionResult result, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if (result.isRedirect()) {
+            String location = req.getContextPath() + "/do/" + result.getView();
+            resp.sendRedirect(location);
+        } else {
+            String path = "/WEB-INF/jsp/" + result.getView() + ".jsp";
+            req.getRequestDispatcher(path).forward(req, resp);
+        }
     }
 }

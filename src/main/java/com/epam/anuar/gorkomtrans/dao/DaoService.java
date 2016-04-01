@@ -59,13 +59,30 @@ public class DaoService {
     }
 
     public static String viewAllUsers(List<User> users) {
-        StringBuilder allUsers = new StringBuilder();
-        for (User user : users) {
-            allUsers.append(user.getLogin())
+        if (users.size() != 0) {
+            StringBuilder view = new StringBuilder();
+            for (User user : users) {
+                view.append(user.getLogin())
+                        .append(" ")
+                        .append(user.getEmail())
+                        .append("\t");
+            }
+            return view.toString();
+        } else {
+            return "No users found";
+        }
+    }
+
+    public static String viewUser(User user) {
+        if (user != null) {
+            StringBuilder view = new StringBuilder();
+            view.append(user.getLogin())
                     .append(" ")
                     .append(user.getEmail())
                     .append("\t");
+            return view.toString();
+        } else {
+            return "User wasn't found";
         }
-        return allUsers.toString();
     }
 }

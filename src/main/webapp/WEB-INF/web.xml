@@ -9,10 +9,10 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>ControllerServlet</servlet-name>
-        <url-pattern>/test</url-pattern>
+        <url-pattern>/do/*</url-pattern>
     </servlet-mapping>
 
     <listener>
-        <listener-class>com.epam.anuar.gorkomtrans.servlet.ContextListener</listener-class>
+        <listener-class>com.epam.anuar.gorkomtrans.ContextListener</listener-class>
     </listener>
 </web-app>

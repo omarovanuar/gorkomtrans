@@ -10,9 +10,9 @@
 </head>
 <body>
     <%--<p>${dbcp.toLowerCase()}--%>
-    <%--<p>${userById}--%>
+    <p>${userById}
     <%--<p>${userByLogin}--%>
     <%--<p>${userByAllParameters}--%>
-    <p>${allUsers}
+    <%--<p>${allUsers}--%>
 </body>
 </html>

@@ -34,14 +34,22 @@ public class UserDao {
         String value = "SELECT * FROM USER WHERE ID = " + id;
         PreparedStatement ps = DaoService.getStatement(con, value);
         List<User> users = getUserFromDb(ps);
-        return users.get(0);
+        if (users.size() != 0) {
+            return users.get(0);
+        } else {
+            return null;
+        }
     }
 
     public User findByLogin(String login) {
         String value = "SELECT * FROM USER WHERE LOGIN = '" + login + "'";
         PreparedStatement ps = DaoService.getStatement(con, value);
         List<User> users = getUserFromDb(ps);
-        return users.get(0);
+        if (users.size() != 0) {
+            return users.get(0);
+        } else {
+            return null;
+        }
     }
 
     public User findByAllParameters(Map<String, String> params) {
@@ -50,14 +58,23 @@ public class UserDao {
                 "' AND PASSWORD = '" + params.get("PASSWORD") + "'";
         PreparedStatement ps = DaoService.getStatement(con, value);
         List<User> users = getUserFromDb(ps);
-        return users.get(0);
+        if (users.size() != 0) {
+            return users.get(0);
+        } else {
+            return null;
+        }
     }
 
     public List<User> findAll() {
         String value = "SELECT * FROM USER";
         PreparedStatement ps = DaoService.getStatement(con, value);
         List<User> users = getUserFromDb(ps);
-        return users;
+        if (users.size() != 0) {
+            return users;
+        } else {
+            return null;
+        }
+
     }
 
     private List<User> getUserFromDb(PreparedStatement ps) {
@@ -116,5 +133,16 @@ public class UserDao {
 
     public void delete(List<User> userList) {
         userList.forEach(this::delete);
+    }
+
+    public User findByCredentials(String login, String password) {
+        String value = "SELECT * FROM USER WHERE LOGIN = '" + login + "' AND PASSWORD='" + password + "'";
+        PreparedStatement ps = DaoService.getStatement(con, value);
+        List<User> users = getUserFromDb(ps);
+        if (users.size() != 0) {
+            return users.get(0);
+        } else {
+            return null;
+        }
     }
 }
