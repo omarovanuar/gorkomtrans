@@ -18,7 +18,6 @@ public class ContextListener implements ServletContextListener {
             ConnectionPool.init();
             pool = ConnectionPool.getInstance();
             sce.getServletContext().setAttribute("db.pool", pool);
-            log.debug("hooray");
         } catch (SQLException e) {
             log.error("Connection pool can't be created");
             throw new RuntimeException();
@@ -29,7 +28,6 @@ public class ContextListener implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         try {
             ConnectionPool.dispose();
-            log.debug("hooray");
         } catch (SQLException e) {
             log.error("Connection pool can't be disposed");
             throw new RuntimeException();

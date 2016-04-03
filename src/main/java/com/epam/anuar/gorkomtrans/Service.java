@@ -21,4 +21,20 @@ public class Service {
         }
     }
 
+    public static ActionResult registerUser(String login, String password, String email, HttpServletRequest req) {
+        UserDao userDao = DaoFactory.getInstance().getUserDao();
+        switch (userDao.insert(login, password, email)) {
+            case 0:
+                return new ActionResult("", true);
+            case 1:
+                req.setAttribute("registerError", "Current login is already exist");
+                return new ActionResult("register");
+            case 2:
+                req.setAttribute("registerError", "Current email is already exist");
+                return new ActionResult("register");
+            default:
+                req.setAttribute("registerError", "Invalid parameters");
+                return new ActionResult("register");
+        }
+    }
 }

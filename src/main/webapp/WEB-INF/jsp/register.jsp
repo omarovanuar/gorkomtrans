@@ -1,18 +1,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head>
-    <title>Register</title>
-</head>
-<body>
-<div>
-    <form action=""<c:url value="/do/register"/>" method="post">
-        <p>Login: <input type="text" name="login"/>
-        <p>Password: <input type="password" name="password"/>
-        <p>E-mail: <input type="email" name="email">
-        <p><button type="submit">Register</button>
-        <div style="color:red">${registerError}</div>
-    </form>
-</div>
-</body>
-</html>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+
+<t:userpage>
+    <div align="center">
+        <form action="<c:url value="/do/register"/>" method="post">
+            <p>Login: <input type="text" name="login"/>
+                Password: <input type="password" name="password"/>
+                E-mail: <input type="email" name="email">
+            <p>
+                <button type="submit">Register</button>
+            <div style="color:red">${registerError}</div>
+        </form>
+    </div>
+</t:userpage>

@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class UserDao {
     private Connection con;
@@ -24,6 +25,18 @@ public class UserDao {
         String email = user.getEmail();
         String value = "INSERT INTO USER VALUES(" + id + ", " + "'" + login + "'" + ", " + "'" + password + "'" + ", " + "'" + email + "');";
         DaoService.executeStatement(con, value);
+    }
+
+    public byte insert(String login, String password, String email) {
+        Random random = new Random();
+        Integer id = random.nextInt(10000);
+        if (findById(id) != null) {
+           insert(login, password, email);
+        }
+        if (findByLogin(login) != null) return 1;
+        if (findByEmail(email) != null) return 2;
+        String value = "INSERT INTO USER VALUES(" + id + ", " + "'" + login + "'" + ", " + "'" + password + "'" + ", " + "'" + email + "');";
+        return DaoService.executeStatement(con, value);
     }
 
     public void save(List<User> userList) {
@@ -43,6 +56,17 @@ public class UserDao {
 
     public User findByLogin(String login) {
         String value = "SELECT * FROM USER WHERE LOGIN = '" + login + "'";
+        PreparedStatement ps = DaoService.getStatement(con, value);
+        List<User> users = getUserFromDb(ps);
+        if (users.size() != 0) {
+            return users.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    public User findByEmail(String email) {
+        String value = "SELECT * FROM USER WHERE EMAIL = '" + email + "'";
         PreparedStatement ps = DaoService.getStatement(con, value);
         List<User> users = getUserFromDb(ps);
         if (users.size() != 0) {

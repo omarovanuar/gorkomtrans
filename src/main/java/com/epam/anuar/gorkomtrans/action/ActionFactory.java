@@ -18,6 +18,8 @@ public class ActionFactory {
         actions.put(rb.getString("doLogin"), new LoginAction());
         actions.put(rb.getString("doLogout"), new LogoutAction());
         actions.put(rb.getString("showHome"), new ShowPageAction("home"));
+        actions.put(rb.getString("showRegister"), new ShowPageAction("register"));
+        actions.put(rb.getString("doRegister"), new RegisterAction());
     }
 
     public Action getAction(String actionName) {

@@ -25,12 +25,14 @@ public class DaoService {
         return ps;
     }
 
-    protected static void executeStatement(Connection con, String value) {
+    protected static byte executeStatement(Connection con, String value) {
         PreparedStatement ps = null;
         ResultSet rs = null;
+        byte isExecuted = 3;
         try {
             ps = con.prepareStatement(value);
             ps.execute();
+            isExecuted = 0;
         } catch (SQLException e) {
             log.warn("Statement can't be executed");
             throw new DaoException();
@@ -38,6 +40,7 @@ public class DaoService {
             closeStatement(ps);
             closeResultSet(rs);
         }
+        return isExecuted;
     }
 
     protected static void closeStatement(PreparedStatement ps) {
