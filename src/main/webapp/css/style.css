@@ -1,19 +1,17 @@
 body {
-    background: #c7b39b url("/images/pic1.png");
+    background: #c7b39b url("/images/pic1.png") no-repeat;
     background-size: cover;
 }
 
 #wrapper {
-
 }
 
 #welcome-header {
     font-family: Aldhabi, fantasy;
     margin-top: 50px;
-    height: 25%;
+    height: 20%;
     width: auto;
     font-size: 15vh;
-
 }
 
 #welcome-body {
@@ -26,12 +24,17 @@ body {
     width: auto;
 }
 
-#welcome-center {
+#login-center {
     width: 500px;
     margin: 50px auto;
 }
 
-.loginform {
+#register-center {
+    width: 500px;
+    margin: 50px auto;
+}
+
+.welcomeform {
     background-color: rgba(250,250,250,0.5);
     border-radius: 5px;
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.2), inset 0px 1px 0px 0px rgba(250,250,250,0.5);
@@ -39,11 +42,11 @@ body {
     font-family: Calibri, serif;
 }
 
-.loginform ul {
+.welcomeform ul {
     padding: 0;
     margin-top: 10px;
 }
-.loginform li {
+.welcomeform li {
     display: inline;
 }
 
@@ -52,7 +55,7 @@ label {
     color: #999;
 }
 
-.loginform input:not([type=submit]) {
+.welcomeform input:not([type=submit]) {
     padding: 5px;
     margin-right: 10px;
     border: 1px solid rgba(0, 0, 0, 0.3);
@@ -61,16 +64,7 @@ label {
     0px 1px 0px 0px rgba(250, 250, 250, 0.5) ;
 }
 
-.loginform input:not([type=submit]) {
-    padding: 5px;
-    margin-right: 10px;
-    border: 1px solid rgba(0, 0, 0, 0.3);
-    border-radius: 3px;
-    box-shadow: inset 0px 1px 3px 0px rgba(0, 0, 0, 0.1),
-    0px 1px 0px 0px rgba(250, 250, 250, 0.5) ;
-}
-
-.loginform input[type=submit] {
+.welcomeform input[type=submit] {
     border: 1px solid rgba(0, 0, 0, 0.3);
     background: #64c8ef; /* Old browsers */
     background: -moz-linear-gradient(top,  #64c8ef 0%, #00a2e2 100%); /* FF3.6+ */

@@ -16,7 +16,7 @@ public class Service {
             req.getSession().setAttribute("user", user);
             return new ActionResult("home", true);
         } else {
-            req.setAttribute("loginError", "login or password incorrect");
+            req.setAttribute("loginError", "Incorrect login or password");
             return new ActionResult("welcome");
         }
     }

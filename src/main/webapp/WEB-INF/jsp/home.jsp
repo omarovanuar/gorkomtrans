@@ -3,6 +3,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
-<t:userpage>
+<t:authorizedpage>
     Hello, ${user.login}! You are logged in! Now you may <a href="<c:url value="/do/logout"/>">log out</a>.
-</t:userpage>
+</t:authorizedpage>
