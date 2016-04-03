@@ -17,7 +17,7 @@ public class Service {
             return new ActionResult("home", true);
         } else {
             req.setAttribute("loginError", "login or password incorrect");
-            return new ActionResult("login");
+            return new ActionResult("welcome");
         }
     }
 

@@ -14,7 +14,6 @@ public class ActionFactory {
         actions = new HashMap<>();
 
         actions.put(rb.getString("showWelcome"), new ShowPageAction("welcome"));
-        actions.put(rb.getString("showLogin"), new ShowPageAction("login"));
         actions.put(rb.getString("doLogin"), new LoginAction());
         actions.put(rb.getString("doLogout"), new LogoutAction());
         actions.put(rb.getString("showHome"), new ShowPageAction("home"));

@@ -1,20 +1,20 @@
-<%@tag description="User Page template" pageEncoding="UTF-8" %>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@tag description="Welcome Page template" pageEncoding="UTF-8" %>
 
-<t:genericpage>
-    <jsp:attribute name="header">
-        <div id="welcome-header" width="">
-            <h1>GorKomTrans</h1>
-        </div>
-    </jsp:attribute>
-    <jsp:attribute name="footer">
-        <div id="welcome-footer">
-            <p id="copyright">Created by Omarov Anuar. Karaganda. 2016.</p>
-        </div>
-    </jsp:attribute>
-    <jsp:body>
-        <div id="welcome-body">
-            <jsp:doBody/>
-        </div>
-    </jsp:body>
-</t:genericpage>
+<html>
+<title>Registration</title>
+<head>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
+</head>
+<body>
+<div id="welcome-header" align="center">
+    <p>GorKomTrans garbage removal company</p>
+</div>
+<div id="welcome-body">
+    <div id="welcome-center" align="center">
+        <jsp:doBody/>
+    </div>
+</div>
+<div id="welcome-footer">
+</div>
+</body>
+</html>

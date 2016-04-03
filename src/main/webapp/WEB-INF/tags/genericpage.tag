@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
-<div id="wrapper" align="center">
+<div id="wrapper">
     <div id="header">
         <jsp:invoke fragment="header"/>
     </div>
