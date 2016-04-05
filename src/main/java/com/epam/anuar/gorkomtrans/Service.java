@@ -3,6 +3,7 @@ package com.epam.anuar.gorkomtrans;
 import com.epam.anuar.gorkomtrans.action.ActionResult;
 import com.epam.anuar.gorkomtrans.dao.DaoFactory;
 import com.epam.anuar.gorkomtrans.dao.UserDao;
+import com.epam.anuar.gorkomtrans.entity.Customer;
 import com.epam.anuar.gorkomtrans.entity.User;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,9 +33,13 @@ public class Service {
             case 2:
                 req.setAttribute("registerError", "Current email is already exist");
                 return new ActionResult("register");
+            case 3:
+                req.setAttribute("registerError", "Please, fill all fields");
+                return new ActionResult("register");
             default:
                 req.setAttribute("registerError", "Invalid parameters");
                 return new ActionResult("register");
         }
     }
+
 }

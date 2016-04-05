@@ -7,7 +7,7 @@
 </head>
 <body>
 <div id="welcome-header" align="center">
-    <p>GorKomTrans garbage removal company</p>
+    <img src="/images/gkt.png">
 </div>
 <div id="welcome-body">
     <jsp:doBody/>

@@ -35,6 +35,7 @@ public class UserDao {
         }
         if (findByLogin(login) != null) return 1;
         if (findByEmail(email) != null) return 2;
+        if (login.equals("") || password.equals("") || email.equals("")) return 3;
         String value = "INSERT INTO USER VALUES(" + id + ", " + "'" + login + "'" + ", " + "'" + password + "'" + ", " + "'" + email + "');";
         return DaoService.executeStatement(con, value);
     }

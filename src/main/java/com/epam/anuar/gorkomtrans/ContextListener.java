@@ -1,6 +1,7 @@
 package com.epam.anuar.gorkomtrans;
 
 import com.epam.anuar.gorkomtrans.db.ConnectionPool;
+import com.epam.anuar.gorkomtrans.entity.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +15,8 @@ public class ContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+        Provider provider = Provider.getProviderInstance();
+        sce.getServletContext().setAttribute("provider", provider);
         try {
             ConnectionPool.init();
             pool = ConnectionPool.getInstance();

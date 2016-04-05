@@ -19,7 +19,7 @@ public class User extends BaseEntity {
 
     public RoleType getRole() {
         if (role == null) {
-            return RoleType.GUEST;
+            return RoleType.REGISTERED_USER;
         }
         return role;
     }
@@ -52,13 +52,4 @@ public class User extends BaseEntity {
         this.password = password;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "email='" + email + '\'' +
-                ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                ", role=" + getRole() +
-                "} " + super.toString();
-    }
 }

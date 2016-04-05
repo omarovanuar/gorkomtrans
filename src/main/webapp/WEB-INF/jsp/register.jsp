@@ -18,7 +18,7 @@
                 </ul>
                 <ul>
                     <li>Email:
-                        <input id="email" type="email" name="email" placeholder="Not necessary"/>
+                        <input id="email" type="email" name="email" placeholder="email"/>
                     </li>
                 </ul>
                 <ul>

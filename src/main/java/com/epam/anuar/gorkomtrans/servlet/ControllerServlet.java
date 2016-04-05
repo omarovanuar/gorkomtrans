@@ -6,6 +6,7 @@ import com.epam.anuar.gorkomtrans.action.ActionResult;
 import com.epam.anuar.gorkomtrans.dao.DaoFactory;
 import com.epam.anuar.gorkomtrans.dao.DaoService;
 import com.epam.anuar.gorkomtrans.dao.UserDao;
+import com.epam.anuar.gorkomtrans.entity.Provider;
 import com.epam.anuar.gorkomtrans.entity.User;
 
 import javax.servlet.ServletException;
@@ -27,7 +28,7 @@ public class ControllerServlet extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        Provider.getProviderInstance();
         String actionName = req.getMethod() + req.getPathInfo();
         Action action = actionFactory.getAction(actionName);
 

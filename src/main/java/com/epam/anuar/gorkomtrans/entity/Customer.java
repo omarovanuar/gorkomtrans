@@ -1,27 +1,24 @@
 package com.epam.anuar.gorkomtrans.entity;
 
-import java.util.List;
-
 public class Customer extends User{
     private String firstName;
     private String lastName;
     private String phoneNumber;
     private String mainAddress;
-    private List<GarbageTechSpecification> garbageTechSpecList;
-    private String bankDetails;
+    private String bankName;
+    private String bankAccount;
 
 
     public Customer() {
     }
 
-    public Customer(Integer id, String email, String login, String password, String firstName, String lastName, String phoneNumber, String mainAddress, List<GarbageTechSpecification> garbageTechSpecList, String bankDetails) {
-        super(id, email, login, password);
+    public Customer(String firstName, String lastName, String phoneNumber, String mainAddress, String bankName, String bankAccount) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
         this.mainAddress = mainAddress;
-        this.garbageTechSpecList = garbageTechSpecList;
-        this.bankDetails = bankDetails;
+        this.bankName = bankName;
+        this.bankAccount = bankAccount;
     }
 
     public String getFullName() {
@@ -52,35 +49,21 @@ public class Customer extends User{
         this.mainAddress = mainAddress;
     }
 
-    public List<GarbageTechSpecification> getGarbageTechSpecList() {
-        return garbageTechSpecList;
+    public String getBankName() {
+        return bankName;
     }
 
-    public void setGarbageTechSpecList(List<GarbageTechSpecification> garbageTechSpecList) {
-        this.garbageTechSpecList = garbageTechSpecList;
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
     }
 
-    public String getBankDetails() {
-        return bankDetails;
+    public String getBankAccount() {
+        return bankAccount;
     }
 
-    public void setBankDetails(String bankDetails) {
-        this.bankDetails = bankDetails;
+    public void setBankAccount(String bankAccount) {
+        this.bankAccount = bankAccount;
     }
 
-    public void addGarbageLocationList(GarbageTechSpecification garbageSpec) {
-        garbageTechSpecList.add(garbageSpec);
-    }
 
-    public void removeGarbageLocationList(GarbageTechSpecification garbageSpec) {
-        garbageTechSpecList.remove(garbageSpec);
-    }
-
-    public double getCustomerGarbageCapacity() {
-        double totalCapacity = 0;
-        for (GarbageTechSpecification techspec : garbageTechSpecList) {
-            totalCapacity += techspec.getTotalGarbageCapacity();
-        }
-        return totalCapacity;
-    }
 }

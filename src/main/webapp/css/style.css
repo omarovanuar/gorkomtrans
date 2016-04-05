@@ -1,17 +1,116 @@
 body {
-    background: #c7b39b url("/images/pic1.png") no-repeat;
+    background: #c7b39b url("/images/pic1.png") no-repeat fixed;
     background-size: cover;
+    margin: 0;
+    padding: 0;
 }
 
-#wrapper {
+#container {
+    /*border: 3px solid black;*/
+    height: 1200px;
+    width: 1100px;
+    margin-top: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: floralwhite;
+
+}
+
+#header {
+    /*border: 3px solid black;*/
+    height: 200px;
+    width: auto;
+    box-shadow: -2px 2px 29px 3px rgba(0,187,255,0.75), inset 8px 7px 29px 8px rgba(0,187,255,0.75);
+    background-color: #00a2e2;
+}
+
+#logo {
+    margin-left: 35px;
+    margin-top: 35px;
+    height: 70px;
+    width: 350px;
+    float: left;
+    /*border: 5px solid black;*/
+}
+
+#logout {
+    margin: 15px 25px;
+    height: 70px;
+    width: 650px;
+    float: right;
+    text-align: right;
+    /*border: 5px solid black;*/
+}
+
+nav {
+    margin-top: 45px;
+    padding: 0;
+    height: 60px;
+    width: 1110px;
+    float: left;
+    /*border: 5px solid black;*/
+    text-align: left;
+}
+
+nav a {
+    text-decoration: none;
+    font: 15pt "Times New Roman";
+}
+
+nav ul {
+    margin: 0;
+    padding: 0;
+}
+
+.main-menu a {
+    padding: 10px 70px;
+    margin: 0;
+    color: black;
+}
+
+.main-menu li {
+    display: inline;
+}
+
+.main-menu a:hover {
+    color: white;
+}
+
+.main-menu a:active {
+    color: white;
+}
+
+
+#body {
+    /*border: 3px solid black;*/
+    height: 870px;
+    width: auto;
+    margin: 2px 0;
+    color: black;
+    padding: 15px;
+    font: 20px Times, serif;
+    box-shadow: -2px 2px 29px 3px rgba(0,187,255,0.75);
+}
+
+
+
+#footer {
+    /*border: 3px solid black;*/
+    height: 125px;
+    width: auto;
+    box-shadow: -2px 2px 29px 3px rgba(0,187,255,0.75);
+    background-color: slategrey;
+}
+
+#copyright {
+    padding: 55px 20px;
+
 }
 
 #welcome-header {
-    font-family: Aldhabi, fantasy;
     margin-top: 50px;
     height: 20%;
     width: auto;
-    font-size: 15vh;
 }
 
 #welcome-body {

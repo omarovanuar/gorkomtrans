@@ -19,6 +19,9 @@ public class ActionFactory {
         actions.put(rb.getString("showHome"), new ShowPageAction("home"));
         actions.put(rb.getString("showRegister"), new ShowPageAction("register"));
         actions.put(rb.getString("doRegister"), new RegisterAction());
+        actions.put(rb.getString("showEmployee"), new ShowPageAction("employee"));
+        actions.put(rb.getString("showContacts"), new ShowPageAction("contacts"));
+        actions.put(rb.getString("showServices"), new ShowPageAction("services"));
     }
 
     public Action getAction(String actionName) {
