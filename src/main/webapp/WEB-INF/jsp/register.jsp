@@ -23,7 +23,7 @@
                 </ul>
                 <ul>
                     <li>
-                        <input type="submit" value="Login">
+                        <input type="submit" value="Register">
                     </li>
                     <li>
                         <div style="color:red">${registerError}</div>

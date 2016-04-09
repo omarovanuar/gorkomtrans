@@ -13,11 +13,14 @@ import java.util.List;
 public class DaoService {
     private static Logger log = LoggerFactory.getLogger(DaoService.class.getName());
 
-    protected static PreparedStatement getStatement(Connection con, String value) {
+    protected static PreparedStatement getStatement(Connection con, String value, List<String> parameters) {
         PreparedStatement ps;
         try {
             ps = con.prepareStatement(value);
-            ps.execute();
+            for (int i = 0; i < parameters.size(); i++) {
+                ps.setString(i + 1, parameters.get(i));
+            }
+            ps.executeQuery();
         } catch (SQLException e) {
             log.warn("Statement can't be executed");
             throw new DaoException();
@@ -25,12 +28,15 @@ public class DaoService {
         return ps;
     }
 
-    protected static byte executeStatement(Connection con, String value) {
+    protected static byte executeStatement(Connection con, String value, List<String> parameters) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        byte isExecuted = 3;
+        byte isExecuted = 4;
         try {
             ps = con.prepareStatement(value);
+            for (int i = 0; i < parameters.size(); i++) {
+                ps.setString(i + 1, parameters.get(i));
+            }
             ps.execute();
             isExecuted = 0;
         } catch (SQLException e) {

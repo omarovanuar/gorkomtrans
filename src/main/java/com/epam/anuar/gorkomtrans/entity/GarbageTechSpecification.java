@@ -4,6 +4,7 @@ import java.util.Map;
 
 public class GarbageTechSpecification extends BaseEntity{
     private String address;
+    private GarbageContainerType type;
     private Map<GarbageContainerType, Integer> garbageContainerParameters;
 
     public GarbageTechSpecification() {
@@ -21,6 +22,18 @@ public class GarbageTechSpecification extends BaseEntity{
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public Map<GarbageContainerType, Integer> getGarbageContainerParameters() {
+        return garbageContainerParameters;
+    }
+
+    public void setGarbageContainerParameters(Map<GarbageContainerType, Integer> garbageContainerParameters) {
+        this.garbageContainerParameters = garbageContainerParameters;
+    }
+
+    public void setGarbageContainerType(GarbageContainerType type) {
+        type.getContainerCapacity();
     }
 
     public void add(GarbageContainerType type, int number) {

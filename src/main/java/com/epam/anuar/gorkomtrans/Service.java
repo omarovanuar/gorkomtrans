@@ -3,7 +3,6 @@ package com.epam.anuar.gorkomtrans;
 import com.epam.anuar.gorkomtrans.action.ActionResult;
 import com.epam.anuar.gorkomtrans.dao.DaoFactory;
 import com.epam.anuar.gorkomtrans.dao.UserDao;
-import com.epam.anuar.gorkomtrans.entity.Customer;
 import com.epam.anuar.gorkomtrans.entity.User;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,4 +41,41 @@ public class Service {
         }
     }
 
+    public static ActionResult update(String id, String password, String email, String firstName, String lastName, String phoneNumber,
+                                      String mainAddress, String bank, String bankAccount, HttpServletRequest req) {
+        UserDao userDao = DaoFactory.getInstance().getUserDao();
+        switch (userDao.update(id, password, email,firstName, lastName, phoneNumber, mainAddress, bank, bankAccount)) {
+            case 0:
+                req.getSession(false).setAttribute("user", userDao.findById(Integer.parseInt(id)));
+                return new ActionResult("personal-cabinet", true);
+            case 2:
+                req.setAttribute("updateUserError", "Current email is already exist");
+                return new ActionResult("personal-cabinet");
+            case 3:
+                req.setAttribute("updateUserError", "Please, fill all fields");
+                return new ActionResult("personal-cabinet");
+            case 4:
+                req.setAttribute("upsertCustomerError", "Please, fill all fields");
+                return new ActionResult("personal-cabinet");
+            default:
+                req.setAttribute("updateUserError", "Invalid parameters");
+                return new ActionResult("personal-cabinet");
+        }
+    }
+//
+//    public static ActionResult upsertCustomer(String id, String firstName, String lastName, String phoneNumber, String mainAddress, String bank, String bankAccount, String userId, HttpServletRequest req) {
+//        UserDao userDao = DaoFactory.getInstance().getUserDao();
+//        CustomerDao customerDao = DaoFactory.getInstance().getCustomerDao();
+//        switch (customerDao.upsert(firstName, lastName, phoneNumber, mainAddress, bank, bankAccount, userId)) {
+//            case 0:
+//                req.getSession().invalidate();
+//                req.getSession().setAttribute("user", userDao.findById(Integer.parseInt(userId)));
+//                req.getSession(false).setAttribute("customer", customerDao.findByUserId(Integer.parseInt(userId)));
+//                return new ActionResult("personal-cabinet", true);
+//
+//            default:
+//                req.setAttribute("upsertCustomerError", "Invalid parameters");
+//                return new ActionResult("personal-cabinet");
+//        }
+//    }
 }

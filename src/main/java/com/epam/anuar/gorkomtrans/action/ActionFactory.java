@@ -6,7 +6,7 @@ import java.util.ResourceBundle;
 
 public class ActionFactory {
 
-    public static final String ACTION_CONFIG = "action";
+    private static final String ACTION_CONFIG = "action";
     private Map<String, Action> actions;
 
     public ActionFactory() {
@@ -22,6 +22,8 @@ public class ActionFactory {
         actions.put(rb.getString("showEmployee"), new ShowPageAction("employee"));
         actions.put(rb.getString("showContacts"), new ShowPageAction("contacts"));
         actions.put(rb.getString("showServices"), new ShowPageAction("services"));
+        actions.put(rb.getString("showPersonalCabinet"), new ShowPageAction("personal-cabinet"));
+        actions.put(rb.getString("doUpdate"), new UpdateAction());
     }
 
     public Action getAction(String actionName) {

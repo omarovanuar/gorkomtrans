@@ -11,10 +11,12 @@ public class DaoFactory {
     private static Logger log = LoggerFactory.getLogger(DaoFactory.class.getName());
     private Connection con;
     private static DaoFactory instance = new DaoFactory();
+    private UserDao userDao;
 
     private DaoFactory() {
         try {
             con = ConnectionPool.getInstance().takeConnection();
+            userDao = new UserDao(con);
         } catch (SQLException e) {
             log.warn("Connection from connection pool can't be taken");
             throw new RuntimeException();
@@ -26,9 +28,7 @@ public class DaoFactory {
     }
 
     public UserDao getUserDao() {
-        UserDao userDao = new UserDao(con);
         return userDao;
     }
-
 
 }

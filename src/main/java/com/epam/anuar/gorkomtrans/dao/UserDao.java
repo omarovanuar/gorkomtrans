@@ -2,29 +2,31 @@ package com.epam.anuar.gorkomtrans.dao;
 
 import com.epam.anuar.gorkomtrans.entity.User;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.sql.*;
+import java.util.*;
 
 public class UserDao {
     private Connection con;
+    private List<String> parameters = new ArrayList<>();
 
     public UserDao(Connection con) {
         this.con = con;
     }
 
     public void insert(User user) {
-        Integer id = user.getId();
-        String login = user.getLogin();
-        String password = user.getPassword();
-        String email = user.getEmail();
-        String value = "INSERT INTO USER VALUES(" + id + ", " + "'" + login + "'" + ", " + "'" + password + "'" + ", " + "'" + email + "');";
-        DaoService.executeStatement(con, value);
+        parameters.add(user.getId().toString());
+        parameters.add(user.getLogin());
+        parameters.add(user.getPassword());
+        parameters.add(user.getEmail());
+        parameters.add(user.getFirstName());
+        parameters.add(user.getLastName());
+        parameters.add(user.getPhoneNumber());
+        parameters.add(user.getMainAddress());
+        parameters.add(user.getBankName());
+        parameters.add(user.getBankAccount());
+        String value = "INSERT INTO USER VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        DaoService.executeStatement(con, value, parameters);
+        parameters.clear();
     }
 
     public byte insert(String login, String password, String email) {
@@ -36,8 +38,14 @@ public class UserDao {
         if (findByLogin(login) != null) return 1;
         if (findByEmail(email) != null) return 2;
         if (login.equals("") || password.equals("") || email.equals("")) return 3;
-        String value = "INSERT INTO USER VALUES(" + id + ", " + "'" + login + "'" + ", " + "'" + password + "'" + ", " + "'" + email + "');";
-        return DaoService.executeStatement(con, value);
+        parameters.add(id.toString());
+        parameters.add(login);
+        parameters.add(password);
+        parameters.add(email);
+        String value = "INSERT INTO USER VALUES(?, ?, ?, ?, 0, '', '', '', '', '', '');";
+        byte result = DaoService.executeStatement(con, value, parameters);
+        parameters.clear();
+        return result;
     }
 
     public void save(List<User> userList) {
@@ -45,9 +53,11 @@ public class UserDao {
     }
 
     public User findById(Integer id) {
-        String value = "SELECT * FROM USER WHERE ID = " + id;
-        PreparedStatement ps = DaoService.getStatement(con, value);
-        List<User> users = getUserFromDb(ps);
+        String value = "SELECT * FROM USER WHERE ID = ?";
+        parameters.add(id.toString());
+        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        parameters.clear();
+        List<User> users = getUserFromDb(ps, parameters);
         if (users.size() != 0) {
             return users.get(0);
         } else {
@@ -56,9 +66,11 @@ public class UserDao {
     }
 
     public User findByLogin(String login) {
-        String value = "SELECT * FROM USER WHERE LOGIN = '" + login + "'";
-        PreparedStatement ps = DaoService.getStatement(con, value);
-        List<User> users = getUserFromDb(ps);
+        String value = "SELECT * FROM USER WHERE LOGIN = ?";
+        parameters.add(login);
+        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        parameters.clear();
+        List<User> users = getUserFromDb(ps, parameters);
         if (users.size() != 0) {
             return users.get(0);
         } else {
@@ -67,9 +79,11 @@ public class UserDao {
     }
 
     public User findByEmail(String email) {
-        String value = "SELECT * FROM USER WHERE EMAIL = '" + email + "'";
-        PreparedStatement ps = DaoService.getStatement(con, value);
-        List<User> users = getUserFromDb(ps);
+        String value = "SELECT * FROM USER WHERE EMAIL = ?";
+        parameters.add(email);
+        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        parameters.clear();
+        List<User> users = getUserFromDb(ps, parameters);
         if (users.size() != 0) {
             return users.get(0);
         } else {
@@ -77,12 +91,27 @@ public class UserDao {
         }
     }
 
+    public User findByCredentials(String login, String password) {
+        String value = "SELECT * FROM USER WHERE LOGIN = ? AND PASSWORD = ?";
+        parameters.add(login);
+        parameters.add(password);
+        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        parameters.clear();
+        List<User> users = getUserFromDb(ps, parameters);
+        if (users.size() != 0) {
+            return users.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    //todo unfinished SQL
     public User findByAllParameters(Map<String, String> params) {
         String value = "SELECT * FROM USER WHERE ID = " + params.get("ID") +
                 " AND LOGIN = '" + params.get("LOGIN") +
                 "' AND PASSWORD = '" + params.get("PASSWORD") + "'";
-        PreparedStatement ps = DaoService.getStatement(con, value);
-        List<User> users = getUserFromDb(ps);
+        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        List<User> users = getUserFromDb(ps, parameters);
         if (users.size() != 0) {
             return users.get(0);
         } else {
@@ -90,10 +119,11 @@ public class UserDao {
         }
     }
 
+    //todo unfinished SQL
     public List<User> findAll() {
         String value = "SELECT * FROM USER";
-        PreparedStatement ps = DaoService.getStatement(con, value);
-        List<User> users = getUserFromDb(ps);
+        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        List<User> users = getUserFromDb(ps, parameters);
         if (users.size() != 0) {
             return users;
         } else {
@@ -102,28 +132,34 @@ public class UserDao {
 
     }
 
-    private List<User> getUserFromDb(PreparedStatement ps) {
+    private List<User> getUserFromDb(PreparedStatement ps, List<String> parameters) {
         List<User> users = new ArrayList<>();
         User user;
         ResultSet rs = null;
-        String login;
-        String password;
-        String email;
-        Integer id;
+        ResultSetMetaData rsmd;
+        Map<String, String> parametersFromDb = new HashMap<>();
 
         try {
             rs = ps.getResultSet();
+            rsmd = rs.getMetaData();
             while (rs.next()) {
                 user = new User();
-                id = rs.getInt("ID");
-                login = rs.getString("LOGIN");
-                password = rs.getString("PASSWORD");
-                email = rs.getString("EMAIL");
-                user.setId(id);
-                user.setLogin(login);
-                user.setPassword(password);
-                user.setEmail(email);
+                for (int i = 1; i < rsmd.getColumnCount()+1; i++) {
+                    parametersFromDb.put(rsmd.getColumnName(i), rs.getString(i));
+                }
+                user.setId(Integer.parseInt(parametersFromDb.get("ID")));
+                user.setLogin(parametersFromDb.get("LOGIN"));
+                user.setPassword(parametersFromDb.get("PASSWORD"));
+                user.setEmail(parametersFromDb.get("EMAIL"));
+                user.setRoleByCode(Integer.parseInt(parametersFromDb.get("ROLE")));
+                user.setFirstName(parametersFromDb.get("FIRSTNAME"));
+                user.setLastName(parametersFromDb.get("LASTNAME"));
+                user.setPhoneNumber(parametersFromDb.get("PHONENUMBER"));
+                user.setMainAddress(parametersFromDb.get("MAINADDRESS"));
+                user.setBankName(parametersFromDb.get("BANK"));
+                user.setBankAccount(parametersFromDb.get("BANKACCOUNT"));
                 users.add(user);
+                parameters.clear();
             }
         } catch (SQLException e) {
             throw new DaoException();
@@ -135,39 +171,55 @@ public class UserDao {
     }
 
 
-    public void update(User user) {
-        Integer id = user.getId();
-        String login = user.getLogin();
-        String password = user.getPassword();
-        String email = user.getEmail();
-        String value = "UPDATE USER SET LOGIN='" + login + "', PASSWORD='" + password + "', EMAIL='" + email + "' WHERE ID=" + id;
-        DaoService.executeStatement(con, value);
-    }
+//    public void update(User user) {
+//        Integer id = user.getId();
+//        String login = user.getLogin();
+//        String password = user.getPassword();
+//        String email = user.getEmail();
+//        String value = "UPDATE USER SET LOGIN='" + login + "', PASSWORD='" + password + "', EMAIL='" + email + "' WHERE ID=" + id;
+//        DaoService.executeStatement(con, value);
+//    }
 
-    public void update(List<User> userList) {
-        userList.forEach(this::update);
-    }
+//    public byte update(String id, String password, String email) {
+//        String value = "UPDATE USER SET PASSWORD='" + password + "', EMAIL='" + email + "' WHERE ID=" + id;
+//        if (findByEmail(email) != null && (!findById(Integer.parseInt(id)).getEmail().equals(email))) return 2;
+//        if (password.equals("") || email.equals("")) return 3;
+//        return DaoService.executeStatement(con, value);
+//    }
 
-    public void delete(User user) {
-        Integer id = user.getId();
-        String login = user.getLogin();
-        String email = user.getEmail();
-        String value = "DELETE FROM USER WHERE LOGIN='" + login + "' OR EMAIL='" + email + "' OR ID=" + id;
-        DaoService.executeStatement(con, value);
+    public byte update(String id, String password, String email, String firstName, String lastName, String phoneNumber, String mainAddress,
+                       String bank, String bankAccount) {
+        String value = "UPDATE USER SET PASSWORD=?, EMAIL=?, FIRSTNAME=?, LASTNAME=?, PHONENUMBER=?, MAINADDRESS=?, BANK=?, BANKACCOUNT=? WHERE ID=?";
+        if (findByEmail(email) != null && (!findById(Integer.parseInt(id)).getEmail().equals(email))) return 2;
+        if (password.equals("") || email.equals("")) return 3;
+        parameters.add(password);
+        parameters.add(email);
+        parameters.add(firstName);
+        parameters.add(lastName);
+        parameters.add(phoneNumber);
+        parameters.add(mainAddress);
+        parameters.add(bank);
+        parameters.add(bankAccount);
+        parameters.add(id);
+        byte result = DaoService.executeStatement(con, value, parameters);
+        parameters.clear();
+        return result;
     }
+//
+//    public void update(List<User> userList) {
+//        userList.forEach(this::update);
+//    }
+//
+//    public void delete(User user) {
+//        Integer id = user.getId();
+//        String login = user.getLogin();
+//        String email = user.getEmail();
+//        String value = "DELETE FROM USER WHERE LOGIN='" + login + "' OR EMAIL='" + email + "' OR ID=" + id;
+//        DaoService.executeStatement(con, value);
+//    }
+//
+//    public void delete(List<User> userList) {
+//        userList.forEach(this::delete);
+//    }
 
-    public void delete(List<User> userList) {
-        userList.forEach(this::delete);
-    }
-
-    public User findByCredentials(String login, String password) {
-        String value = "SELECT * FROM USER WHERE LOGIN = '" + login + "' AND PASSWORD='" + password + "'";
-        PreparedStatement ps = DaoService.getStatement(con, value);
-        List<User> users = getUserFromDb(ps);
-        if (users.size() != 0) {
-            return users.get(0);
-        } else {
-            return null;
-        }
-    }
 }

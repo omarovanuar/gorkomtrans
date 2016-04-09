@@ -7,32 +7,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Contract extends BaseEntity {
-    private Customer customer;
+    private User user;
     private GarbageTechSpecification gts;
     private Money contractAmount;
     private DateTime providingTerm;
     private DateTime signDate;
 
-    private static Logger log = LoggerFactory.getLogger(Customer.class.getName());
+    private static Logger log = LoggerFactory.getLogger(Contract.class.getName());
 
     public Contract() {
     }
 
-    public Contract(Integer id, Customer customer, GarbageTechSpecification gts, Money contractAmount, DateTime providingTerm, DateTime signDate) {
+    public Contract(Integer id, User user, GarbageTechSpecification gts, Money contractAmount, DateTime providingTerm, DateTime signDate) {
         super(id);
-        this.customer = customer;
+        this.user = user;
         this.contractAmount = contractAmount;
         this.providingTerm = providingTerm;
         this.signDate = signDate;
         this.gts = gts;
     }
 
-    public Customer getCustomer() {
-        if (customer == null) {
-            log.debug("No customer object for contract object");
+    public User getUser() {
+        if (user == null) {
+            log.debug("No user object for contract object");
             throw new NullPointerException();
         }
-        return customer;
+        return user;
     }
 
     public GarbageTechSpecification getGarbageTechSpecification() {

@@ -92,7 +92,10 @@ nav ul {
     box-shadow: -2px 2px 29px 3px rgba(0,187,255,0.75);
 }
 
-
+.userdata {
+    margin: 0;
+    padding: 0;
+}
 
 #footer {
     /*border: 3px solid black;*/

@@ -8,7 +8,7 @@
             <a href="${pageContext.request.contextPath}/do/home"><img id="gktlogo" src="/images/gkt.png"></a>
         </div>
         <div id="logout">
-            Hello, ${user.login}! You are logged in! Now you may <a href="<c:url value="/do/logout"/>">log out</a>.
+            Hello, ${user.login}! <a href="<c:url value="/do/personal-cabinet"/>">Personal cabinet</a> <a href="<c:url value="/do/logout"/>">log out</a>.
         </div>
         <nav>
             <ul class="main-menu">
