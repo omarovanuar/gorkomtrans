@@ -24,6 +24,10 @@ public class ActionFactory {
         actions.put(rb.getString("showServices"), new ShowPageAction("services"));
         actions.put(rb.getString("showPersonalCabinet"), new ShowPageAction("personal-cabinet"));
         actions.put(rb.getString("doUpdate"), new UpdateAction());
+        actions.put(rb.getString("doFillTechSpec"), new FillTechSpecAction());
+        actions.put(rb.getString("showTechSpec"), new ShowPageAction("tech-spec"));
+        actions.put(rb.getString("doSubmitContract"), new SubmitContractAction());
+        actions.put(rb.getString("showContract"), new ShowPageAction("contract"));
     }
 
     public Action getAction(String actionName) {

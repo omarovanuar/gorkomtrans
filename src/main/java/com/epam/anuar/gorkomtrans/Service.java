@@ -3,9 +3,11 @@ package com.epam.anuar.gorkomtrans;
 import com.epam.anuar.gorkomtrans.action.ActionResult;
 import com.epam.anuar.gorkomtrans.dao.DaoFactory;
 import com.epam.anuar.gorkomtrans.dao.UserDao;
+import com.epam.anuar.gorkomtrans.entity.GarbageContainerType;
 import com.epam.anuar.gorkomtrans.entity.User;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 public class Service {
     public static ActionResult checkUser(String login, String password, HttpServletRequest req) {
@@ -62,20 +64,17 @@ public class Service {
                 return new ActionResult("personal-cabinet");
         }
     }
-//
-//    public static ActionResult upsertCustomer(String id, String firstName, String lastName, String phoneNumber, String mainAddress, String bank, String bankAccount, String userId, HttpServletRequest req) {
-//        UserDao userDao = DaoFactory.getInstance().getUserDao();
-//        CustomerDao customerDao = DaoFactory.getInstance().getCustomerDao();
-//        switch (customerDao.upsert(firstName, lastName, phoneNumber, mainAddress, bank, bankAccount, userId)) {
-//            case 0:
-//                req.getSession().invalidate();
-//                req.getSession().setAttribute("user", userDao.findById(Integer.parseInt(userId)));
-//                req.getSession(false).setAttribute("customer", customerDao.findByUserId(Integer.parseInt(userId)));
-//                return new ActionResult("personal-cabinet", true);
-//
-//            default:
-//                req.setAttribute("upsertCustomerError", "Invalid parameters");
-//                return new ActionResult("personal-cabinet");
-//        }
-//    }
+
+    public static ActionResult fillTechSpec(String euro, String standard, String nonStandardNumber, HttpServletRequest req) {
+        if (euro == null) euro = "0";
+        if (standard == null) standard = "0";
+        req.getSession(false).setAttribute("euro", euro);
+        req.getSession(false).setAttribute("standard", standard);
+        req.getSession(false).setAttribute("nonStandardNumber", nonStandardNumber);
+        return new ActionResult("tech-spec", true);
+    }
+
+    public static ActionResult submitContract(String address, HttpServletRequest req) {
+        return null;
+    }
 }

@@ -1,33 +1,31 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
-<%--@elvariable id="containerTypeNumber" type="java.lang.Integer"--%>
-<%--@elvariable id="techspec" type="com.epam.anuar.gorkomtrans.entity.GarbageTechSpecification"--%>
-<%--@elvariable id="containerType" type="com.epam.anuar.gorkomtrans.entity.GarbageContainerType"--%>
 
 <t:authorizedpage>
-    <section class="tech-spec">
-        <form action="<c:url value="/do/contract"/>" method="post">
+    <section class="service">
+        <form action="<c:url value="/do/tech-spec"/>" method="post">
             <ul>
                 <p align="center">
-                    Please, fill all fields of technical specification to create a new contract:
+                    Choose types of containers(if you choose non-standard type, please specify it's quantity)
                 </p>
-                <li>Address:
-                    <input id="tech-address" type="text" name="tech-address" value="${techspec.address}">
-                </li>
-
-                <c:forEach items="${containerTypeNumber}" var="containerTypeNumber">
-                    <li>
-                        <select id="tech-container">
-                            <option disabled>Choose container type</option>
-                            <option value="${containerType.containerCapacity}">Euro container</option>
-                            <option value="${containerType.containerCapacity}">Standart container</option>
-                            <option value="${containerType.containerCapacity}">Non-standart container</option>
-                        </select>
-                    </li>
-                </c:forEach>
                 <li>
-                    <%--<a>${techspec.add()}</a>--%>
+                    <input id="euro-type" type="checkbox" name="euro-type" value="1">Euro container
+                </li>
+                <li>
+                    <input id="standard-type" type="checkbox" name="standard-type" value="1">Standard container
+                </li>
+                <li>
+                    Non-standard container
+                    <select id="non-standard-type-number" name="non-standard-type-number">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </li>
+                <li>
+                    <input type="submit" value="Start">
                 </li>
             </ul>
         </form>

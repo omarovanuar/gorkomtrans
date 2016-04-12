@@ -28,7 +28,6 @@ public class ControllerServlet extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Provider.getProviderInstance();
         String actionName = req.getMethod() + req.getPathInfo();
         Action action = actionFactory.getAction(actionName);
 

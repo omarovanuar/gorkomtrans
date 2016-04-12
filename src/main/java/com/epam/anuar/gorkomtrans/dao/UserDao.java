@@ -8,9 +8,12 @@ import java.util.*;
 public class UserDao {
     private Connection con;
     private List<String> parameters = new ArrayList<>();
+    private ResourceBundle rb = ResourceBundle.getBundle("user-sql");
+
 
     public UserDao(Connection con) {
         this.con = con;
+
     }
 
     public void insert(User user) {
@@ -24,7 +27,7 @@ public class UserDao {
         parameters.add(user.getMainAddress());
         parameters.add(user.getBankName());
         parameters.add(user.getBankAccount());
-        String value = "INSERT INTO USER VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String value = rb.getString("insert.user");
         DaoService.executeStatement(con, value, parameters);
         parameters.clear();
     }
@@ -42,7 +45,7 @@ public class UserDao {
         parameters.add(login);
         parameters.add(password);
         parameters.add(email);
-        String value = "INSERT INTO USER VALUES(?, ?, ?, ?, 0, '', '', '', '', '', '');";
+        String value = rb.getString("insert.login-pass-email");
         byte result = DaoService.executeStatement(con, value, parameters);
         parameters.clear();
         return result;
@@ -53,7 +56,7 @@ public class UserDao {
     }
 
     public User findById(Integer id) {
-        String value = "SELECT * FROM USER WHERE ID = ?";
+        String value = rb.getString("find.id");
         parameters.add(id.toString());
         PreparedStatement ps = DaoService.getStatement(con, value, parameters);
         parameters.clear();
@@ -66,7 +69,7 @@ public class UserDao {
     }
 
     public User findByLogin(String login) {
-        String value = "SELECT * FROM USER WHERE LOGIN = ?";
+        String value = rb.getString("find.login");
         parameters.add(login);
         PreparedStatement ps = DaoService.getStatement(con, value, parameters);
         parameters.clear();
@@ -79,7 +82,7 @@ public class UserDao {
     }
 
     public User findByEmail(String email) {
-        String value = "SELECT * FROM USER WHERE EMAIL = ?";
+        String value = rb.getString("find.email");
         parameters.add(email);
         PreparedStatement ps = DaoService.getStatement(con, value, parameters);
         parameters.clear();
@@ -92,7 +95,7 @@ public class UserDao {
     }
 
     public User findByCredentials(String login, String password) {
-        String value = "SELECT * FROM USER WHERE LOGIN = ? AND PASSWORD = ?";
+        String value = rb.getString("find.login-pass");
         parameters.add(login);
         parameters.add(password);
         PreparedStatement ps = DaoService.getStatement(con, value, parameters);
@@ -189,7 +192,7 @@ public class UserDao {
 
     public byte update(String id, String password, String email, String firstName, String lastName, String phoneNumber, String mainAddress,
                        String bank, String bankAccount) {
-        String value = "UPDATE USER SET PASSWORD=?, EMAIL=?, FIRSTNAME=?, LASTNAME=?, PHONENUMBER=?, MAINADDRESS=?, BANK=?, BANKACCOUNT=? WHERE ID=?";
+        String value = rb.getString("update.all");
         if (findByEmail(email) != null && (!findById(Integer.parseInt(id)).getEmail().equals(email))) return 2;
         if (password.equals("") || email.equals("")) return 3;
         parameters.add(password);

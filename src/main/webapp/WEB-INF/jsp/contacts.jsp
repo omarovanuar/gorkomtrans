@@ -11,7 +11,7 @@
                 <td>${provider.postIndex}</td>
             </tr>
             <tr>
-                <td>Address</td>
+                <td>Address:</td>
                 <td>${provider.mainAddress}</td>
             </tr>
             <tr>
