@@ -12,11 +12,15 @@ public class DaoFactory {
     private Connection con;
     private static DaoFactory instance = new DaoFactory();
     private UserDao userDao;
+    private TechSpecDao techSpecDao;
+    private ContractDao contractDao;
 
     private DaoFactory() {
         try {
             con = ConnectionPool.getInstance().takeConnection();
             userDao = new UserDao(con);
+            techSpecDao = new TechSpecDao(con);
+            contractDao = new ContractDao(con);
         } catch (SQLException e) {
             log.warn("Connection from connection pool can't be taken");
             throw new RuntimeException();
@@ -31,4 +35,9 @@ public class DaoFactory {
         return userDao;
     }
 
+    public TechSpecDao getTechSpecDao() {return  techSpecDao;}
+
+    public ContractDao getContractDao() {
+        return contractDao;
+    }
 }

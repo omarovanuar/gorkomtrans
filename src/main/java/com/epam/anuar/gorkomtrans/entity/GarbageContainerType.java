@@ -12,7 +12,7 @@ public enum GarbageContainerType {
         this.containerCapacity = containerCapacity;
     }
 
-    public double getContainerCapacity() {
+    public Double getContainerCapacity() {
         return containerCapacity;
     }
 

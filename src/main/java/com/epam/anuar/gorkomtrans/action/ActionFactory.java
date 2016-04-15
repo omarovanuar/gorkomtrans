@@ -26,8 +26,11 @@ public class ActionFactory {
         actions.put(rb.getString("doUpdate"), new UpdateAction());
         actions.put(rb.getString("doFillTechSpec"), new FillTechSpecAction());
         actions.put(rb.getString("showTechSpec"), new ShowPageAction("tech-spec"));
-        actions.put(rb.getString("doSubmitContract"), new SubmitContractAction());
+        actions.put(rb.getString("doCreateContract"), new CreateContractAction());
         actions.put(rb.getString("showContract"), new ShowPageAction("contract"));
+        actions.put(rb.getString("showSubmitContract"), new ShowPageAction("submitted-contract"));
+        actions.put(rb.getString("doSubmitContract"), new SubmitContractAction());
+        actions.put(rb.getString("doContractView"), new ContractViewAction());
     }
 
     public Action getAction(String actionName) {

@@ -13,7 +13,6 @@ body {
     margin-left: auto;
     margin-right: auto;
     background-color: floralwhite;
-
 }
 
 #header {
@@ -39,6 +38,7 @@ body {
     width: 650px;
     float: right;
     text-align: right;
+    font-size: 16pt;
     /*border: 5px solid black;*/
 }
 
@@ -82,20 +82,24 @@ nav ul {
 
 
 #body {
-    /*border: 3px solid black;*/
     height: 870px;
     width: auto;
     margin: 2px 0;
     color: black;
     padding: 15px;
-    font: 20px Times, serif;
+    font: 18pt Times, serif;
     box-shadow: -2px 2px 29px 3px rgba(0,187,255,0.75);
 }
 
-.userdata {
+.user-data {
     margin: 0;
     padding: 0;
 }
+
+.user-data-table {
+    font-size: 14pt;
+}
+
 
 #footer {
     /*border: 3px solid black;*/
@@ -127,12 +131,12 @@ nav ul {
 }
 
 #login-center {
-    width: 500px;
+    width: 600px;
     margin: 50px auto;
 }
 
 #register-center {
-    width: 500px;
+    width: 600px;
     margin: 50px auto;
 }
 
@@ -142,6 +146,7 @@ nav ul {
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.2), inset 0px 1px 0px 0px rgba(250,250,250,0.5);
     border: 1px solid rgba(0, 0, 0, 0.3);
     font-family: Calibri, serif;
+    font-size: 14pt;
 }
 
 .welcomeform ul {
@@ -163,7 +168,8 @@ input:not([type=submit]) {
     border: 1px solid rgba(0, 0, 0, 0.3);
     border-radius: 3px;
     box-shadow: inset 0px 1px 3px 0px rgba(0, 0, 0, 0.1),
-    0px 1px 0px 0px rgba(250, 250, 250, 0.5) ;
+    0px 1px 0px 0px rgba(250, 250, 250, 0.5);
+    font-size: 13pt;
 }
 
 input[type=submit] {
@@ -182,6 +188,7 @@ input[type=submit] {
     margin-top: 15px;
     border-radius: 3px;
     text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3);
+    font-size: 14pt;
 }
 
 .service li {
@@ -203,3 +210,85 @@ select {
     0px 1px 0px 0px rgba(250, 250, 250, 0.5) ;
 }
 
+
+.customer-req {
+    float: left;
+    padding: 10px;
+    width: 350px;
+}
+
+.customer-req th {
+    text-align: left;
+}
+
+.provider-req {
+    float: left;
+    width: 350px;
+    padding: 10px;
+}
+
+.provider-req th {
+    text-align: left;
+}
+
+.tech-spec-details {
+    padding: 10px;
+    float: left;
+}
+
+.sanction-contract {
+    width: 1000px;
+    clear: both;
+    float: left;
+    padding: 10px;
+    border-top: black groove 1px;
+    font-size: 15pt;
+    font-style: oblique;
+}
+
+.tech-spec-details th {
+    text-align: left;
+}
+
+.main-text {
+    padding: 10px;
+}
+
+.main-text p {
+    padding: 0;
+    margin: 1px;
+    font: 15pt Times, serif;
+}
+
+#personal-cabinet {
+    float: left;
+    padding: 10px;
+    font-size: 14pt;
+}
+
+#contacts {
+    border: black solid;
+    width: 370px;
+    margin: 15% 32%;
+}
+
+#contact-table {
+    font-size: 15pt;
+}
+
+.contract-list {
+    float: left;
+    margin-top: 5px;
+    font-size: 15pt;
+    width: 650px;
+}
+
+.contract-list p {
+    padding: 0px 0px 0px 10px;
+    margin: 5px 0px 0px;
+}
+
+.contract-list input {
+    margin: 0;
+    width: 630px;
+}

@@ -13,7 +13,6 @@ public class UserDao {
 
     public UserDao(Connection con) {
         this.con = con;
-
     }
 
     public void insert(User user) {

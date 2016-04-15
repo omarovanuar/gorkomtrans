@@ -19,22 +19,28 @@
                 </li>
                 <c:forEach var="currentEuro" begin="1" end="${euro}">
                 <li>Euro container:
-                    <input  id="euro" name="euro" type="text" placeholder="Container quantity">
+                    <input  id="euro" name="euro" type="number" placeholder="Container quantity">
                 </li>
                 </c:forEach>
                 <c:forEach var="currentStandard" begin="1" end="${standard}">
                 <li>Standard container:
-                    <input id="standard" name="standard" type="text" placeholder="Container quantity">
+                    <input id="standard" name="standard" type="number" placeholder="Container quantity">
                 </li>
                 </c:forEach>
                 <c:forEach var="currentNonStandard" begin="1" end="${nonStandardNumber}">
                 <li>Non-standard container №${currentNonStandard}:
-                    <input id="container-number-${currentNonStandard.toString()}" type="text"
+                    <input id="container-number-${currentNonStandard.toString()}" type="number"
                            name="container-number-${currentNonStandard.toString()}" placeholder="Container quantity">
                     <input id="container-capacity-${currentNonStandard.toString()}" type="text"
                            name="container-capacity-${currentNonStandard.toString()}" placeholder="Container capacity">
                 </li>
                 </c:forEach>
+                <li>How often remove the garbage(how many times per month)?
+                    <input id="providingMonthNumber" type="number" name="providingMonthNumber">
+                </li>
+                <li>Providing month number
+                    <input id="perMonth" type="number" name="perMonth">
+                </li>
                 <li>
                     <input id="submit" type="submit" value="Make a contract">
                 </li>

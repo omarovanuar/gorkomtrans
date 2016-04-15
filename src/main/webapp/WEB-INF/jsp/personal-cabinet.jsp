@@ -4,13 +4,16 @@
 <%--@elvariable id="user" type="com.epam.anuar.gorkomtrans.entity.User"--%>
 <%--@elvariable id="updateUserError" type="java.lang.String"--%>
 <%--@elvariable id="upsertCustomerError" type="java.lang.String"--%>
+<%--@elvariable id="contracts" type="java.util.List"--%>
+<%--@elvariable id="item" type="com.epam.anuar.gorkomtrans.entity.Contract"--%>
+<%--@elvariable id="contract" type="com.epam.anuar.gorkomtrans.entity.Contract"--%>
 
 <t:authorizedpage>
     <div id="personal-cabinet" align="left">
 
         <section class="user-data cf">
             <form action="<c:url value="/do/personal-cabinet"/>" method="post">
-                <table id="user-data-table">
+                <table class="user-data-table" id="user-data-table">
                     <tr>
                         <th align="left">User data:</th>
                         <th style="color:red">${updateUserError}</th>
@@ -56,5 +59,16 @@
                 <input type="submit" value="Update">
             </form>
         </section>
+    </div>
+    <div class="contract-list">
+        <p align="center">Contracts:</p>
+        <c:forEach var="item" items="${contracts}">
+            <form action="<c:url value="/do/contract-view"/>" method="post">
+                <p>
+                    <input type="hidden" name="current-contract" value="${item.id.toString()}">
+                    <input type="submit" value="№${item.id.toString()}, ${item.garbageTechSpecification.address}, ${item.contractAmount}, ${item.sanctionedString}">
+                </p>
+            </form>
+        </c:forEach>
     </div>
 </t:authorizedpage>

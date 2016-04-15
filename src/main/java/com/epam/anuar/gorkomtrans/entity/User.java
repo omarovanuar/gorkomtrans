@@ -85,7 +85,7 @@ public class User extends BaseEntity {
     }
 
     public String getFullName() {
-        return firstName + lastName;
+        return firstName + " " + lastName;
     }
 
     public String getFirstName() {
