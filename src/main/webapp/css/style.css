@@ -246,6 +246,10 @@ select {
     font-style: oblique;
 }
 
+.sanction-contract input[type=submit] {
+    margin-left: 10px;
+}
+
 .tech-spec-details th {
     text-align: left;
 }
@@ -266,21 +270,23 @@ select {
     font-size: 14pt;
 }
 
-#contacts {
-    border: black solid;
-    width: 370px;
-    margin: 15% 32%;
-}
-
-#contact-table {
-    font-size: 15pt;
-}
-
 .contract-list {
     float: left;
     margin-top: 5px;
     font-size: 15pt;
-    width: 650px;
+    width: 1000px;
+}
+
+.contract-list td {
+    padding: 10px;
+    margin: 10px;
+    border: black 1px groove;
+}
+
+.contract-list th {
+    padding: 10px;
+    margin: 10px;
+    border: black 1px groove;
 }
 
 .contract-list p {
@@ -289,6 +295,20 @@ select {
 }
 
 .contract-list input {
+    padding: 2px;
     margin: 0;
-    width: 630px;
+}
+
+#next {
+    float: left;
+    padding: 12px;
+}
+
+#contract-pagination {
+    float: left;
+}
+
+#prev {
+    float: left;
+    padding: 12px;
 }

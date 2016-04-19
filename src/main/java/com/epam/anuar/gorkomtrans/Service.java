@@ -1,40 +1,44 @@
 package com.epam.anuar.gorkomtrans;
 
 import com.epam.anuar.gorkomtrans.action.ActionResult;
-import com.epam.anuar.gorkomtrans.dao.ContractDao;
-import com.epam.anuar.gorkomtrans.dao.DaoFactory;
-import com.epam.anuar.gorkomtrans.dao.TechSpecDao;
-import com.epam.anuar.gorkomtrans.dao.UserDao;
-import com.epam.anuar.gorkomtrans.entity.Contract;
-import com.epam.anuar.gorkomtrans.entity.GarbageContainerType;
-import com.epam.anuar.gorkomtrans.entity.GarbageTechSpecification;
-import com.epam.anuar.gorkomtrans.entity.User;
+import com.epam.anuar.gorkomtrans.dao.*;
+import com.epam.anuar.gorkomtrans.entity.*;
 import org.joda.time.DateTime;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
+import static com.epam.anuar.gorkomtrans.util.IdGenerator.generateID;
+
 public class Service {
+    private static DaoFactory dao = DaoFactory.getInstance();
+
     public static ActionResult checkUser(String login, String password, HttpServletRequest req) {
-        UserDao userDao = DaoFactory.getInstance().getUserDao();
-        ContractDao contractDao = DaoFactory.getInstance().getContractDao();
+        UserDao userDao = dao.getUserDao();
         //todo salty hash
         User user = userDao.findByCredentials(login, password);
         if (user != null) {
-            req.getSession(false).setAttribute("contracts", contractDao.findByUserId(user.getId()));
             req.getSession().setAttribute("user", user);
-            return new ActionResult("home", true);
+            dao.close();
+            return new ActionResult("", true);
         } else {
             req.setAttribute("loginError", "Incorrect login or password");
             return new ActionResult("welcome");
         }
     }
 
-    public static ActionResult registerUser(String login, String password, String email, HttpServletRequest req) {
-        UserDao userDao = DaoFactory.getInstance().getUserDao();
-        switch (userDao.insert(login, password, email)) {
+    public static ActionResult registerUser(List<String> parameters, HttpServletRequest req) {
+        UserDao userDao = dao.getUserDao();
+        parameters.add(0, generateID(userDao).toString());
+        WalletDao walletDao = dao.getWalletDao();
+        Integer walletId = generateID(walletDao);
+        walletDao.insert(walletId, parameters.get(8) + " " + parameters.get(9));
+        parameters.add(walletId.toString());
+        byte result = userDao.insertByParameters(parameters);
+        dao.close();
+        switch (result) {
             case 0:
-                return new ActionResult("", true);
+                return new ActionResult("welcome", true);
             case 1:
                 req.setAttribute("registerError", "Current login is already exist");
                 return new ActionResult("register");
@@ -50,13 +54,13 @@ public class Service {
         }
     }
 
-    public static ActionResult update(String id, String password, String email, String firstName, String lastName, String phoneNumber,
-                                      String mainAddress, String bank, String bankAccount, HttpServletRequest req) {
-        UserDao userDao = DaoFactory.getInstance().getUserDao();
-        ContractDao contractDao = DaoFactory.getInstance().getContractDao();
-        switch (userDao.update(id, password, email,firstName, lastName, phoneNumber, mainAddress, bank, bankAccount)) {
+    public static ActionResult changeUserParameters(String id, String password, String email, String firstName, String lastName, String phoneNumber,
+                                                    String mainAddress, String bank, String bankAccount, HttpServletRequest req) {
+        UserDao userDao = dao.getUserDao();
+        byte result = userDao.update(id, password, email, firstName, lastName, phoneNumber, mainAddress, bank, bankAccount);
+        dao.close();
+        switch (result) {
             case 0:
-                req.getSession(false).setAttribute("contracts", contractDao.findByUserId(Integer.parseInt(id)));
                 req.getSession(false).setAttribute("user", userDao.findById(Integer.parseInt(id)));
                 return new ActionResult("personal-cabinet", true);
             case 2:
@@ -84,46 +88,49 @@ public class Service {
     }
 
     public static ActionResult createContract(User user, GarbageTechSpecification techSpecification, String providingMonthNumber, HttpServletRequest req) {
-        ContractDao contractDao = DaoFactory.getInstance().getContractDao();
-        Integer id = generateContractId(contractDao);
+        ContractDao contractDao = dao.getContractDao();
+        Integer id = generateID(contractDao);
         Contract contract = new Contract(id, user, techSpecification, Integer.parseInt(providingMonthNumber));
         req.getSession(false).setAttribute("contract", contract);
         contractDao.insert(contract);
+        req.getSession(false).setAttribute("status", 0);
+        dao.close();
         return new ActionResult("contract", true);
     }
 
-    public static ActionResult sanctionContract(String contractCost, Contract contract, HttpServletRequest req) {
-        ContractDao contractDao = DaoFactory.getInstance().getContractDao();
-        contractDao.update(((Contract) req.getSession(false).getAttribute("contract")).getId(), DateTime.now().toString("dd.MM.YYYY HH:mm"));
+    public static ActionResult submitContract(Contract contract, HttpServletRequest req) {
+        ContractDao contractDao = dao.getContractDao();
+        contractDao.update(((Contract) req.getSession(false).getAttribute("contract")).getId(), DateTime.now().toString("dd.MM.YYYY HH:mm"), Status.SUBMITTED);
+        dao.close();
         req.getSession(false).setAttribute("isSubmitted", "Contract successfully submitted");
-        return new ActionResult("submitted-contract", true);
+        return new ActionResult("contract-status", true);
     }
 
     public static GarbageTechSpecification createTechSpec(String address, String euroNumber, String standardNumber,
                                                           List<String> parameters, String perMonth, HttpServletRequest req) {
-        TechSpecDao techSpecDao = DaoFactory.getInstance().getTechSpecDao();
-        Integer id = generateTechSpecId(techSpecDao);
+        TechSpecDao techSpecDao = dao.getTechSpecDao();
+        Integer id = generateID(techSpecDao);
         Map<String, List<String>> garbageParameters = createGarbageContainerParameters(euroNumber, standardNumber, parameters);
         GarbageTechSpecification techSpecification = new GarbageTechSpecification(id, address, garbageParameters, Integer.parseInt(perMonth));
-
         techSpecDao.insert(techSpecification);
+        dao.close();
         return techSpecification;
     }
 
     private static Map<String, List<String>> createGarbageContainerParameters(String euroNumber, String standardNumber, List<String> parameters) {
         Map<String, List<String>> techSpecParameters = new HashMap<>();
         GarbageContainerType tempType = GarbageContainerType.EURO;
-        techSpecParameters = fillMapParameters(tempType, tempType.toString(), euroNumber, tempType.getContainerCapacity().toString(), techSpecParameters);
+        techSpecParameters = fillMapParameters(tempType.toString(), euroNumber, tempType.getContainerCapacity().toString(), techSpecParameters);
         tempType = GarbageContainerType.STANDARD;
-        techSpecParameters = fillMapParameters(tempType, tempType.toString(), standardNumber, tempType.getContainerCapacity().toString(), techSpecParameters);
+        techSpecParameters = fillMapParameters(tempType.toString(), standardNumber, tempType.getContainerCapacity().toString(), techSpecParameters);
         for (Integer i = 0; i < parameters.size(); i += 2) {
             tempType = GarbageContainerType.NON_STANDARD;
-            techSpecParameters = fillMapParameters(tempType, tempType.toString() + i.toString(), parameters.get(i), parameters.get(i+1), techSpecParameters);
+            techSpecParameters = fillMapParameters(tempType.toString() + i.toString(), parameters.get(i), parameters.get(i+1), techSpecParameters);
         }
         return techSpecParameters;
     }
 
-    private static Map<String, List<String>> fillMapParameters(GarbageContainerType type, String typeString, String containerNumber, String containerCapacity,  Map<String, List<String>> techSpecParameters) {
+    private static Map<String, List<String>> fillMapParameters(String typeString, String containerNumber, String containerCapacity,  Map<String, List<String>> techSpecParameters) {
         List<String> numberAndCapacity = new ArrayList<>();
         numberAndCapacity.add(containerNumber);
         numberAndCapacity.add(containerCapacity);
@@ -131,28 +138,40 @@ public class Service {
         return techSpecParameters;
     }
 
-    private static Integer generateTechSpecId(TechSpecDao techSpecDao) {
-        Random random = new Random();
-        Integer id = random.nextInt(10000) + 10000;
-        if (techSpecDao.findById(id) != null) {
-            id = generateTechSpecId(techSpecDao);
-        }
-        return id;
-    }
-
-    private static Integer generateContractId(ContractDao contractDao) {
-        Random random = new Random();
-        Integer id = random.nextInt(10000) + 20000;
-        if (contractDao.findById(id) != null) {
-            id = generateContractId(contractDao);
-        }
-        return id;
-    }
-
-
-    public static ActionResult contractView(String id, HttpServletRequest req) {
-        ContractDao contractDao = DaoFactory.getInstance().getContractDao();
-        req.getSession(false).setAttribute("contract", contractDao.findById(Integer.parseInt(id)));
+    public static ActionResult viewContract(String id, HttpServletRequest req) {
+        ContractDao contractDao = dao.getContractDao();
+        Contract contract = contractDao.findById(Integer.parseInt(id));
+        req.getSession(false).setAttribute("contract", contract);
+        dao.close();
+        if (contract.getStatus().equals(Status.NEW)) req.setAttribute("status", 0); else req.setAttribute("status", 1);
         return new ActionResult("contract");
+    }
+
+
+    public static ActionResult showUserContracts(int page, int recordsPerPage, HttpServletRequest req) {
+        ContractDao contractDao = dao.getContractDao();
+        User user = (User) req.getSession(false).getAttribute("user");
+        List<Contract> contracts = contractDao.findByUserId(user.getId(), (page-1) * recordsPerPage, recordsPerPage);
+        int noOfRecords = contractDao.userRowsNumber(user.getId().toString());
+        int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
+        if (noOfPages == 0) noOfPages = 1;
+        req.setAttribute("contracts", contracts);
+        req.setAttribute("noOfPages", noOfPages);
+        req.setAttribute("currentPage", page);
+        dao.close();
+        return new ActionResult("contracts");
+    }
+
+    public static ActionResult showAllContracts(int page, int recordsPerPage, HttpServletRequest req) {
+        ContractDao contractDao = dao.getContractDao();
+        List<Contract> contracts = contractDao.findAll((page-1) * recordsPerPage, recordsPerPage);
+        int noOfRecords = contractDao.allRowsNumber();
+        int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
+        if (noOfPages == 0) noOfPages = 1;
+        req.setAttribute("allContracts", contracts);
+        req.setAttribute("noOfPages", noOfPages);
+        req.setAttribute("currentPage", page);
+        dao.close();
+        return new ActionResult("admin-cabinet");
     }
 }

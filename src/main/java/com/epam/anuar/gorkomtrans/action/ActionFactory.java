@@ -20,17 +20,22 @@ public class ActionFactory {
         actions.put(rb.getString("showRegister"), new ShowPageAction("register"));
         actions.put(rb.getString("doRegister"), new RegisterAction());
         actions.put(rb.getString("showEmployee"), new ShowPageAction("employee"));
-        actions.put(rb.getString("showContacts"), new ShowPageAction("contacts"));
+        actions.put(rb.getString("showContracts"), new ShowUserContractsAction());
         actions.put(rb.getString("showServices"), new ShowPageAction("services"));
         actions.put(rb.getString("showPersonalCabinet"), new ShowPageAction("personal-cabinet"));
-        actions.put(rb.getString("doUpdate"), new UpdateAction());
+        actions.put(rb.getString("doChangeUserParameters"), new ChangeUserParametersAction());
         actions.put(rb.getString("doFillTechSpec"), new FillTechSpecAction());
         actions.put(rb.getString("showTechSpec"), new ShowPageAction("tech-spec"));
         actions.put(rb.getString("doCreateContract"), new CreateContractAction());
         actions.put(rb.getString("showContract"), new ShowPageAction("contract"));
-        actions.put(rb.getString("showSubmitContract"), new ShowPageAction("submitted-contract"));
+        actions.put(rb.getString("showContractStatus"), new ShowPageAction("contract-status"));
         actions.put(rb.getString("doSubmitContract"), new SubmitContractAction());
         actions.put(rb.getString("doContractView"), new ContractViewAction());
+        actions.put(rb.getString("showAdminCabinet"), new ShowAllContractsAction());
+        actions.put(rb.getString("showErrorPage"), new ShowPageAction("error-page"));
+        actions.put(rb.getString("doAgreeContract"), new AgreeContractAction());
+        actions.put(rb.getString("doDenyContract"), new DenyContractAction());
+
     }
 
     public Action getAction(String actionName) {

@@ -4,6 +4,13 @@
 
 <t:authorizedpage>
     <section class="service">
+        <div align="center">
+            <img id="gkt-service" src="/images/service.jpg" height="400" width="600">
+        </div>
+        <p>Need It Removed? You've come to the right place...</p>
+        <p>Removing junk can be a burdon. Why not let us do all the dirty work? Our junk removal crews are ready and able to dive in and explore the unknown. That's right, we will remove junk from under your home, in the attic, buried in the shed or anywhere else you would rather not go.</p>
+        <p>You name it and we haul it. ----- You say, "junk." We say, "how high?". . . OK, you get the idea!</p>
+
         <form action="<c:url value="/do/tech-spec"/>" method="post">
             <ul>
                 <p align="center">

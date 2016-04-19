@@ -5,7 +5,7 @@ import com.epam.anuar.gorkomtrans.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class UpdateAction implements Action {
+public class ChangeUserParametersAction implements Action {
     @Override
     public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) {
         String id = req.getParameter("id");
@@ -17,6 +17,6 @@ public class UpdateAction implements Action {
         String mainAddress = req.getParameter("main-address");
         String bank = req.getParameter("bank");
         String bankAccount = req.getParameter("bank-account");
-        return Service.update(id, password, email, firstName, lastName, phoneNumber, mainAddress, bank, bankAccount, req);
+        return Service.changeUserParameters(id, password, email, firstName, lastName, phoneNumber, mainAddress, bank, bankAccount, req);
     }
 }

@@ -5,6 +5,8 @@ import com.epam.anuar.gorkomtrans.entity.User;
 import java.sql.*;
 import java.util.*;
 
+import static com.epam.anuar.gorkomtrans.dao.DaoService.*;
+
 public class UserDao {
     private Connection con;
     private List<String> parameters = new ArrayList<>();
@@ -27,7 +29,7 @@ public class UserDao {
         parameters.add(user.getBankName());
         parameters.add(user.getBankAccount());
         String value = rb.getString("insert.user");
-        DaoService.executeStatement(con, value, parameters);
+        executeStatement(con, value, parameters);
         parameters.clear();
     }
 
@@ -45,9 +47,19 @@ public class UserDao {
         parameters.add(password);
         parameters.add(email);
         String value = rb.getString("insert.login-pass-email");
-        byte result = DaoService.executeStatement(con, value, parameters);
+        byte result = executeStatement(con, value, parameters);
         parameters.clear();
         return result;
+    }
+
+    public byte insertByParameters(List<String> parameters) {
+        if (findByLogin(parameters.get(1)) != null) return 1;
+        if (findByEmail(parameters.get(2)) != null) return 2;
+        for (String parameter : parameters) {
+            if (parameter.equals("")) return 3;
+        }
+        String value = rb.getString("insert.parameters");
+        return executeStatement(con, value, parameters);
     }
 
     public void save(List<User> userList) {
@@ -57,7 +69,7 @@ public class UserDao {
     public User findById(Integer id) {
         String value = rb.getString("find.id");
         parameters.add(id.toString());
-        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        PreparedStatement ps = getStatement(con, value, parameters);
         parameters.clear();
         List<User> users = getUserFromDb(ps, parameters);
         if (users.size() != 0) {
@@ -70,7 +82,7 @@ public class UserDao {
     public User findByLogin(String login) {
         String value = rb.getString("find.login");
         parameters.add(login);
-        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        PreparedStatement ps = getStatement(con, value, parameters);
         parameters.clear();
         List<User> users = getUserFromDb(ps, parameters);
         if (users.size() != 0) {
@@ -83,7 +95,7 @@ public class UserDao {
     public User findByEmail(String email) {
         String value = rb.getString("find.email");
         parameters.add(email);
-        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        PreparedStatement ps = getStatement(con, value, parameters);
         parameters.clear();
         List<User> users = getUserFromDb(ps, parameters);
         if (users.size() != 0) {
@@ -97,7 +109,7 @@ public class UserDao {
         String value = rb.getString("find.login-pass");
         parameters.add(login);
         parameters.add(password);
-        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        PreparedStatement ps = getStatement(con, value, parameters);
         parameters.clear();
         List<User> users = getUserFromDb(ps, parameters);
         if (users.size() != 0) {
@@ -112,7 +124,7 @@ public class UserDao {
         String value = "SELECT * FROM USER WHERE ID = " + params.get("ID") +
                 " AND LOGIN = '" + params.get("LOGIN") +
                 "' AND PASSWORD = '" + params.get("PASSWORD") + "'";
-        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        PreparedStatement ps = getStatement(con, value, parameters);
         List<User> users = getUserFromDb(ps, parameters);
         if (users.size() != 0) {
             return users.get(0);
@@ -124,7 +136,7 @@ public class UserDao {
     //todo unfinished SQL
     public List<User> findAll() {
         String value = "SELECT * FROM USER";
-        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        PreparedStatement ps = getStatement(con, value, parameters);
         List<User> users = getUserFromDb(ps, parameters);
         if (users.size() != 0) {
             return users;
@@ -166,8 +178,8 @@ public class UserDao {
         } catch (SQLException e) {
             throw new DaoException();
         } finally {
-            DaoService.closeResultSet(rs);
-            DaoService.closeStatement(ps);
+            closeResultSet(rs);
+            closeStatement(ps);
         }
         return users;
     }
@@ -203,7 +215,7 @@ public class UserDao {
         parameters.add(bank);
         parameters.add(bankAccount);
         parameters.add(id);
-        byte result = DaoService.executeStatement(con, value, parameters);
+        byte result = executeStatement(con, value, parameters);
         parameters.clear();
         return result;
     }
@@ -223,5 +235,7 @@ public class UserDao {
 //    public void delete(List<User> userList) {
 //        userList.forEach(this::delete);
 //    }
+
+
 
 }

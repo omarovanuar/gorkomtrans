@@ -30,7 +30,6 @@ public class DaoService {
 
     protected static byte executeStatement(Connection con, String value, List<String> parameters) {
         PreparedStatement ps = null;
-        ResultSet rs = null;
         byte isExecuted = 4;
         try {
             ps = con.prepareStatement(value);
@@ -44,9 +43,26 @@ public class DaoService {
             throw new DaoException();
         } finally {
             closeStatement(ps);
-            closeResultSet(rs);
         }
         return isExecuted;
+    }
+
+    protected static int calculateRowNumber(String value, Connection con) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int noOfRecords = 0;
+        try {
+            ps = con.prepareStatement(value);
+            rs = ps.executeQuery();
+            while (rs.next()) noOfRecords = rs.getInt(1);
+        } catch (SQLException e) {
+            log.warn("Statement can't be executed");
+            throw new DaoException();
+        } finally {
+            DaoService.closeResultSet(rs);
+            DaoService.closeStatement(ps);
+        }
+        return noOfRecords;
     }
 
     protected static void closeStatement(PreparedStatement ps) {

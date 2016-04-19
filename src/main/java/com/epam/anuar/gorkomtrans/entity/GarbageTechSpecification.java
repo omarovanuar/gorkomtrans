@@ -1,6 +1,7 @@
 package com.epam.anuar.gorkomtrans.entity;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
@@ -67,8 +68,9 @@ public class GarbageTechSpecification extends BaseEntity{
     }
 
     public String getCapacityPerMonthString() {
-        NumberFormat nf = NumberFormat.getNumberInstance(Locale.ENGLISH);
-        DecimalFormat df = (DecimalFormat) nf;
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator('.');
+        DecimalFormat df = new DecimalFormat("###.##", symbols);
         return df.format(getCapacityPerMonth());
     }
 }

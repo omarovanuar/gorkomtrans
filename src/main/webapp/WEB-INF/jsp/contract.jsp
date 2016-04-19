@@ -3,7 +3,8 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%--@elvariable id="contract" type="com.epam.anuar.gorkomtrans.entity.Contract"--%>
 <%--@elvariable id="provider" type="com.epam.anuar.gorkomtrans.entity.Provider"--%>
-
+<%--@elvariable id="status" type="java.lang.Integer"--%>
+<%--@elvariable id="user" type="com.epam.anuar.gorkomtrans.entity.User"--%>
 
 <t:authorizedpage>
     <h2 align="center">Contract №${contract.id}</h2>
@@ -95,15 +96,20 @@
         <div class="sanction-contract">
             <form action="<c:url value="/do/submitted-contract"/>" method="post">
                 <span>Service price:</span>
-                <input disabled id="contract-cost" type="text" name="contract-cost" value="${contract.contractAmount.toString()}">
-                <c:choose>
-                    <c:when test="${!contract.sanctioned}">
-                        <input id="submit" type="submit" value="Submit contract">
-                    </c:when>
-                    <c:otherwise>
-                        <label id="sanctioned">Sanctioned</label>
-                    </c:otherwise>
-                </c:choose>
+                <input disabled id="contract-cost" type="text" name="contract-cost"
+                       value="${contract.contractAmount.toString()}">
+                <span id="status">Status: ${contract.status.toString()}</span>
+                <c:if test="${status == 0}">
+                    <input id="submit" type="submit" value="Submit contract">
+                </c:if>
+                <c:if test="${status == 1 && user.roleByCode >= 1}">
+                    <form action="<c:url value="/do/agree-contract"/>" method="post">
+                        <input id="agree" type="submit" value="Agree">
+                    </form>
+                    <form action="<c:url value="/do/deny-contract"/>" method="post">
+                        <input id="deny" type="submit" value="Deny">
+                    </form>
+                </c:if>
             </form>
         </div>
     </div>

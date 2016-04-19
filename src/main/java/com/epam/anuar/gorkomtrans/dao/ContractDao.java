@@ -1,10 +1,13 @@
 package com.epam.anuar.gorkomtrans.dao;
 
 import com.epam.anuar.gorkomtrans.entity.Contract;
+import com.epam.anuar.gorkomtrans.entity.Status;
 import org.joda.money.Money;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ContractDao {
+    private static Logger log = LoggerFactory.getLogger(ContractDao.class.getName());
     private Connection con;
     private List<String> parameters = new ArrayList<>();
 
@@ -27,7 +31,7 @@ public class ContractDao {
         parameters.add(contract.getContractAmount().toString());
         parameters.add(contract.getProvidingMonthNumber().toString());
         parameters.add(contract.getContractTotalCapacityString());
-        String value = "INSERT INTO CONTRACT VALUES (?, ?, ?, ?, ?, '', FALSE, ?)";
+        String value = "INSERT INTO CONTRACT VALUES (?, ?, ?, ?, ?, '', 'NEW', ?)";
         DaoService.executeStatement(con, value, parameters);
         parameters.clear();
     }
@@ -45,12 +49,34 @@ public class ContractDao {
         }
     }
 
-    public List<Contract> findByUserId(Integer id) {
-        String value = "SELECT * FROM CONTRACT TABLE WHERE USERID = ?";
+    public List<Contract> findByUserId(Integer id, Integer offset, Integer noOfRecords) {
+        String value = "SELECT * FROM CONTRACT TABLE WHERE USERID = ? LIMIT ?, ?";
         parameters.add(id.toString());
+        parameters.add(offset.toString());
+        parameters.add(noOfRecords.toString());
         PreparedStatement ps = DaoService.getStatement(con, value, parameters);
         parameters.clear();
         return getContractFromDb(ps, parameters);
+    }
+
+    public List<Contract> findAll(Integer offset, Integer noOfRecords) {
+        String value = "SELECT * FROM CONTRACT TABLE LIMIT ?, ?";
+        parameters.add(offset.toString());
+        parameters.add(noOfRecords.toString());
+        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        parameters.clear();
+        return getContractFromDb(ps, parameters);
+    }
+
+    public int userRowsNumber(String id) {
+        String value = "SELECT ROWNUM(), * FROM CONTRACT WHERE ID = " + id;
+        return DaoService.calculateRowNumber(value, con);
+    }
+
+    public int allRowsNumber() {
+        String value = "SELECT ROWNUM(), * FROM CONTRACT";
+        return DaoService.calculateRowNumber(value, con);
+
     }
 
     private List<Contract> getContractFromDb(PreparedStatement ps, List<String> parameters) {
@@ -79,7 +105,7 @@ public class ContractDao {
                 if (!parametersFromDb.get("SIGNDATE").equals("")) {
                     contract.setSignDate(formatter.parseDateTime(parametersFromDb.get("SIGNDATE")));
                 }
-                contract.setSanctioned(Boolean.getBoolean(parametersFromDb.get("SANCTIONED")));
+                contract.setStatus(Status.valueOf(parametersFromDb.get("STATUS")));
                 contract.setContractTotalCapacity(Double.parseDouble(parametersFromDb.get("TOTALCAPACITY")));
                 contracts.add(contract);
                 parameters.clear();
@@ -93,9 +119,10 @@ public class ContractDao {
         return contracts;
     }
 
-    public void update(Integer id, String signdate) {
-        String value = "UPDATE CONTRACT SET SIGNDATE = ? WHERE ID = ?";
-        parameters.add(signdate);
+    public void update(Integer id, String signDate, Status status) {
+        String value = "UPDATE CONTRACT SET SIGNDATE = ?, STATUS = ? WHERE ID = ?";
+        parameters.add(signDate);
+        parameters.add(status.toString());
         parameters.add(id.toString());
         DaoService.executeStatement(con, value, parameters);
         parameters.clear();

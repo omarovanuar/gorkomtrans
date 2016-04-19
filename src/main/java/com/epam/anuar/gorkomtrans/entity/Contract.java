@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -17,7 +18,7 @@ public class Contract extends BaseEntity {
     private Money contractAmount;
     private Integer providingMonthNumber;
     private DateTime signDate;
-    private Boolean isSanctioned = false;
+    private Status status;
 
     private static Logger log = LoggerFactory.getLogger(Contract.class.getName());
 
@@ -32,7 +33,7 @@ public class Contract extends BaseEntity {
         this.contractAmount = calculateContractAmount();
     }
 
-    public Contract(Integer id, User user, GarbageTechSpecification gts, Money contractAmount, Integer providingMonthNumber, DateTime signDate) {
+    public Contract(Integer id, User user, GarbageTechSpecification gts, Money contractAmount, Integer providingMonthNumber, DateTime signDate, Status status) {
         super(id);
         this.user = user;
         this.contractAmount = contractAmount;
@@ -74,7 +75,9 @@ public class Contract extends BaseEntity {
     }
 
     public String getContractTotalCapacityString() {
-        DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(Locale.ENGLISH);
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator('.');
+        DecimalFormat df = new DecimalFormat("###.##", symbols);
         return df.format(getContractTotalCapacity());
     }
 
@@ -111,19 +114,14 @@ public class Contract extends BaseEntity {
         this.signDate = signDate;
     }
 
-    public String getSanctionedString() {
-        if (getSanctioned() == true) {
-            return "Sanctioned";
-        } else {
-            return "Not sanctioned";
+    public Status getStatus() {
+        if (status == null) {
+            return Status.NEW;
         }
+        return status;
     }
 
-    public Boolean getSanctioned() {
-        return isSanctioned;
-    }
-
-    public void setSanctioned(Boolean sanctioned) {
-        isSanctioned = sanctioned;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

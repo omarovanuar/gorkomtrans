@@ -144,6 +144,20 @@ public class ConnectionPool {
             connection.close();
         }
     }
+
+    public void getConnectionQueue() {
+        for (Connection connection : connectionQueue) {
+            Boolean closed = null;
+            try {
+                closed = connection.isClosed();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            if (closed != null) {
+                log.debug(connection + "  " + closed.toString());
+            }
+        }
+    }
 }
 
 

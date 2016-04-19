@@ -12,6 +12,7 @@ public class User extends BaseEntity {
     private String mainAddress;
     private String bankName;
     private String bankAccount;
+    private Wallet wallet;
 
     public User() {
     }
@@ -42,6 +43,10 @@ public class User extends BaseEntity {
             return RoleType.REGISTERED_USER;
         }
         return role;
+    }
+
+    public Integer getRoleByCode() {
+        return role.getRoleCode();
     }
 
     public void setRoleByCode(Integer roleCode) {

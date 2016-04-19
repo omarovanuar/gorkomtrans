@@ -2,6 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%--@elvariable id="registerError" type="java.lang.String"--%>
+<%--@elvariable id="userParamList" type="java.util.List<String>"--%>
 
 <t:welcomepage>
     <div id="register-center" align="center">
@@ -9,26 +10,21 @@
             <form action="<c:url value="/do/register"/>" method="post">
                 <ul>
                     <p>Registration form:</p>
-                    <li>Login:
-                        <input id="login" type="text" name="login" placeholder="login"/>
-                    </li>
-                    <li>Password:
-                        <input id="password" type="password" name="password" placeholder="password"/>
-                    </li>
-                </ul>
-                <ul>
-                    <li>Email:
-                        <input id="email" type="email" name="email" placeholder="email"/>
-                    </li>
-                </ul>
-                <ul>
+                    <table>
+                        <c:forEach items="${userParamList}" var="userParam">
+                            <tr>
+                                <td>${userParam}</td>
+                                <td><input type="text" name="${userParam}" placeholder="${userParam}"></td>
+                            </tr>
+                        </c:forEach>
+                    </table>
                     <li>
                         <input type="submit" value="Register">
                     </li>
                     <li>
                         <div style="color:red">${registerError}</div>
                     </li>
-                    <p><a href="<c:url value="/do/"/>">login page</a></p>
+                    <p><a href="<c:url value="/do/welcome"/>">login page</a></p>
                 </ul>
             </form>
         </section>

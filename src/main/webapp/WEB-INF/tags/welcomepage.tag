@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@tag description="Welcome Page template" pageEncoding="UTF-8" %>
 
 <html>
@@ -7,7 +8,7 @@
 </head>
 <body>
 <div id="welcome-header" align="center">
-    <img src="/images/gkt.png">
+    <a href="<c:url value="/do/"/>"><img src="/images/gkt.png"></a>
 </div>
 <div id="welcome-body">
     <jsp:doBody/>

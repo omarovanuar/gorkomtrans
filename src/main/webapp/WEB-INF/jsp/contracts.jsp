@@ -1,14 +1,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
-<%--@elvariable id="allContracts" type="java.util.List"--%>
+<%--@elvariable id="contracts" type="java.util.List"--%>
 <%--@elvariable id="item" type="com.epam.anuar.gorkomtrans.entity.Contract"--%>
 <%--@elvariable id="noOfPages" type="java.lang.Integer"--%>
 <%--@elvariable id="currentPage" type="java.lang.Integer"--%>
 
 <t:authorizedpage>
     <div class="contract-list">
-        <p align="center">Contracts:</p>
         <table>
             <tr>
                 <th>Id</th>
@@ -18,7 +17,7 @@
                 <th>Status</th>
                 <th>Contract</th>
             </tr>
-            <c:forEach var="item" items="${allContracts}">
+            <c:forEach var="item" items="${contracts}">
                 <tr>
                     <td>${item.id.toString()}</td>
                     <td>${item.garbageTechSpecification.address}</td>
@@ -37,9 +36,9 @@
             </c:forEach>
         </table>
         <c:if test="${currentPage != 1}">
-            <div id="next"><a
-                    href="${pageContext.request.contextPath}/do/admin-cabinet?page=${currentPage - 1}">Previous</a></div>
+            <div id="next"><a href="${pageContext.request.contextPath}/do/contracts?page=${currentPage - 1}">Previous</a></div>
         </c:if>
+
         <div>
             <table id="contract-pagination" border="1" cellpadding="5" cellspacing="5">
                 <tr>
@@ -50,7 +49,7 @@
                                 <td>${i}</td>
                             </c:when>
                             <c:otherwise>
-                                <td><a href="${pageContext.request.contextPath}/do/admin-cabinet?page=${i}">${i}</a></td>
+                                <td><a href="${pageContext.request.contextPath}/do/contracts?page=${i}">${i}</a></td>
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>
@@ -58,8 +57,7 @@
             </table>
         </div>
         <c:if test="${currentPage lt noOfPages}">
-            <div id="prev"><a href="${pageContext.request.contextPath}/do/admin-cabinet?page=${currentPage + 1}">Next</a>
-            </div>
+            <div id="prev"><a href="${pageContext.request.contextPath}/do/contracts?page=${currentPage + 1}">Next</a></div>
         </c:if>
     </div>
 </t:authorizedpage>
