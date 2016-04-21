@@ -140,4 +140,12 @@ public class User extends BaseEntity {
     public void setBankAccount(String bankAccount) {
         this.bankAccount = bankAccount;
     }
+
+    public Wallet getWallet() {
+        return wallet;
+    }
+
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
+    }
 }

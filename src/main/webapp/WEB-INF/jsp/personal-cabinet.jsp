@@ -52,6 +52,12 @@
                         <td>Bank account:</td>
                         <td><input id="bank-account" type="text" name="bank-account" value="${user.bankAccount}"/></td>
                     </tr>
+                    <tr>
+                        <th align="left">Balance:</th>
+                    </tr>
+                    <tr>
+                        <td><input disabled id="balance" type="text" name="balance" value="${user.wallet.money.toString()}"/></td>
+                    </tr>
                 </table>
                 <input type="submit" value="Apply changes">
             </form>

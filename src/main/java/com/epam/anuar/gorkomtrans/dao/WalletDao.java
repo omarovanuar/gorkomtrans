@@ -3,6 +3,7 @@ package com.epam.anuar.gorkomtrans.dao;
 import com.epam.anuar.gorkomtrans.entity.Wallet;
 import org.joda.money.Money;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,6 +65,23 @@ public class WalletDao {
         parameters.add(account);
         String value = "INSERT INTO WALLET VALUES(?, ?, 'KZT 0.00')";
         executeStatement(con, value, parameters);
+        parameters.clear();
+    }
+
+    public byte updateBalance(String id, String money) {
+        String value = "UPDATE WALLET SET MONEY = ? WHERE ID = ?";
+        if (Double.parseDouble(money) < 0) return 4;
+        parameters.add("KZT " + money);
+        parameters.add(id);
+        byte result = executeStatement(con, value, parameters);
+        parameters.clear();
+        return result;
+    }
+
+    public void deleteById(String id) {
+        parameters.add(id);
+        String value = "DELETE FROM WALLET WHERE ID = ?";
+        DaoService.executeStatement(con, value, parameters);
         parameters.clear();
     }
 }

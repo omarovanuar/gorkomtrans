@@ -10,12 +10,15 @@
     <h2 align="center">Contract №${contract.id}</h2>
     <div class="main-text">
         <p>${contract.user.fullName} , known as "First Party," agrees to enter into this contract
-            with ${provider.organizationName}, known as "Second Party" on {date}.</p>
+            with ${provider.organizationName}, known as "Second Party".</p>
         <p> This agreement is based on the following provisions:</p>
         <p> 1. First Party pays immediately the full cost of the contract.</p>
-        <p> 2. If the Second Party doesn't sanction with the contract, the First Party takes full of his money back. </p>
-        <p> 3. When the Second Party sanctions with the contract, status of the contract becomes "Sanctioned" and the Second Party starts executing of the contract in accordance with the technical specification.</p>
-        <p> 4. After expiration of the contract, the Second Part provides to the First Party acts of rendered services.</p>
+        <p> 2. If the Second Party doesn't sanction with the contract, the First Party takes full of his money
+            back. </p>
+        <p> 3. When the Second Party sanctions with the contract, status of the contract becomes "Sanctioned" and the
+            Second Party starts executing of the contract in accordance with the technical specification.</p>
+        <p> 4. After expiration of the contract, the Second Part provides to the First Party acts of rendered
+            services.</p>
         <p> Furthermore, the First Party agrees:</p>
         <p> - to pay full cost of the contract to the Second Party</p>
         <p> and the Second Party agrees:</p>
@@ -94,23 +97,25 @@
             </table>
         </div>
         <div class="sanction-contract">
-            <form action="<c:url value="/do/submitted-contract"/>" method="post">
-                <span>Service price:</span>
-                <input disabled id="contract-cost" type="text" name="contract-cost"
-                       value="${contract.contractAmount.toString()}">
-                <span id="status">Status: ${contract.status.toString()}</span>
-                <c:if test="${status == 0}">
+            <span>Service price:</span>
+            <input disabled id="contract-cost" type="text" name="contract-cost"
+                   value="${contract.contractAmount.toString()}">
+            <span id="status">Status: ${contract.status.toString()}</span>
+            <c:if test="${status == 0}">
+                <form action="<c:url value="/do/submitted-contract"/>" method="post">
                     <input id="submit" type="submit" value="Submit contract">
-                </c:if>
-                <c:if test="${status == 1 && user.roleByCode >= 1}">
+                </form>
+            </c:if>
+            <c:if test="${status == 1 && user.roleByCode >= 1}">
+                <div id="ag-de-contract">
                     <form action="<c:url value="/do/agree-contract"/>" method="post">
                         <input id="agree" type="submit" value="Agree">
                     </form>
                     <form action="<c:url value="/do/deny-contract"/>" method="post">
                         <input id="deny" type="submit" value="Deny">
                     </form>
-                </c:if>
-            </form>
+                </div>
+            </c:if>
         </div>
     </div>
 </t:authorizedpage>

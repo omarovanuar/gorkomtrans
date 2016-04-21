@@ -3,6 +3,7 @@ package com.epam.anuar.gorkomtrans;
 import com.epam.anuar.gorkomtrans.action.ActionResult;
 import com.epam.anuar.gorkomtrans.dao.*;
 import com.epam.anuar.gorkomtrans.entity.*;
+import com.epam.anuar.gorkomtrans.util.Validator;
 import org.joda.time.DateTime;
 
 import javax.servlet.http.HttpServletRequest;
@@ -56,6 +57,7 @@ public class Service {
 
     public static ActionResult changeUserParameters(String id, String password, String email, String firstName, String lastName, String phoneNumber,
                                                     String mainAddress, String bank, String bankAccount, HttpServletRequest req) {
+        Validator.checkUnlogged(req);
         UserDao userDao = dao.getUserDao();
         byte result = userDao.update(id, password, email, firstName, lastName, phoneNumber, mainAddress, bank, bankAccount);
         dao.close();
@@ -79,6 +81,8 @@ public class Service {
     }
 
     public static ActionResult fillTechSpec(String euro, String standard, String nonStandardNumber, HttpServletRequest req) {
+        Validator.checkUnlogged(req);
+        Validator.isEmptyTechSpec(euro, standard, nonStandardNumber);
         if (euro == null) euro = "0";
         if (standard == null) standard = "0";
         req.getSession(false).setAttribute("euro", euro);
@@ -88,6 +92,7 @@ public class Service {
     }
 
     public static ActionResult createContract(User user, GarbageTechSpecification techSpecification, String providingMonthNumber, HttpServletRequest req) {
+        Validator.checkUnlogged(req);
         ContractDao contractDao = dao.getContractDao();
         Integer id = generateID(contractDao);
         Contract contract = new Contract(id, user, techSpecification, Integer.parseInt(providingMonthNumber));
@@ -99,15 +104,17 @@ public class Service {
     }
 
     public static ActionResult submitContract(Contract contract, HttpServletRequest req) {
+        Validator.checkUnlogged(req);
         ContractDao contractDao = dao.getContractDao();
-        contractDao.update(((Contract) req.getSession(false).getAttribute("contract")).getId(), DateTime.now().toString("dd.MM.YYYY HH:mm"), Status.SUBMITTED);
+        contractDao.updateStatus(((Contract) req.getSession(false).getAttribute("contract")).getId(), Status.SUBMITTED);
         dao.close();
-        req.getSession(false).setAttribute("isSubmitted", "Contract successfully submitted");
-        return new ActionResult("contract-status", true);
+        req.setAttribute("statusMessage", "Contract successfully submitted");
+        return new ActionResult("contract-status");
     }
 
     public static GarbageTechSpecification createTechSpec(String address, String euroNumber, String standardNumber,
                                                           List<String> parameters, String perMonth, HttpServletRequest req) {
+        Validator.checkUnlogged(req);
         TechSpecDao techSpecDao = dao.getTechSpecDao();
         Integer id = generateID(techSpecDao);
         Map<String, List<String>> garbageParameters = createGarbageContainerParameters(euroNumber, standardNumber, parameters);
@@ -139,16 +146,23 @@ public class Service {
     }
 
     public static ActionResult viewContract(String id, HttpServletRequest req) {
+        Validator.checkUnlogged(req);
         ContractDao contractDao = dao.getContractDao();
         Contract contract = contractDao.findById(Integer.parseInt(id));
         req.getSession(false).setAttribute("contract", contract);
         dao.close();
-        if (contract.getStatus().equals(Status.NEW)) req.setAttribute("status", 0); else req.setAttribute("status", 1);
+        if (contract.getStatus().equals(Status.NEW)) req.setAttribute("status", 0);
+        else if (contract.getStatus().equals(Status.SUBMITTED)){
+            req.setAttribute("status", 1);
+        } else {
+            req.setAttribute("status", 2);
+        }
         return new ActionResult("contract");
     }
 
 
     public static ActionResult showUserContracts(int page, int recordsPerPage, HttpServletRequest req) {
+        Validator.checkUnlogged(req);
         ContractDao contractDao = dao.getContractDao();
         User user = (User) req.getSession(false).getAttribute("user");
         List<Contract> contracts = contractDao.findByUserId(user.getId(), (page-1) * recordsPerPage, recordsPerPage);
@@ -163,6 +177,7 @@ public class Service {
     }
 
     public static ActionResult showAllContracts(int page, int recordsPerPage, HttpServletRequest req) {
+        Validator.checkAdminOrModer(req);
         ContractDao contractDao = dao.getContractDao();
         List<Contract> contracts = contractDao.findAll((page-1) * recordsPerPage, recordsPerPage);
         int noOfRecords = contractDao.allRowsNumber();
@@ -172,6 +187,112 @@ public class Service {
         req.setAttribute("noOfPages", noOfPages);
         req.setAttribute("currentPage", page);
         dao.close();
+        return new ActionResult("contract-sanction");
+    }
+
+    public static ActionResult agreeContract(HttpServletRequest req) {
+        Validator.checkAdminOrModer(req);
+        UserDao userDao = dao.getUserDao();
+        ContractDao contractDao = dao.getContractDao();
+        ContractPayTransaction transaction = dao.getContractPayTransaction();
+        String summa = ((Contract) req.getSession(false).getAttribute("contract")).getContractAmount().toString();
+        String userId = ((Contract) req.getSession(false).getAttribute("contract")).getUser().getWallet().getId().toString();
+        String providerId = userDao.findByLogin("admin").getWallet().getId().toString();
+        if (transaction.transfer(summa, userId, providerId) == 1) {
+            contractDao.update(((Contract) req.getSession(false).getAttribute("contract")).getId(), DateTime.now().toString("dd.MM.YYYY HH:mm"), Status.AGREED);
+            dao.close();
+            req.setAttribute("statusMessage", "Contract successfully agreed");
+            return new ActionResult("contract-status");
+        } else {
+            dao.close();
+            req.setAttribute("statusMessage", "Contract not agreed, try later");
+            return new ActionResult("contract-status");
+        }
+    }
+
+    public static ActionResult denyContract(HttpServletRequest req) {
+        Validator.checkAdminOrModer(req);
+        ContractDao contractDao = dao.getContractDao();
+        contractDao.updateStatus(((Contract) req.getSession(false).getAttribute("contract")).getId(), Status.DENIED);
+        dao.close();
+        req.setAttribute("statusMessage", "Contract successfully denied");
+        return new ActionResult("contract-status");
+    }
+
+    public static ActionResult showAllUsers(int page, int recordsPerPage, HttpServletRequest req) {
+        Validator.checkAdmin(req);
+        UserDao userDao = dao.getUserDao();
+        List<User> users = userDao.findAll((page-1) * recordsPerPage, recordsPerPage);
+        int noOfRecords = userDao.allRowsNumber();
+        int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
+        if (noOfPages == 0) noOfPages = 1;
+        req.setAttribute("allUsers", users);
+        req.setAttribute("noOfPages", noOfPages);
+        req.setAttribute("currentPage", page);
+        dao.close();
         return new ActionResult("admin-cabinet");
+    }
+
+    public static ActionResult viewUser(String id, HttpServletRequest req) {
+        Validator.checkAdmin(req);
+        UserDao userDao = dao.getUserDao();
+        User user = userDao.findById(Integer.parseInt(id));
+        req.setAttribute("userParam", user);
+        dao.close();
+        return new ActionResult("user-view");
+    }
+
+    public static ActionResult changeUserView(String id, String password, String email, String role, String balance, HttpServletRequest req) {
+        Validator.checkAdmin(req);
+        UserDao userDao = dao.getUserDao();
+        User user = userDao.findById(Integer.parseInt(id));
+        switch (userDao.updatePassEmailRole(id, password, email, role)) {
+            case 0:
+                WalletDao walletDao = dao.getWalletDao();
+                if (walletDao.updateBalance(user.getWallet().getId().toString(), balance) > 0) {
+                    req.setAttribute("updateUserParamError", "Invalid balance");
+                }
+                req.setAttribute("userParam", userDao.findById(Integer.parseInt(id)));
+                dao.close();
+                return new ActionResult("user-view");
+            case 2:
+                req.setAttribute("updateUserParamError", "Current email is already exist");
+                req.setAttribute("userParam", user);
+                dao.close();
+                return new ActionResult("user-view");
+            case 3:
+                req.setAttribute("updateUserParamError", "Please, fill all fields");
+                req.setAttribute("userParam", user);
+                dao.close();
+                return new ActionResult("user-view");
+            default:
+                req.setAttribute("error", "Unknown error");
+                return new ActionResult("error-page");
+        }
+
+    }
+
+    public static ActionResult deleteUser(String id, HttpServletRequest req) {
+        Validator.checkAdmin(req);
+        UserDao userDao = dao.getUserDao();
+        WalletDao walletDao = dao.getWalletDao();
+        ContractDao contractDao = dao.getContractDao();
+        TechSpecDao techSpecDao = dao.getTechSpecDao();
+        User user = userDao.findById(Integer.parseInt(id));
+        String walletId = user.getWallet().getId().toString();
+        List<Contract> contracts = contractDao.findByUserId(Integer.parseInt(id));
+        for (Contract contract : contracts) {
+            techSpecDao.deleteById(contract.getGarbageTechSpecification().getId().toString());
+        }
+        contractDao.deleteByUserId(id);
+        walletDao.deleteById(walletId);
+        userDao.deleteById(id);
+        dao.close();
+        return showAllUsers(1, 13, req);
+    }
+
+    public static ActionResult showRegister(HttpServletRequest req) {
+
+        return new ActionResult("register");
     }
 }

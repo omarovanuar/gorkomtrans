@@ -1,6 +1,7 @@
 package com.epam.anuar.gorkomtrans.dao;
 
 import com.epam.anuar.gorkomtrans.entity.User;
+import com.epam.anuar.gorkomtrans.entity.Wallet;
 
 import java.sql.*;
 import java.util.*;
@@ -11,7 +12,6 @@ public class UserDao {
     private Connection con;
     private List<String> parameters = new ArrayList<>();
     private ResourceBundle rb = ResourceBundle.getBundle("user-sql");
-
 
     public UserDao(Connection con) {
         this.con = con;
@@ -134,16 +134,13 @@ public class UserDao {
     }
 
     //todo unfinished SQL
-    public List<User> findAll() {
-        String value = "SELECT * FROM USER";
-        PreparedStatement ps = getStatement(con, value, parameters);
-        List<User> users = getUserFromDb(ps, parameters);
-        if (users.size() != 0) {
-            return users;
-        } else {
-            return null;
-        }
-
+    public List<User> findAll(Integer offset, Integer noOfRecords) {
+        String value = "SELECT * FROM USER TABLE LIMIT ?, ?";
+        parameters.add(offset.toString());
+        parameters.add(noOfRecords.toString());
+        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        parameters.clear();
+        return getUserFromDb(ps, parameters);
     }
 
     private List<User> getUserFromDb(PreparedStatement ps, List<String> parameters) {
@@ -152,6 +149,7 @@ public class UserDao {
         ResultSet rs = null;
         ResultSetMetaData rsmd;
         Map<String, String> parametersFromDb = new HashMap<>();
+        WalletDao walletDao = DaoFactory.getInstance().getWalletDao();
 
         try {
             rs = ps.getResultSet();
@@ -172,6 +170,7 @@ public class UserDao {
                 user.setMainAddress(parametersFromDb.get("MAINADDRESS"));
                 user.setBankName(parametersFromDb.get("BANK"));
                 user.setBankAccount(parametersFromDb.get("BANKACCOUNT"));
+                user.setWallet(walletDao.findById(Integer.parseInt(parametersFromDb.get("WALLETID"))));
                 users.add(user);
                 parameters.clear();
             }
@@ -219,22 +218,39 @@ public class UserDao {
         parameters.clear();
         return result;
     }
+
+    public byte updatePassEmailRole(String id, String password, String email, String role) {
+        String value = rb.getString("update.pass-email-role");
+        if (findByEmail(email) != null && (!findById(Integer.parseInt(id)).getEmail().equals(email))) return 2;
+        if (password.equals("") || email.equals("")) return 3;
+        parameters.add(password);
+        parameters.add(email);
+        parameters.add(role);
+        parameters.add(id);
+        byte result = executeStatement(con, value, parameters);
+        parameters.clear();
+        return result;
+    }
 //
 //    public void update(List<User> userList) {
 //        userList.forEach(this::update);
 //    }
 //
-//    public void delete(User user) {
-//        Integer id = user.getId();
-//        String login = user.getLogin();
-//        String email = user.getEmail();
-//        String value = "DELETE FROM USER WHERE LOGIN='" + login + "' OR EMAIL='" + email + "' OR ID=" + id;
-//        DaoService.executeStatement(con, value);
-//    }
+    public void deleteById(String id) {
+        parameters.add(id);
+        String value = "DELETE FROM USER WHERE ID = ?";
+        DaoService.executeStatement(con, value, parameters);
+        parameters.clear();
+    }
 //
 //    public void delete(List<User> userList) {
 //        userList.forEach(this::delete);
 //    }
+
+    public int allRowsNumber() {
+        String value = "SELECT ROWNUM(), * FROM USER";
+        return DaoService.calculateRowNumber(value, con);
+    }
 
 
 

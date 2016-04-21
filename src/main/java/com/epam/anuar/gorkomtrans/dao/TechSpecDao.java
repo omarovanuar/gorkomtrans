@@ -115,4 +115,11 @@ public class TechSpecDao {
         garbageContainerParameters.put(GarbageContainerType.STANDARD.toString()+ "4", numberAndCapacity);
         return garbageContainerParameters;
     }
+
+    public void deleteById(String id) {
+        parameters.add(id);
+        String value = "DELETE FROM TECHSPEC WHERE ID = ?";
+        DaoService.executeStatement(con, value, parameters);
+        parameters.clear();
+    }
 }

@@ -5,9 +5,10 @@ import com.epam.anuar.gorkomtrans.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class DenyContractAction implements Action {
+public class DeleteUserAction implements Action {
     @Override
     public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) {
-        return Service.denyContract(req);
+        String id = req.getParameter("current-user");
+        return Service.deleteUser(id, req);
     }
 }

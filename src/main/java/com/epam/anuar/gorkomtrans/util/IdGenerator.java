@@ -33,7 +33,7 @@ public class IdGenerator {
 
     public static Integer generateID(TechSpecDao techSpecDao) {
         Random random = new Random();
-        Integer id = random.nextInt(10000) + 10000;
+        Integer id = random.nextInt(45000) + 10000;
         if (techSpecDao.findById(id) != null) {
             id = generateID(techSpecDao);
         }
@@ -42,17 +42,16 @@ public class IdGenerator {
 
     public static Integer generateID(ContractDao contractDao) {
         Random random = new Random();
-        Integer id = random.nextInt(10000) + 20000;
+        Integer id = random.nextInt(45000) + 55000;
         if (contractDao.findById(id) != null) {
             id = generateID(contractDao);
         }
         return id;
     }
 
-    // TODO: 17.04.2016  
     public static Integer generateID(WalletDao walletDao) {
         Random random = new Random();
-        Integer id = random.nextInt(10000) + 100000;
+        Integer id = random.nextInt(20000) + 100000;
         if (walletDao.findById(id) != null) {
             id = generateID(walletDao);
         }

@@ -2,6 +2,7 @@ package com.epam.anuar.gorkomtrans.action;
 
 import com.epam.anuar.gorkomtrans.Service;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 

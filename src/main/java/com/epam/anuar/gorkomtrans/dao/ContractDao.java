@@ -49,14 +49,24 @@ public class ContractDao {
         }
     }
 
+    public List<Contract> findByUserId(Integer id) {
+        String value = "SELECT * FROM CONTRACT TABLE WHERE USERID = ?";
+        parameters.add(id.toString());
+        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        List<Contract> contracts = getContractFromDb(ps, parameters);
+        parameters.clear();
+        return contracts;
+    }
+
     public List<Contract> findByUserId(Integer id, Integer offset, Integer noOfRecords) {
         String value = "SELECT * FROM CONTRACT TABLE WHERE USERID = ? LIMIT ?, ?";
         parameters.add(id.toString());
         parameters.add(offset.toString());
         parameters.add(noOfRecords.toString());
         PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        List<Contract> contracts = getContractFromDb(ps, parameters);
         parameters.clear();
-        return getContractFromDb(ps, parameters);
+        return contracts;
     }
 
     public List<Contract> findAll(Integer offset, Integer noOfRecords) {
@@ -64,8 +74,9 @@ public class ContractDao {
         parameters.add(offset.toString());
         parameters.add(noOfRecords.toString());
         PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        List<Contract> contracts = getContractFromDb(ps, parameters);
         parameters.clear();
-        return getContractFromDb(ps, parameters);
+        return contracts;
     }
 
     public int userRowsNumber(String id) {
@@ -76,7 +87,6 @@ public class ContractDao {
     public int allRowsNumber() {
         String value = "SELECT ROWNUM(), * FROM CONTRACT";
         return DaoService.calculateRowNumber(value, con);
-
     }
 
     private List<Contract> getContractFromDb(PreparedStatement ps, List<String> parameters) {
@@ -124,6 +134,21 @@ public class ContractDao {
         parameters.add(signDate);
         parameters.add(status.toString());
         parameters.add(id.toString());
+        DaoService.executeStatement(con, value, parameters);
+        parameters.clear();
+    }
+
+    public void updateStatus(Integer id, Status status) {
+        String value = "UPDATE CONTRACT SET STATUS = ? WHERE ID = ?";
+        parameters.add(status.toString());
+        parameters.add(id.toString());
+        DaoService.executeStatement(con, value, parameters);
+        parameters.clear();
+    }
+
+    public void deleteByUserId(String id) {
+        parameters.add(id);
+        String value = "DELETE FROM CONTRACT WHERE USERID = ?";
         DaoService.executeStatement(con, value, parameters);
         parameters.clear();
     }

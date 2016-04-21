@@ -15,6 +15,7 @@
                 <th>Capacity</th>
                 <th>Amount</th>
                 <th>Status</th>
+                <th>Sign date</th>
                 <th>Contract</th>
             </tr>
             <c:forEach var="item" items="${contracts}">
@@ -24,6 +25,7 @@
                     <td>${item.contractTotalCapacityString}</td>
                     <td>${item.contractAmount}</td>
                     <td>${item.status.toString()}</td>
+                    <td>${item.signDateString}</td>
                     <td>
                         <form action="<c:url value="/do/contract-view"/>" method="post">
                             <p>

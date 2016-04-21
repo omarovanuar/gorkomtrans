@@ -1,14 +1,9 @@
 package com.epam.anuar.gorkomtrans.dao;
 
-import com.epam.anuar.gorkomtrans.ContextListener;
 import com.epam.anuar.gorkomtrans.db.ConnectionPool;
-import com.epam.anuar.gorkomtrans.entity.Wallet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.naming.InitialContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.http.HttpServlet;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -58,6 +53,11 @@ public class DaoFactory {
     public WalletDao getWalletDao() {
         checkConnection();
         return new WalletDao(this.con);
+    }
+
+    public ContractPayTransaction getContractPayTransaction() {
+        checkConnection();
+        return new ContractPayTransaction(this.con);
     }
 
     public void beginTransaction() {

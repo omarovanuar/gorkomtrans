@@ -8,16 +8,23 @@
         <div id="logo">
             <a href="${pageContext.request.contextPath}/do/"><img id="gktlogo" src="/images/gkt.png"></a>
         </div>
-        <div id="logout">
+        <div class="functions">
             <c:choose>
                 <c:when test="${user.roleByCode eq 2}">
-                    Hello, ${user.fullName}! <a href="<c:url value="/do/admin-cabinet"/>">Admin cabinet</a> <a href="<c:url value="/do/logout"/>">log out</a>.
+                    Hello, ${user.fullName}!
+                    <a href="<c:url value="/do/admin-cabinet"/>">Admin cabinet</a>
+                    <a href="<c:url value="/do/contract-sanction"/>">Sanction contracts</a>
+                    <a href="<c:url value="/do/logout"/>">log out</a>
                 </c:when>
                 <c:when test="${user.roleByCode eq 1}">
-                    Hello, ${user.fullName}! <a href="<c:url value="/do/admin-cabinet"/>">Admin cabinet</a> <a href="<c:url value="/do/logout"/>">log out</a>.
+                    Hello, ${user.fullName}!
+                    <a href="<c:url value="/do/contract-sanction"/>">Sanction contracts</a>
+                    <a href="<c:url value="/do/logout"/>">log out</a>.
                 </c:when>
                 <c:when test="${user.roleByCode eq 0}">
-                    Hello, ${user.fullName}! <a href="<c:url value="/do/personal-cabinet"/>">Personal cabinet</a> <a href="<c:url value="/do/logout"/>">log out</a>.
+                    Hello, ${user.fullName}!
+                    <a href="<c:url value="/do/personal-cabinet"/>">Personal cabinet</a>
+                    <a href="<c:url value="/do/logout"/>">log out</a>.
                 </c:when>
                 <c:otherwise>
                     <a href="<c:url value="/do/welcome"/>">Login</a>
@@ -29,14 +36,7 @@
                 <li><a href="${pageContext.request.contextPath}/do/">ABOUT COMPANY</a></li>
                 <li><a href="${pageContext.request.contextPath}/do/services">SERVICES</a></li>
                 <li><a href="${pageContext.request.contextPath}/do/employee">EMPLOYEE</a></li>
-                <c:choose>
-                    <c:when test="${user eq null}">
-                        <li><a href="${pageContext.request.contextPath}/do/error-page">CONTRACTS</a></li>
-                    </c:when>
-                    <c:otherwise>
-                        <li><a href="${pageContext.request.contextPath}/do/contracts">CONTRACTS</a></li>
-                    </c:otherwise>
-                </c:choose>
+                <li><a href="${pageContext.request.contextPath}/do/contracts">CONTRACTS</a></li>
             </ul>
         </nav>
     </jsp:attribute>

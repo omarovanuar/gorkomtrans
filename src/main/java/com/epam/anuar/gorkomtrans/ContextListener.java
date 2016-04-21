@@ -12,22 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ContextListener implements ServletContextListener {
-    private List<String> userParamList;
+//    private List<String> userParamList;
     private static Logger log = LoggerFactory.getLogger(ContextListener.class.getName());
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        userParamList = new ArrayList<>();
-        userParamList.add("Login");
-        userParamList.add("Password");
-        userParamList.add("Email");
-        userParamList.add("First-name");
-        userParamList.add("Last-name");
-        userParamList.add("Phone-number");
-        userParamList.add("Main-address");
-        userParamList.add("Bank");
-        userParamList.add("Bank-account");
-        sce.getServletContext().setAttribute("userParamList", userParamList);
+//
         Provider provider = Provider.getProviderInstance();
         sce.getServletContext().setAttribute("provider", provider);
         try {

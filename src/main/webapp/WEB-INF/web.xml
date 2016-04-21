@@ -12,6 +12,24 @@
         <url-pattern>/do/*</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>ErrorHandler</servlet-name>
+        <servlet-class>com.epam.anuar.gorkomtrans.servlet.ErrorHandler</servlet-class>
+    </servlet>
+    <!-- servlet mappings -->
+    <servlet-mapping>
+        <servlet-name>ErrorHandler</servlet-name>
+        <url-pattern>/error</url-pattern>
+    </servlet-mapping>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error</location>
+    </error-page>
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type >
+        <location>/error</location>
+    </error-page>
+
     <listener>
         <listener-class>com.epam.anuar.gorkomtrans.ContextListener</listener-class>
     </listener>

@@ -107,6 +107,9 @@ public class Contract extends BaseEntity {
     }
 
     public String getSignDateString() {
+        if (signDate == null) {
+            return "";
+        }
         return signDate.toString("dd.MM.YYYY HH:mm");
     }
 

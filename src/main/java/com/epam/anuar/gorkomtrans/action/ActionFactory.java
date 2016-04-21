@@ -17,7 +17,7 @@ public class ActionFactory {
         actions.put(rb.getString("doLogin"), new LoginAction());
         actions.put(rb.getString("doLogout"), new LogoutAction());
         actions.put(rb.getString("showHome"), new ShowPageAction("home"));
-        actions.put(rb.getString("showRegister"), new ShowPageAction("register"));
+        actions.put(rb.getString("showRegister"), new ShowRegisterAction());
         actions.put(rb.getString("doRegister"), new RegisterAction());
         actions.put(rb.getString("showEmployee"), new ShowPageAction("employee"));
         actions.put(rb.getString("showContracts"), new ShowUserContractsAction());
@@ -31,11 +31,14 @@ public class ActionFactory {
         actions.put(rb.getString("showContractStatus"), new ShowPageAction("contract-status"));
         actions.put(rb.getString("doSubmitContract"), new SubmitContractAction());
         actions.put(rb.getString("doContractView"), new ContractViewAction());
-        actions.put(rb.getString("showAdminCabinet"), new ShowAllContractsAction());
+        actions.put(rb.getString("showContractSanction"), new ShowAllContractsAction());
         actions.put(rb.getString("showErrorPage"), new ShowPageAction("error-page"));
         actions.put(rb.getString("doAgreeContract"), new AgreeContractAction());
         actions.put(rb.getString("doDenyContract"), new DenyContractAction());
-
+        actions.put(rb.getString("showAdminCabinet"), new ShowAllUsersAction());
+        actions.put(rb.getString("showUserView"), new UserViewAction());
+        actions.put(rb.getString("doChangeUserView"), new ChangeUserViewAction());
+        actions.put(rb.getString("doDeleteUser"), new DeleteUserAction());
     }
 
     public Action getAction(String actionName) {
