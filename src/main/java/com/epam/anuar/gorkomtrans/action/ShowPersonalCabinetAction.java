@@ -1,15 +1,16 @@
 package com.epam.anuar.gorkomtrans.action;
 
+import com.epam.anuar.gorkomtrans.entity.User;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShowRegisterAction implements Action {
+public class ShowPersonalCabinetAction implements Action {
     @Override
     public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) {
         List<String> userParamList = new ArrayList<>();
-        userParamList.add("Login");
         userParamList.add("Password");
         userParamList.add("Email");
         userParamList.add("FirstName");
@@ -23,11 +24,16 @@ public class ShowRegisterAction implements Action {
             violations.add(i, "");
         }
         List<String> values = new ArrayList<>();
-        for (int i = 0; i < userParamList.size(); i++) {
-            values.add(i, "");
-        }
-        return ActionService.showRegister(req, userParamList, violations, values);
+        User user = (User) req.getSession(false).getAttribute("user");
+        values.add(user.getPassword());
+        values.add(user.getEmail());
+        values.add(user.getFirstName());
+        values.add(user.getLastName());
+        values.add(user.getPhoneNumber());
+        values.add(user.getMainAddress());
+        values.add(user.getBankName());
+        values.add(user.getBankAccount());
+
+        return ActionService.showPersonalCabinet(req, userParamList, violations, values);
     }
-
-
 }

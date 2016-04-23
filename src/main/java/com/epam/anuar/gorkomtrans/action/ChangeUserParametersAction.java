@@ -1,22 +1,23 @@
 package com.epam.anuar.gorkomtrans.action;
 
-import com.epam.anuar.gorkomtrans.Service;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class ChangeUserParametersAction implements Action {
     @Override
     public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) {
+        Map<String, String> parameters = new LinkedHashMap<>();
+        parameters.put("Password", req.getParameter("Password"));
+        parameters.put("Email", req.getParameter("Email"));
+        parameters.put("FirstName", req.getParameter("FirstName"));
+        parameters.put("LastName", req.getParameter("LastName"));
+        parameters.put("PhoneNumber", req.getParameter("PhoneNumber"));
+        parameters.put("MainAddress", req.getParameter("MainAddress"));
+        parameters.put("Bank", req.getParameter("Bank"));
+        parameters.put("BankAccount", req.getParameter("BankAccount"));
         String id = req.getParameter("id");
-        String password = req.getParameter("password");
-        String email = req.getParameter("email");
-        String firstName = req.getParameter("first-name");
-        String lastName = req.getParameter("last-name");
-        String phoneNumber = req.getParameter("phone-number");
-        String mainAddress = req.getParameter("main-address");
-        String bank = req.getParameter("bank");
-        String bankAccount = req.getParameter("bank-account");
-        return Service.changeUserParameters(id, password, email, firstName, lastName, phoneNumber, mainAddress, bank, bankAccount, req);
+        return ActionService.changeUserParameters(id, parameters, req);
     }
 }

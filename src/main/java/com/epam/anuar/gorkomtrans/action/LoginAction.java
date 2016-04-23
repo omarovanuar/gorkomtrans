@@ -3,7 +3,7 @@ package com.epam.anuar.gorkomtrans.action;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.epam.anuar.gorkomtrans.Service.checkUser;
+import static com.epam.anuar.gorkomtrans.action.ActionService.checkUser;
 
 public class LoginAction implements Action {
 

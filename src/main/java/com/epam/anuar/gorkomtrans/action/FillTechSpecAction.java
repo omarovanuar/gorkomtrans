@@ -3,9 +3,7 @@ package com.epam.anuar.gorkomtrans.action;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.ObjectStreamClass;
-
-import static com.epam.anuar.gorkomtrans.Service.fillTechSpec;
+import static com.epam.anuar.gorkomtrans.action.ActionService.fillTechSpec;
 
 public class FillTechSpecAction implements Action {
     @Override

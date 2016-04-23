@@ -22,7 +22,7 @@ public class ActionFactory {
         actions.put(rb.getString("showEmployee"), new ShowPageAction("employee"));
         actions.put(rb.getString("showContracts"), new ShowUserContractsAction());
         actions.put(rb.getString("showServices"), new ShowPageAction("services"));
-        actions.put(rb.getString("showPersonalCabinet"), new ShowPageAction("personal-cabinet"));
+        actions.put(rb.getString("showPersonalCabinet"), new ShowPersonalCabinetAction());
         actions.put(rb.getString("doChangeUserParameters"), new ChangeUserParametersAction());
         actions.put(rb.getString("doFillTechSpec"), new FillTechSpecAction());
         actions.put(rb.getString("showTechSpec"), new ShowPageAction("tech-spec"));

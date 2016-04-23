@@ -52,14 +52,22 @@ public class UserDao {
         return result;
     }
 
-    public byte insertByParameters(List<String> parameters) {
-        if (findByLogin(parameters.get(1)) != null) return 1;
-        if (findByEmail(parameters.get(2)) != null) return 2;
-        for (String parameter : parameters) {
-            if (parameter.equals("")) return 3;
-        }
+    public byte insertByParameters(Map<String, String> parameters) {
+        this.parameters.add(parameters.get("Id"));
+        this.parameters.add(parameters.get("Login"));
+        this.parameters.add(parameters.get("Password"));
+        this.parameters.add(parameters.get("Email"));
+        this.parameters.add(parameters.get("FirstName"));
+        this.parameters.add(parameters.get("LastName"));
+        this.parameters.add(parameters.get("PhoneNumber"));
+        this.parameters.add(parameters.get("MainAddress"));
+        this.parameters.add(parameters.get("Bank"));
+        this.parameters.add(parameters.get("BankAccount"));
+        this.parameters.add(parameters.get("WalletId"));
         String value = rb.getString("insert.parameters");
-        return executeStatement(con, value, parameters);
+        byte result = executeStatement(con, value, this.parameters);
+        this.parameters.clear();
+        return result;
     }
 
     public void save(List<User> userList) {
@@ -200,22 +208,19 @@ public class UserDao {
 //        return DaoService.executeStatement(con, value);
 //    }
 
-    public byte update(String id, String password, String email, String firstName, String lastName, String phoneNumber, String mainAddress,
-                       String bank, String bankAccount) {
+    public byte update(String id, Map<String, String> parameters) {
         String value = rb.getString("update.all");
-        if (findByEmail(email) != null && (!findById(Integer.parseInt(id)).getEmail().equals(email))) return 2;
-        if (password.equals("") || email.equals("")) return 3;
-        parameters.add(password);
-        parameters.add(email);
-        parameters.add(firstName);
-        parameters.add(lastName);
-        parameters.add(phoneNumber);
-        parameters.add(mainAddress);
-        parameters.add(bank);
-        parameters.add(bankAccount);
-        parameters.add(id);
-        byte result = executeStatement(con, value, parameters);
-        parameters.clear();
+        this.parameters.add(parameters.get("Password"));
+        this.parameters.add(parameters.get("Email"));
+        this.parameters.add(parameters.get("FirstName"));
+        this.parameters.add(parameters.get("LastName"));
+        this.parameters.add(parameters.get("PhoneNumber"));
+        this.parameters.add(parameters.get("MainAddress"));
+        this.parameters.add(parameters.get("Bank"));
+        this.parameters.add(parameters.get("BankAccount"));
+        this.parameters.add(id);
+        byte result = executeStatement(con, value, this.parameters);
+        this.parameters.clear();
         return result;
     }
 

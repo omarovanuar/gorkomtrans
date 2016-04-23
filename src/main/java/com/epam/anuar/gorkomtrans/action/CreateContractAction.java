@@ -1,7 +1,5 @@
 package com.epam.anuar.gorkomtrans.action;
 
-import com.epam.anuar.gorkomtrans.Service;
-import com.epam.anuar.gorkomtrans.entity.GarbageContainerType;
 import com.epam.anuar.gorkomtrans.entity.GarbageTechSpecification;
 import com.epam.anuar.gorkomtrans.entity.User;
 
@@ -9,11 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static com.epam.anuar.gorkomtrans.Service.*;
+import static com.epam.anuar.gorkomtrans.action.ActionService.*;
 
 public class CreateContractAction implements Action {
     String attributeName;

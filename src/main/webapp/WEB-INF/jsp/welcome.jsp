@@ -5,7 +5,7 @@
 
 <t:welcomepage>
     <div id="login-center" align="center">
-        <section class="welcomeform cf">
+        <section class="welcomelogin cf">
             <form action="<c:url value="/do/login"/>" method="post">
                 <ul>
                     <p>Please, login:</p>

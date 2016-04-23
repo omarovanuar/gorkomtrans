@@ -5,7 +5,7 @@ import com.epam.anuar.gorkomtrans.entity.Contract;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.epam.anuar.gorkomtrans.Service.submitContract;
+import static com.epam.anuar.gorkomtrans.action.ActionService.submitContract;
 
 public class SubmitContractAction implements Action {
     @Override

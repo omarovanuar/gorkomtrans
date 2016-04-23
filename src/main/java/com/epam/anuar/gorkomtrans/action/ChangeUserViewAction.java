@@ -1,7 +1,5 @@
 package com.epam.anuar.gorkomtrans.action;
 
-import com.epam.anuar.gorkomtrans.Service;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.DecimalFormat;
@@ -19,6 +17,6 @@ public class ChangeUserViewAction implements Action {
         symbols.setDecimalSeparator('.');
         DecimalFormat df = new DecimalFormat("###.##", symbols);
         balance = df.format(Double.parseDouble(balance));
-        return  Service.changeUserView(id, password, email, role, balance, req);
+        return  ActionService.changeUserView(id, password, email, role, balance, req);
     }
 }
