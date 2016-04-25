@@ -228,6 +228,10 @@ input[type=submit] {
     margin: 3px;
 }
 
+.tech-spec div {
+    color: red;
+}
+
 select {
     padding: 5px;
     margin-top: 5px;
@@ -354,4 +358,15 @@ select {
 #register-error {
     color: red;
     margin-top: 5px;
+}
+
+.per-month p {
+    padding: 0;
+    margin: 0;
+}
+
+.non-standard-error p {
+    padding: 0;
+    margin: 0;
+
 }

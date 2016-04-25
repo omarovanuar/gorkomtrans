@@ -90,10 +90,10 @@ public class ActionService {
         Validator.isEmptyTechSpec(euro, standard, nonStandardNumber);
         if (euro == null) euro = "0";
         if (standard == null) standard = "0";
-        req.getSession(false).setAttribute("euro", euro);
-        req.getSession(false).setAttribute("standard", standard);
-        req.getSession(false).setAttribute("nonStandardNumber", nonStandardNumber);
-        return new ActionResult("tech-spec", true);
+        req.setAttribute("euro", euro);
+        req.setAttribute("standard", standard);
+        req.setAttribute("nonStandardNumber", nonStandardNumber);
+        return new ActionResult("tech-spec");
     }
 
     public static ActionResult createContract(User user, GarbageTechSpecification techSpecification, String providingMonthNumber, HttpServletRequest req) {
