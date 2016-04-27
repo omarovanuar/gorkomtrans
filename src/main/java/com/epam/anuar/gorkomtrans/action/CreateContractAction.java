@@ -76,6 +76,7 @@ public class CreateContractAction implements Action {
             req.setAttribute("paramValues", tempParameterMap);
             return new ActionResult("tech-spec");
         }
+
         User user = (User) req.getSession(false).getAttribute("user");
 
         GarbageTechSpecification techSpecification = createTechSpec(address, euroNumber, standardNumber, parameters, perMonth, req);

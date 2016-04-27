@@ -39,6 +39,8 @@ public class ActionFactory {
         actions.put(rb.getString("showUserView"), new UserViewAction());
         actions.put(rb.getString("doChangeUserView"), new ChangeUserViewAction());
         actions.put(rb.getString("doDeleteUser"), new DeleteUserAction());
+        actions.put(rb.getString("doSetRu"), new SetRuLanguage());
+        actions.put(rb.getString("doSetEn"), new SetEnLanguage());
     }
 
     public Action getAction(String actionName) {

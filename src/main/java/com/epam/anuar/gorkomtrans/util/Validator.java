@@ -3,6 +3,7 @@ package com.epam.anuar.gorkomtrans.util;
 import com.epam.anuar.gorkomtrans.action.UnloggedException;
 import com.epam.anuar.gorkomtrans.dao.DaoFactory;
 import com.epam.anuar.gorkomtrans.dao.UserDao;
+import com.epam.anuar.gorkomtrans.dao.WalletDao;
 import com.epam.anuar.gorkomtrans.entity.RoleType;
 import com.epam.anuar.gorkomtrans.entity.User;
 
@@ -148,6 +149,7 @@ public class Validator {
             return new Violation("Email can't be empty", violationNumber);
         } else if (userDao.findByEmail(parameters.get("Email")) != null &&
                 !((User) req.getSession(false).getAttribute("user")).getEmail().equals(parameters.get("Email"))) {
+            dao.close();
             return new Violation("Current email is already exist", violationNumber);
         } else if (!EMAIL.matcher(parameters.get("Email")).matches()) {
             return new Violation("Invalid email", violationNumber);
@@ -191,11 +193,17 @@ public class Validator {
     }
 
     private static Violation validateBankAccount(Map<String, String> parameters, Integer violationNumber) {
+        DaoFactory dao = DaoFactory.getInstance();
+        WalletDao walletDao = dao.getWalletDao();
         if (parameters.get("BankAccount").isEmpty()){
             return new Violation("BankAccount can't be empty", violationNumber);
         } else if (!BANK_ACCOUNT.matcher(parameters.get("BankAccount")).matches()) {
             return new Violation("BankAccount must be in the form LLNNNN-NNNN-NNNN-NNNN(L-Big letter, N-Number", violationNumber);
+        } else if (walletDao.findByAccount(parameters.get("Bank") + " " + parameters.get("BankAccount")) != null) {
+            dao.close();
+            return new Violation("BankAccount is already exist", violationNumber);
         }
+        dao.close();
         return null;
     }
 

@@ -10,16 +10,16 @@ import javax.servlet.ServletContextListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ContextListener implements ServletContextListener {
-//    private List<String> userParamList;
     private static Logger log = LoggerFactory.getLogger(ContextListener.class.getName());
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-//
         Provider provider = Provider.getProviderInstance();
         sce.getServletContext().setAttribute("provider", provider);
+        sce.getServletContext().setAttribute("locale", "en");
         try {
             ConnectionPool.init();
         } catch (SQLException e) {
@@ -36,7 +36,8 @@ public class ContextListener implements ServletContextListener {
             log.error("Connection pool can't be disposed");
             throw new RuntimeException();
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            log.error(e.toString());
+            throw new RuntimeException();
         }
     }
 }

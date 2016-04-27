@@ -33,6 +33,19 @@ public class WalletDao {
         }
     }
 
+    public Wallet findByAccount(String account) {
+        String value = "SELECT * FROM WALLET WHERE ACCOUNT = ?";
+        parameters.add(account);
+        PreparedStatement ps = getStatement(con, value, parameters);
+        parameters.clear();
+        List<Wallet> wallets = getWalletFromDb(ps, parameters);
+        if (wallets.size() != 0) {
+            return wallets.get(0);
+        } else {
+            return null;
+        }
+    }
+
     private List<Wallet> getWalletFromDb(PreparedStatement ps, List<String> parameters) {
         List<Wallet> wallets = new ArrayList<>();
         Wallet wallet;

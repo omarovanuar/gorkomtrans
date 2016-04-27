@@ -127,6 +127,19 @@ public class UserDao {
         }
     }
 
+    public User findByWalletId(Integer walletId) {
+        String value = rb.getString("find.wallet");
+        parameters.add(walletId.toString());
+        PreparedStatement ps = getStatement(con, value, parameters);
+        parameters.clear();
+        List<User> users = getUserFromDb(ps, parameters);
+        if (users.size() != 0) {
+            return users.get(0);
+        } else {
+            return null;
+        }
+    }
+
     //todo unfinished SQL
     public User findByAllParameters(Map<String, String> params) {
         String value = "SELECT * FROM USER WHERE ID = " + params.get("ID") +
@@ -141,7 +154,6 @@ public class UserDao {
         }
     }
 
-    //todo unfinished SQL
     public List<User> findAll(Integer offset, Integer noOfRecords) {
         String value = "SELECT * FROM USER TABLE LIMIT ?, ?";
         parameters.add(offset.toString());
@@ -218,6 +230,23 @@ public class UserDao {
         this.parameters.add(parameters.get("MainAddress"));
         this.parameters.add(parameters.get("Bank"));
         this.parameters.add(parameters.get("BankAccount"));
+        this.parameters.add(id);
+        byte result = executeStatement(con, value, this.parameters);
+        this.parameters.clear();
+        return result;
+    }
+
+    public byte updateWithWallet(String id, Map<String, String> parameters, String walletId) {
+        String value = rb.getString("update.all-with-wallet");
+        this.parameters.add(parameters.get("Password"));
+        this.parameters.add(parameters.get("Email"));
+        this.parameters.add(parameters.get("FirstName"));
+        this.parameters.add(parameters.get("LastName"));
+        this.parameters.add(parameters.get("PhoneNumber"));
+        this.parameters.add(parameters.get("MainAddress"));
+        this.parameters.add(parameters.get("Bank"));
+        this.parameters.add(parameters.get("BankAccount"));
+        this.parameters.add(walletId);
         this.parameters.add(id);
         byte result = executeStatement(con, value, this.parameters);
         this.parameters.clear();

@@ -6,6 +6,7 @@ import com.epam.anuar.gorkomtrans.entity.Contract;
 import com.epam.anuar.gorkomtrans.entity.GarbageTechSpecification;
 import com.epam.anuar.gorkomtrans.entity.Status;
 import com.epam.anuar.gorkomtrans.entity.User;
+import com.epam.anuar.gorkomtrans.util.IdGenerator;
 import com.epam.anuar.gorkomtrans.util.Validator;
 import com.epam.anuar.gorkomtrans.util.Violation;
 import org.joda.time.DateTime;
@@ -27,7 +28,11 @@ public class ActionService {
             dao.close();
             return new ActionResult("", true);
         } else {
-            req.setAttribute("loginError", "Incorrect login or password");
+            if (req.getSession(false).getAttribute("locale").equals("ru")) {
+                req.setAttribute("loginError", "Не правильный логин или пароль");
+            } else {
+                req.setAttribute("loginError", "Invalid login or password");
+            }
             return new ActionResult("welcome");
         }
     }
@@ -79,7 +84,16 @@ public class ActionService {
         }
         Validator.checkUnlogged(req);
         UserDao userDao = dao.getUserDao();
-        userDao.update(id, parameters);
+        if (!parameters.get("Bank").equalsIgnoreCase(getCurrentUserParameters(req).get(6)) ||
+                !parameters.get("BankAccount").equalsIgnoreCase(getCurrentUserParameters(req).get(7))) {
+            WalletDao walletDao = dao.getWalletDao();
+            Integer walletId = IdGenerator.generateID(walletDao);
+            walletDao.insert(walletId, parameters.get("Bank") + " " + parameters.get("BankAccount"));
+            walletDao.deleteById(userDao.findById(Integer.parseInt(id)).getWallet().getId().toString());
+            userDao.updateWithWallet(id, parameters, walletId.toString());
+        } else {
+            userDao.update(id, parameters);
+        }
         dao.close();
         req.getSession(false).setAttribute("user", userDao.findById(Integer.parseInt(id)));
         return new ActionResult("personal-cabinet", true);

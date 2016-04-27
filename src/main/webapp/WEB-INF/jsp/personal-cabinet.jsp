@@ -19,9 +19,7 @@
                     <c:forEach items="${userParamList}" var="userParam" varStatus="i">
                         <tr>
                             <td>${userParam}</td>
-
-                                    <td><input id="${userParam}" type="text" name="${userParam}" value="${values.get(i.index)}"/></td>
-
+                                <td><input id="${userParam}" type="text" name="${userParam}" value="${values.get(i.index)}"/></td>
                             <td>${violations.get(i.index)}</td>
                         </tr>
                     </c:forEach>
