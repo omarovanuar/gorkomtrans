@@ -1,7 +1,5 @@
 package com.epam.anuar.gorkomtrans.dao;
 
-import java.sql.SQLException;
-
 public class DaoException extends RuntimeException{
     public DaoException() {
     }

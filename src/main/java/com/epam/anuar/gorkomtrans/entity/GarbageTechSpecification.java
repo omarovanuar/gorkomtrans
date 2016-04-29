@@ -2,12 +2,10 @@ package com.epam.anuar.gorkomtrans.entity;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
-public class GarbageTechSpecification extends BaseEntity{
+public class GarbageTechSpecification extends BaseEntity {
     private String address;
     private Map<String, List<String>> garbageContainerParameters;
     private Integer removePerMonth;
@@ -38,16 +36,8 @@ public class GarbageTechSpecification extends BaseEntity{
         this.garbageContainerParameters = garbageContainerParameters;
     }
 
-    public void setGarbageContainerType(GarbageContainerType type) {
-        type.getContainerCapacity();
-    }
-
     public void add(String type, List<String> containerNumberAndCapacity) {
         garbageContainerParameters.put(type, containerNumberAndCapacity);
-    }
-
-    public void delete(String type) {
-        garbageContainerParameters.remove(type);
     }
 
     public Integer getRemovePerMonth() {

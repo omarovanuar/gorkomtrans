@@ -11,5 +11,4 @@ public enum RoleType {
     public Integer getRoleCode() {
         return roleCode;
     }
-
 }

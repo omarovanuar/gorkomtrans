@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
-import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -13,7 +12,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import static java.util.concurrent.TimeUnit.*;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class ConnectionPool {
     private static Logger log = LoggerFactory.getLogger(ConnectionPool.class.getName());
@@ -24,13 +23,13 @@ public class ConnectionPool {
     private BlockingQueue<Connection> connectionQueue;
     private static Map<String, String> connectionParameters;
 
-    public static void init () throws SQLException {
+    public static void init() throws SQLException {
         if (instance == null) {
             readConnectionProperties();
             int poolSize;
             try {
                 poolSize = Integer.parseInt(connectionParameters.get("poolSize"));
-                if (poolSize < 1){
+                if (poolSize < 1) {
                     poolSize = DEFAULT_POOL_SIZE;
                 }
             } catch (NumberFormatException e) {
@@ -39,7 +38,7 @@ public class ConnectionPool {
             }
             try {
                 log.debug("Trying to create pool of connections...");
-                instance = new ConnectionPool (
+                instance = new ConnectionPool(
                         connectionParameters.get("driver"),
                         connectionParameters.get("url"),
                         connectionParameters.get("user"),
@@ -48,7 +47,7 @@ public class ConnectionPool {
             } catch (ClassNotFoundException e) {
                 log.info("Driver " + connectionParameters.get("driver") + " not found.");
                 try {
-                    instance = new ConnectionPool (DEFAULT_DRIVER,
+                    instance = new ConnectionPool(DEFAULT_DRIVER,
                             connectionParameters.get("url"),
                             connectionParameters.get("user"),
                             connectionParameters.get("password"), poolSize);
@@ -61,7 +60,7 @@ public class ConnectionPool {
         }
     }
 
-    public static void dispose () throws SQLException, ClassNotFoundException {
+    public static void dispose() throws SQLException, ClassNotFoundException {
         if (instance != null) {
             instance.clearConnectionQueue();
             instance = null;
@@ -70,12 +69,12 @@ public class ConnectionPool {
         }
     }
 
-    public static ConnectionPool getInstance () {
+    public static ConnectionPool getInstance() {
         return instance;
     }
 
-    private ConnectionPool (String driver, String url, String user, String password, int poolSize) throws ClassNotFoundException, SQLException {
-        Class.forName (driver);
+    private ConnectionPool(String driver, String url, String user, String password, int poolSize) throws ClassNotFoundException, SQLException {
+        Class.forName(driver);
         connectionQueue = new ArrayBlockingQueue<>(poolSize);
         for (int i = 0; i < poolSize; i++) {
             Connection connection = DriverManager.getConnection(url, user, password);
@@ -84,7 +83,7 @@ public class ConnectionPool {
 
     }
 
-    public Connection takeConnection () throws SQLException {
+    public Connection takeConnection() throws SQLException {
 
         Connection connection;
         try {
@@ -96,9 +95,9 @@ public class ConnectionPool {
         return connection;
     }
 
-    public void releaseConnection (Connection connection) {
+    public void releaseConnection(Connection connection) {
         try {
-            if (!connection.isClosed ()) {
+            if (!connection.isClosed()) {
                 if (!connectionQueue.offer(connection)) {
                     log.warn("Connection not added. Possible `leakage` of connections");
                 }
@@ -135,27 +134,13 @@ public class ConnectionPool {
         return connection;
     }
 
-    private void clearConnectionQueue () throws SQLException {
+    private void clearConnectionQueue() throws SQLException {
         Connection connection;
-        while ((connection = connectionQueue.poll ()) != null) {
+        while ((connection = connectionQueue.poll()) != null) {
             if (!connection.getAutoCommit()) {
                 connection.commit();
             }
             connection.close();
-        }
-    }
-
-    public void getConnectionQueue() {
-        for (Connection connection : connectionQueue) {
-            Boolean closed = null;
-            try {
-                closed = connection.isClosed();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            if (closed != null) {
-                log.debug(connection + "  " + closed.toString());
-            }
         }
     }
 }

@@ -9,7 +9,7 @@
 <t:authorizedpage>
     <section class="service">
         <div align="center">
-            <img id="gkt-service" src="/images/service.jpg" height="400" width="600">
+            <img id="gkt-service" src="/images/service.jpg" height="400" width="600" style="background: dimgrey">
         </div>
         <p><fmt:message key="services.text1" bundle="${rb}"/></p>
         <p><fmt:message key="services.text2" bundle="${rb}"/></p>

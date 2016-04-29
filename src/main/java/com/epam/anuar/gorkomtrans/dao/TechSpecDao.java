@@ -43,7 +43,7 @@ public class TechSpecDao {
         }
     }
 
-    public GarbageTechSpecification findById(Integer id){
+    public GarbageTechSpecification findById(Integer id) {
         String value = "SELECT * FROM TECHSPEC WHERE ID = ?";
         parameters.add(id.toString());
         PreparedStatement ps = DaoService.getStatement(con, value, parameters);
@@ -70,7 +70,7 @@ public class TechSpecDao {
             rsmd = rs.getMetaData();
             while (rs.next()) {
                 techSpec = new GarbageTechSpecification();
-                for (int i = 1; i < rsmd.getColumnCount()+1; i++) {
+                for (int i = 1; i < rsmd.getColumnCount() + 1; i++) {
                     parametersFromDb.put(rsmd.getColumnName(i), rs.getString(i));
                 }
                 techSpec.setId(Integer.parseInt(parametersFromDb.get("ID")));
@@ -112,7 +112,7 @@ public class TechSpecDao {
         numberAndCapacity = new ArrayList<>();
         numberAndCapacity.add(parametersFromDb.get("NONSTANDARDNUM3"));
         numberAndCapacity.add(parametersFromDb.get("NONSTANDARDCAPAS3"));
-        garbageContainerParameters.put(GarbageContainerType.STANDARD.toString()+ "4", numberAndCapacity);
+        garbageContainerParameters.put(GarbageContainerType.STANDARD.toString() + "4", numberAndCapacity);
         return garbageContainerParameters;
     }
 

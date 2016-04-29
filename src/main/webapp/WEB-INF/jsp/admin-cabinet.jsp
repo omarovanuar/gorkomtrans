@@ -1,6 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<fmt:setBundle basename="other-text" var="rb"/>
 <%--@elvariable id="allUsers" type="java.util.List"--%>
 <%--@elvariable id="item" type="com.epam.anuar.gorkomtrans.entity.User"--%>
 <%--@elvariable id="noOfPages" type="java.lang.Integer"--%>
@@ -8,16 +10,15 @@
 
 <t:authorizedpage>
     <div class="contract-list">
-        <p align="center">Users:</p>
         <table>
             <tr>
                 <th>Id</th>
-                <th>Login</th>
-                <th>Full name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>View</th>
-                <th>Delete</th>
+                <th><fmt:message key="user.login" bundle="${rb}"/></th>
+                <th><fmt:message key="user.full-name" bundle="${rb}"/></th>
+                <th><fmt:message key="user.email" bundle="${rb}"/></th>
+                <th><fmt:message key="user.role" bundle="${rb}"/></th>
+                <th><fmt:message key="action.view" bundle="${rb}"/></th>
+                <th><fmt:message key="action.delete" bundle="${rb}"/></th>
             </tr>
             <c:forEach var="item" items="${allUsers}">
                 <tr>
@@ -30,7 +31,7 @@
                         <form action="<c:url value="/do/user-view"/>" method="post">
                             <p>
                                 <input type="hidden" name="current-user" value="${item.id.toString()}">
-                                <input type="submit" value="View">
+                                <input type="submit" value="<fmt:message key="action.view" bundle="${rb}"/>">
                             </p>
                         </form>
                     </td>
@@ -38,7 +39,7 @@
                         <form action="<c:url value="/do/user-delete"/>" method="post">
                             <p>
                                 <input type="hidden" name="current-user" value="${item.id.toString()}">
-                                <input type="submit" value="Delete">
+                                <input type="submit" value="<fmt:message key="action.delete" bundle="${rb}"/>">
                             </p>
                         </form>
                     </td>

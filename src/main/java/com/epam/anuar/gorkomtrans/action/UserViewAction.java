@@ -9,6 +9,4 @@ public class UserViewAction implements Action {
         String id = req.getParameter("current-user");
         return ActionService.viewUser(id, req);
     }
-
-
 }

@@ -2,14 +2,11 @@ package com.epam.anuar.gorkomtrans.entity;
 
 import org.joda.money.Money;
 import org.joda.time.DateTime;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.util.Locale;
 
 public class Contract extends BaseEntity {
     private User user;
@@ -33,7 +30,7 @@ public class Contract extends BaseEntity {
         this.contractAmount = calculateContractAmount();
     }
 
-    public Contract(Integer id, User user, GarbageTechSpecification gts, Money contractAmount, Integer providingMonthNumber, DateTime signDate, Status status) {
+    public Contract(Integer id, User user, GarbageTechSpecification gts, Money contractAmount, Integer providingMonthNumber, DateTime signDate) {
         super(id);
         this.user = user;
         this.contractAmount = contractAmount;
@@ -100,10 +97,6 @@ public class Contract extends BaseEntity {
 
     public void setProvidingMonthNumber(Integer providingMonthNumber) {
         this.providingMonthNumber = providingMonthNumber;
-    }
-
-    public DateTime getSignDate() {
-        return signDate;
     }
 
     public String getSignDateString() {

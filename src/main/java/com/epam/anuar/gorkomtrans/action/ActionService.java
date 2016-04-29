@@ -22,7 +22,6 @@ public class ActionService {
 
     public static ActionResult checkUser(String login, String password, HttpServletRequest req) {
         UserDao userDao = dao.getUserDao();
-        //todo salty hash
         User user = userDao.findByCredentials(login, password);
         if (user != null) {
             req.getSession().setAttribute("user", user);
@@ -39,7 +38,7 @@ public class ActionService {
     }
 
     public static ActionResult registerUser(Map<String, String> parameters, HttpServletRequest req) {
-        Set<Violation> tempViolations = Validator.validateRegister(parameters ,req);
+        Set<Violation> tempViolations = Validator.validateRegister(parameters, req);
         if (!tempViolations.isEmpty()) {
             List<String> violations = new ArrayList<>();
             for (int i = 0; i < parameters.size(); i++) {
@@ -83,6 +82,9 @@ public class ActionService {
             req.setAttribute("userParamList", list);
             List<String> values = getCurrentUserParameters(req);
             req.setAttribute("values", values);
+            List<String> name = getRegisterParameterNames(req);
+            name.remove(0);
+            req.setAttribute("userParamName", name);
             return new ActionResult("personal-cabinet");
         }
         Validator.checkUnlogged(req);
@@ -129,7 +131,7 @@ public class ActionService {
         return new ActionResult("contract", true);
     }
 
-    public static ActionResult submitContract(Contract contract, HttpServletRequest req) {
+    public static ActionResult submitContract(HttpServletRequest req) {
         Validator.checkUnlogged(req);
         ContractDao contractDao = dao.getContractDao();
         contractDao.updateStatus(((Contract) req.getSession(false).getAttribute("contract")).getId(), Status.SUBMITTED);
@@ -158,7 +160,7 @@ public class ActionService {
         req.getSession(false).setAttribute("contract", contract);
         dao.close();
         if (contract.getStatus().equals(Status.NEW)) req.setAttribute("status", 0);
-        else if (contract.getStatus().equals(Status.SUBMITTED)){
+        else if (contract.getStatus().equals(Status.SUBMITTED)) {
             req.setAttribute("status", 1);
         } else {
             req.setAttribute("status", 2);
@@ -171,7 +173,7 @@ public class ActionService {
         Validator.checkUnlogged(req);
         ContractDao contractDao = dao.getContractDao();
         User user = (User) req.getSession(false).getAttribute("user");
-        List<Contract> contracts = contractDao.findByUserId(user.getId(), (page-1) * recordsPerPage, recordsPerPage);
+        List<Contract> contracts = contractDao.findByUserId(user.getId(), (page - 1) * recordsPerPage, recordsPerPage);
         int noOfRecords = contractDao.userRowsNumber(user.getId().toString());
         int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
         if (noOfPages == 0) noOfPages = 1;
@@ -185,7 +187,7 @@ public class ActionService {
     public static ActionResult showAllContracts(int page, int recordsPerPage, HttpServletRequest req) {
         Validator.checkAdminOrModer(req);
         ContractDao contractDao = dao.getContractDao();
-        List<Contract> contracts = contractDao.findAll((page-1) * recordsPerPage, recordsPerPage);
+        List<Contract> contracts = contractDao.findAll((page - 1) * recordsPerPage, recordsPerPage);
         int noOfRecords = contractDao.allRowsNumber();
         int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
         if (noOfPages == 0) noOfPages = 1;
@@ -230,7 +232,7 @@ public class ActionService {
     public static ActionResult showAllUsers(int page, int recordsPerPage, HttpServletRequest req) {
         Validator.checkAdmin(req);
         UserDao userDao = dao.getUserDao();
-        List<User> users = userDao.findAll((page-1) * recordsPerPage, recordsPerPage);
+        List<User> users = userDao.findAll((page - 1) * recordsPerPage, recordsPerPage);
         int noOfRecords = userDao.allRowsNumber();
         int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
         if (noOfPages == 0) noOfPages = 1;

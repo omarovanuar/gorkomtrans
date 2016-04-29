@@ -9,18 +9,6 @@ import com.epam.anuar.gorkomtrans.entity.Wallet;
 import java.util.Random;
 
 public class IdGenerator {
-    private static final Integer USER_ID_RANGE = 0;
-    private static final Integer USER_ID_NUMBER = 10000;
-
-    // TODO: 17.04.2016  
-//    public static <T> Integer generate(Class<T> clazz) {
-//        Random random = new Random();
-//        Integer id = random.nextInt(clazz.getClass().getClassLoader().) + 10000;
-//        if (T.findById(id) != null) {
-//            id = generateTechSpecId(techSpecDao);
-//        }
-//        return id;
-//    }
     
     public static Integer generateID(UserDao userDao) {
         Random random = new Random();

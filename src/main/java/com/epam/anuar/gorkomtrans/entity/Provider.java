@@ -41,14 +41,6 @@ public class Provider {
         return bankDetails;
     }
 
-    public String getPostIndex() {
-        return postIndex.toString();
-    }
-
-    public String getFax() {
-        return fax;
-    }
-
     public String getEmail() {
         return email;
     }

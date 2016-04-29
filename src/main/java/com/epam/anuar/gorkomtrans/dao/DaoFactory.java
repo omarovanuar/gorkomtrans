@@ -60,44 +60,13 @@ public class DaoFactory {
         return new ContractPayTransaction(this.con);
     }
 
-    public void beginTransaction() {
-        try {
-            this.con.setAutoCommit(false);
-        } catch (SQLException e) {
-            log.warn("can't set autocommit", e);
-            abortTransaction();
-        }
-    }
-
-    public void endTransaction() {
-        try {
-            this.con.commit();
-        } catch (SQLException e) {
-            log.warn("can't commit changes");
-            abortTransaction();
-        }
-    }
-
-    public void abortTransaction() {
-        try {
-            this.con.rollback();
-        } catch (SQLException e) {
-            log.warn("connection can't be rollbacked", e);
-            this.con = null;
-        }
-    }
-
     private void checkConnection() {
         try {
-            if (this.con == null ||this.con.isClosed()) {
+            if (this.con == null || this.con.isClosed()) {
                 this.open();
             }
         } catch (SQLException e) {
             throw new DaoException();
         }
-    }
-
-    public void getConnectionQueue() {
-        pool.getConnectionQueue();
     }
 }

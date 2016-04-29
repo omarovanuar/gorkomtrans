@@ -3,7 +3,6 @@ package com.epam.anuar.gorkomtrans.dao;
 import com.epam.anuar.gorkomtrans.entity.Wallet;
 import org.joda.money.Money;
 
-import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,7 +56,7 @@ public class WalletDao {
             rs = ps.getResultSet();
             rsmd = rs.getMetaData();
             while (rs.next()) {
-                for (int i = 1; i < rsmd.getColumnCount()+1; i++) {
+                for (int i = 1; i < rsmd.getColumnCount() + 1; i++) {
                     parametersFromDb.put(rsmd.getColumnName(i), rs.getString(i));
                 }
                 wallet = new Wallet(Integer.parseInt(parametersFromDb.get("ID")), parametersFromDb.get("ACCOUNT"), Money.parse(parametersFromDb.get("MONEY")));

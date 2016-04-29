@@ -4,9 +4,6 @@ public enum Status {
     SUBMITTED("нропюбкем"), NEW("мнбши"), AGREED("србепфдем"), DENIED("нрйкнмем");
     String ru;
 
-    Status() {
-    }
-
     Status(String ru) {
         this.ru = ru;
     }
