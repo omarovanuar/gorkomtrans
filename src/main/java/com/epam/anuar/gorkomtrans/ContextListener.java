@@ -19,7 +19,6 @@ public class ContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         Provider provider = Provider.getProviderInstance();
         sce.getServletContext().setAttribute("provider", provider);
-        sce.getServletContext().setAttribute("locale", "en");
         try {
             ConnectionPool.init();
         } catch (SQLException e) {

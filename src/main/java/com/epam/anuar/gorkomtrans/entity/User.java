@@ -141,6 +141,10 @@ public class User extends BaseEntity {
         this.bankAccount = bankAccount;
     }
 
+    public String getBankRequisitions() {
+        return bankName + " " + bankAccount;
+    }
+
     public Wallet getWallet() {
         return wallet;
     }

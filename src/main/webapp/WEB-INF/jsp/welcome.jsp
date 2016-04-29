@@ -3,7 +3,9 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--@elvariable id="loginError" type="java.lang.String"--%>
-<fmt:setBundle basename="login-register" var="rb" scope="session"/>
+<%--@elvariable id="locale" type="java.lang.String"--%>
+<fmt:setLocale value="${locale}" scope="session"/>
+<fmt:setBundle basename="login-register" var="rb"/>
 
 <t:welcomepage>
     <div id="login-center" align="center">

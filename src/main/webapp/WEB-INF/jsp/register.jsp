@@ -5,30 +5,31 @@
 <%--@elvariable id="userParamList" type="java.util.List"--%>
 <%--@elvariable id="violations" type="java.util.List"--%>
 <%--@elvariable id="values" type="java.util.List"--%>
-<fmt:setBundle basename="login-register" var="rb" scope="session"/>
+<%--@elvariable id="userParamName" type="java.util.List"--%>
+<fmt:setBundle basename="login-register" var="rb"/>
 
 <t:welcomepage>
     <div id="register-center" align="center">
         <section class="welcomeform cf">
             <form action="<c:url value="/do/register"/>" method="post">
                 <ul>
-                    <p>Registration form:</p>
+                    <p><fmt:message key="register.main-text" bundle="${rb}"/>:</p>
                     <table>
                         <c:forEach items="${userParamList}" var="userParam" varStatus="i">
                             <tr>
-                                <td>${userParam}</td>
+                                <td>${userParamName.get(i.index)}</td>
                                 <td>
                                     <div><input type="text" name="${userParam}" value="${values.get(i.index)}"
-                                                placeholder="${userParam}"></div>
-                                    <div id="register-error">${violations.get(i.index)}</div>
+                                                placeholder="${userParamName.get(i.index)}"></div>
+                                    <p id="register-error">${violations.get(i.index)}</p>
                                 </td>
                             </tr>
                         </c:forEach>
                     </table>
                     <li>
-                        <input type="submit" value="Register">
+                        <input type="submit" value="<fmt:message key="register.button" bundle="${rb}"/>">
                     </li>
-                    <p><a href="<c:url value="/do/welcome"/>">login page</a></p>
+                    <p><a href="<c:url value="/do/welcome"/>"><fmt:message key="register.login-page" bundle="${rb}"/></a></p>
                 </ul>
             </form>
         </section>

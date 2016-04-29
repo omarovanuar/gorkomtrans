@@ -8,7 +8,9 @@ public class LogoutAction implements Action {
 
     @Override
     public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) {
+        String locale = req.getSession(false).getAttribute("locale").toString();
         req.getSession().invalidate();
+        req.getSession().setAttribute("locale", locale);
         return welcome;
     }
 }

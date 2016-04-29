@@ -1,22 +1,25 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<fmt:setBundle basename="other-text" var="rb"/>
 <%--@elvariable id="contracts" type="java.util.List"--%>
 <%--@elvariable id="item" type="com.epam.anuar.gorkomtrans.entity.Contract"--%>
 <%--@elvariable id="noOfPages" type="java.lang.Integer"--%>
 <%--@elvariable id="currentPage" type="java.lang.Integer"--%>
+<%--@elvariable id="locale" type="java.lang.String"--%>
 
 <t:authorizedpage>
     <div class="contract-list">
         <table>
             <tr>
                 <th>Id</th>
-                <th>Address</th>
-                <th>Capacity</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Sign date</th>
-                <th>Contract</th>
+                <th><fmt:message key="contract.address" bundle="${rb}"/></th>
+                <th><fmt:message key="contract.capacity" bundle="${rb}"/></th>
+                <th><fmt:message key="contract.amount" bundle="${rb}"/></th>
+                <th><fmt:message key="contract.status" bundle="${rb}"/></th>
+                <th><fmt:message key="contract.sign-date" bundle="${rb}"/></th>
+                <th><fmt:message key="contract.contract" bundle="${rb}"/></th>
             </tr>
             <c:forEach var="item" items="${contracts}">
                 <tr>
@@ -24,13 +27,20 @@
                     <td>${item.garbageTechSpecification.address}</td>
                     <td>${item.contractTotalCapacityString}</td>
                     <td>${item.contractAmount}</td>
-                    <td>${item.status.toString()}</td>
+                    <c:choose>
+                        <c:when test="${locale eq \"ru\"}">
+                            <td>${item.status.ru}</td>
+                        </c:when>
+                        <c:otherwise>
+                            <td>${item.status.toString()}</td>
+                        </c:otherwise>
+                    </c:choose>
                     <td>${item.signDateString}</td>
                     <td>
                         <form action="<c:url value="/do/contract-view"/>" method="post">
                             <p>
                                 <input type="hidden" name="current-contract" value="${item.id.toString()}">
-                                <input type="submit" value="View">
+                                <input type="submit" value="<fmt:message key="action.view" bundle="${rb}"/>">
                             </p>
                         </form>
                     </td>

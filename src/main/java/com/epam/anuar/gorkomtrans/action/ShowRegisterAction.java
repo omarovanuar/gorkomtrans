@@ -18,6 +18,7 @@ public class ShowRegisterAction implements Action {
         userParamList.add("MainAddress");
         userParamList.add("Bank");
         userParamList.add("BankAccount");
+        List<String> userParamName = ActionService.getRegisterParameterNames(req);
         List<String> violations = new ArrayList<>();
         for (int i = 0; i < userParamList.size(); i++) {
             violations.add(i, "");
@@ -26,7 +27,7 @@ public class ShowRegisterAction implements Action {
         for (int i = 0; i < userParamList.size(); i++) {
             values.add(i, "");
         }
-        return ActionService.showRegister(req, userParamList, violations, values);
+        return ActionService.showRegister(req, userParamList, userParamName, violations, values);
     }
 
 

@@ -18,35 +18,40 @@ public class Validator {
     private static final Pattern INTEGER_VALUE = Pattern.compile("[1-9]\\d*");
     private static final Pattern DOUBLE_VALUE = Pattern.compile("\\d+(\\.[0-9]+)?");
     private static Set<Violation> violations = new HashSet<>();
+    private static ResourceBundle bundle;
 
     public static void checkUnlogged(HttpServletRequest req) {
         if (req.getSession(false).getAttribute("user") == null) {
-            throw new UnloggedException("Please, login");
+            bundle = ResourceBundle.getBundle("error", Locale.forLanguageTag(req.getSession(false).getAttribute("locale").toString()));
+            throw new UnloggedException(bundle.getString("not.logged"));
         }
     }
 
     public static void checkAdmin(HttpServletRequest req) {
         User user = (User) req.getSession(false).getAttribute("user");
         if (!(user.getRole().equals(RoleType.ADMIN))) {
-            System.out.println(user.getRole().toString());
-            throw new UnloggedException("You have not admin role");
+            bundle = ResourceBundle.getBundle("error", Locale.forLanguageTag(req.getSession(false).getAttribute("locale").toString()));
+            throw new UnloggedException(bundle.getString("not.admin"));
         }
     }
 
     public static void checkAdminOrModer(HttpServletRequest req) {
         User user = (User) req.getSession(false).getAttribute("user");
         if (!(user.getRole().equals(RoleType.ADMIN) || user.getRole().equals(RoleType.MODERATOR))) {
-            throw new UnloggedException("You have not admin or moderator role");
+            bundle = ResourceBundle.getBundle("error", Locale.forLanguageTag(req.getSession(false).getAttribute("locale").toString()));
+            throw new UnloggedException(bundle.getString("not.admin-moder"));
         }
     }
 
-    public static void isEmptyTechSpec(String euro, String standard, String nonStandardNumber) {
+    public static Violation isEmptyTechSpec(String euro, String standard, String nonStandardNumber, HttpServletRequest req) {
         if (euro == null && standard == null && nonStandardNumber.equals("0")) {
-            throw new RuntimeException("Please, choose type of containers");
-        }
+            bundle = ResourceBundle.getBundle("error", Locale.forLanguageTag(req.getSession(false).getAttribute("locale").toString()));
+            return new Violation(bundle.getString("empty.type"), 0);
+        } else return null;
     }
 
-    public static Set<Violation> validateRegister(Map<String, String> parameters) {
+    public static Set<Violation> validateRegister(Map<String, String> parameters, HttpServletRequest req) {
+        bundle = ResourceBundle.getBundle("error", Locale.forLanguageTag(req.getSession(false).getAttribute("locale").toString()));
         Set<Violation> returnViolations = new HashSet<>();
         putViolation(validateLogin(parameters, 0));
         putViolation(validatePassword(parameters, 1));
@@ -63,6 +68,7 @@ public class Validator {
     }
 
     public static Set<Violation> validatePersonalCabinet(Map<String, String> parameters, HttpServletRequest req) {
+        bundle = ResourceBundle.getBundle("error", Locale.forLanguageTag(req.getSession(false).getAttribute("locale").toString()));
         Set<Violation> returnViolations = new HashSet<>();
         putViolation(validatePassword(parameters, 0));
         putViolation(validateEmail(parameters, 1, req));
@@ -71,13 +77,14 @@ public class Validator {
         putViolation(validatePhoneNumber(parameters, 4));
         putViolation(validateIsEmpty(parameters, 5, "MainAddress"));
         putViolation(validateIsEmpty(parameters, 6, "Bank"));
-        putViolation(validateBankAccount(parameters, 7));
+        putViolation(validateChangeBankAccount(parameters, 7, req));
         returnViolations.addAll(violations);
         violations.clear();
         return returnViolations;
     }
 
-    public static Set<Violation> validateTechSpec(Map<String, String> parameters) {
+    public static Set<Violation> validateTechSpec(Map<String, String> parameters, HttpServletRequest req) {
+        bundle = ResourceBundle.getBundle("error", Locale.forLanguageTag(req.getSession(false).getAttribute("locale").toString()));
         Set<Violation> returnViolations = new HashSet<>();
         putViolation(validateIsEmpty(parameters, 0, "tech-address"));
         if (parameters.keySet().contains("euro")) {
@@ -111,19 +118,19 @@ public class Validator {
         DaoFactory dao = DaoFactory.getInstance();
         UserDao userDao = dao.getUserDao();
         if (parameters.get("Login").isEmpty()) {
-            return new Violation("Login can't be empty", violationNumber);
+            return new Violation(bundle.getString("empty.login"), violationNumber);
         } else if (userDao.findByLogin(parameters.get("Login")) != null) {
-            return new Violation("Current login is already exist", violationNumber);
+            return new Violation(bundle.getString("exist.login"), violationNumber);
         }
         dao.close();
         return null;
     }
 
     private static Violation validatePassword(Map<String, String> parameters, Integer violationNumber) {
-        if (parameters.get("Password").isEmpty()){
-            return new Violation("Password can't be empty", violationNumber);
+        if (parameters.get("Password").isEmpty()) {
+            return new Violation(bundle.getString("empty.password"), violationNumber);
         } else if (parameters.get("Password").length() < 8) {
-            return new Violation("Password must contain at least 8 symbols", violationNumber);
+            return new Violation(bundle.getString("not.password"), violationNumber);
         }
         return null;
     }
@@ -131,12 +138,12 @@ public class Validator {
     private static Violation validateRegisterEmail(Map<String, String> parameters, Integer violationNumber) {
         DaoFactory dao = DaoFactory.getInstance();
         UserDao userDao = dao.getUserDao();
-        if (parameters.get("Email").isEmpty()){
-            return new Violation("Email can't be empty", violationNumber);
+        if (parameters.get("Email").isEmpty()) {
+            return new Violation(bundle.getString("empty.email"), violationNumber);
         } else if (userDao.findByEmail(parameters.get("Email")) != null) {
-            return new Violation("Current email is already exist", violationNumber);
+            return new Violation(bundle.getString("exist.email"), violationNumber);
         } else if (!EMAIL.matcher(parameters.get("Email")).matches()) {
-            return new Violation("Invalid email", violationNumber);
+            return new Violation(bundle.getString("not.email"), violationNumber);
         }
         dao.close();
         return null;
@@ -145,49 +152,49 @@ public class Validator {
     private static Violation validateEmail(Map<String, String> parameters, Integer violationNumber, HttpServletRequest req) {
         DaoFactory dao = DaoFactory.getInstance();
         UserDao userDao = dao.getUserDao();
-        if (parameters.get("Email").isEmpty()){
-            return new Violation("Email can't be empty", violationNumber);
+        if (parameters.get("Email").isEmpty()) {
+            return new Violation(bundle.getString("empty.email"), violationNumber);
         } else if (userDao.findByEmail(parameters.get("Email")) != null &&
                 !((User) req.getSession(false).getAttribute("user")).getEmail().equals(parameters.get("Email"))) {
             dao.close();
-            return new Violation("Current email is already exist", violationNumber);
+            return new Violation(bundle.getString("exist.email"), violationNumber);
         } else if (!EMAIL.matcher(parameters.get("Email")).matches()) {
-            return new Violation("Invalid email", violationNumber);
+            return new Violation(bundle.getString("not.email"), violationNumber);
         }
         dao.close();
         return null;
     }
 
     private static Violation validateIsEmpty(Map<String, String> parameters, Integer violationNumber, String emptyParam) {
-        if (parameters.get(emptyParam).isEmpty()){
-            return new Violation(emptyParam + " can't be empty", violationNumber);
+        if (parameters.get(emptyParam).isEmpty()) {
+            return new Violation(emptyParam + " " + bundle.getString("empty.all"), violationNumber);
         }
         return null;
     }
 
     private static Violation validateInteger(Map<String, String> parameters, Integer violationNumber, String validatingString) {
-        if (parameters.get(validatingString).isEmpty()){
-            return new Violation(validatingString + " can't be empty", violationNumber);
+        if (parameters.get(validatingString).isEmpty()) {
+            return new Violation(validatingString + " " + bundle.getString("empty.all"), violationNumber);
         } else if (!INTEGER_VALUE.matcher(parameters.get(validatingString)).matches()) {
-            return new Violation(validatingString + " must be Integer type", violationNumber);
+            return new Violation(validatingString + " " + bundle.getString("not.integer"), violationNumber);
         }
         return null;
     }
 
     private static Violation validateDouble(Map<String, String> parameters, Integer violationNumber, String validatingString) {
-        if (parameters.get(validatingString).isEmpty()){
-            return new Violation(validatingString + " can't be empty", violationNumber);
+        if (parameters.get(validatingString).isEmpty()) {
+            return new Violation(validatingString + " " + bundle.getString("empty.all"), violationNumber);
         } else if (!DOUBLE_VALUE.matcher(parameters.get(validatingString)).matches()) {
-            return new Violation(validatingString + " must be Double type", violationNumber);
+            return new Violation(validatingString + " " + bundle.getString("not.double"), violationNumber);
         }
         return null;
     }
 
     private static Violation validatePhoneNumber(Map<String, String> parameters, Integer violationNumber) {
-        if (parameters.get("PhoneNumber").isEmpty()){
-            return new Violation("PhoneNumber can't be empty", violationNumber);
+        if (parameters.get("PhoneNumber").isEmpty()) {
+            return new Violation(bundle.getString("empty.phone"), violationNumber);
         } else if (!PHONE_NUMBER.matcher(parameters.get("PhoneNumber")).matches()) {
-            return new Violation("PhoneNumber must be in the form N-NNN-NNNNNNN(N-Number)", violationNumber);
+            return new Violation(bundle.getString("not.phone"), violationNumber);
         }
         return null;
     }
@@ -195,19 +202,34 @@ public class Validator {
     private static Violation validateBankAccount(Map<String, String> parameters, Integer violationNumber) {
         DaoFactory dao = DaoFactory.getInstance();
         WalletDao walletDao = dao.getWalletDao();
-        if (parameters.get("BankAccount").isEmpty()){
-            return new Violation("BankAccount can't be empty", violationNumber);
+        if (parameters.get("BankAccount").isEmpty()) {
+            return new Violation(bundle.getString("empty.bank-account"), violationNumber);
         } else if (!BANK_ACCOUNT.matcher(parameters.get("BankAccount")).matches()) {
-            return new Violation("BankAccount must be in the form LLNNNN-NNNN-NNNN-NNNN(L-Big letter, N-Number", violationNumber);
+            return new Violation(bundle.getString("not.bank-account"), violationNumber);
         } else if (walletDao.findByAccount(parameters.get("Bank") + " " + parameters.get("BankAccount")) != null) {
             dao.close();
-            return new Violation("BankAccount is already exist", violationNumber);
+            return new Violation(bundle.getString("exist.bank-account"), violationNumber);
         }
         dao.close();
         return null;
     }
 
-
+    private static Violation validateChangeBankAccount(Map<String, String> parameters, Integer violationNumber, HttpServletRequest req) {
+        DaoFactory dao = DaoFactory.getInstance();
+        WalletDao walletDao = dao.getWalletDao();
+        if (parameters.get("BankAccount").isEmpty()) {
+            return new Violation(bundle.getString("empty.bank-account"), violationNumber);
+        } else if (!BANK_ACCOUNT.matcher(parameters.get("BankAccount")).matches()) {
+            return new Violation(bundle.getString("not.bank-account"), violationNumber);
+        } else if (walletDao.findByAccount(parameters.get("Bank") + " " + parameters.get("BankAccount")) != null &&
+                !((User) req.getSession(false).getAttribute("user")).getBankRequisitions().equals(parameters.get("Bank") + " "
+                        + parameters.get("BankAccount"))) {
+            dao.close();
+            return new Violation(bundle.getString("exist.bank-account"), violationNumber);
+        }
+        dao.close();
+        return null;
+    }
 
     private static void putViolation(Violation violation) {
         if (violation != null) {

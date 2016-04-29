@@ -232,6 +232,10 @@ input[type=submit] {
     color: red;
 }
 
+.tech-spec td {
+    font-size: 16pt;
+}
+
 select {
     padding: 5px;
     margin-top: 5px;
@@ -358,6 +362,7 @@ select {
 #register-error {
     color: red;
     margin-top: 5px;
+    float: none;
 }
 
 .per-month p {
@@ -385,4 +390,12 @@ select {
 
 .language-change input[type=submit]:hover {
     color: white;
+}
+
+.empty-tech-spec div {
+    float: left;
+}
+
+#empty-tech-error {
+    padding: 18px;
 }

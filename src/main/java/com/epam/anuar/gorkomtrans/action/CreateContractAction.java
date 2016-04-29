@@ -60,7 +60,7 @@ public class CreateContractAction implements Action {
             }
 
         }
-        Set<Violation> tempViolations = Validator.validateTechSpec(parameterMap);
+        Set<Violation> tempViolations = Validator.validateTechSpec(parameterMap, req);
         if (!tempViolations.isEmpty()) {
             List<String> violations = new ArrayList<>();
             for (int i = 0; i < 11; i++) {

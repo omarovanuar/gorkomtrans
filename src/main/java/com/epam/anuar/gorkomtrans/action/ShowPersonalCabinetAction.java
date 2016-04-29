@@ -23,6 +23,8 @@ public class ShowPersonalCabinetAction implements Action {
         for (int i = 0; i < userParamList.size(); i++) {
             violations.add(i, "");
         }
+        List<String> userParamName = ActionService.getRegisterParameterNames(req);
+        userParamName.remove(0);
         List<String> values = new ArrayList<>();
         User user = (User) req.getSession(false).getAttribute("user");
         values.add(user.getPassword());
@@ -34,6 +36,6 @@ public class ShowPersonalCabinetAction implements Action {
         values.add(user.getBankName());
         values.add(user.getBankAccount());
 
-        return ActionService.showPersonalCabinet(req, userParamList, violations, values);
+        return ActionService.showPersonalCabinet(req, userParamList, userParamName, violations, values);
     }
 }

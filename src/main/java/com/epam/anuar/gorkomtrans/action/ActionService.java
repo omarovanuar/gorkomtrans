@@ -18,6 +18,7 @@ import static com.epam.anuar.gorkomtrans.util.IdGenerator.generateID;
 
 public class ActionService {
     private static DaoFactory dao = DaoFactory.getInstance();
+    private static ResourceBundle bundle;
 
     public static ActionResult checkUser(String login, String password, HttpServletRequest req) {
         UserDao userDao = dao.getUserDao();
@@ -38,7 +39,7 @@ public class ActionService {
     }
 
     public static ActionResult registerUser(Map<String, String> parameters, HttpServletRequest req) {
-        Set<Violation> tempViolations = Validator.validateRegister(parameters);
+        Set<Violation> tempViolations = Validator.validateRegister(parameters ,req);
         if (!tempViolations.isEmpty()) {
             List<String> violations = new ArrayList<>();
             for (int i = 0; i < parameters.size(); i++) {
@@ -52,6 +53,8 @@ public class ActionService {
             req.setAttribute("userParamList", list);
             List<String> values = new ArrayList<>(parameters.values());
             req.setAttribute("values", values);
+            List<String> names = ActionService.getRegisterParameterNames(req);
+            req.setAttribute("userParamName", names);
             return new ActionResult("register");
         }
         UserDao userDao = dao.getUserDao();
@@ -101,7 +104,11 @@ public class ActionService {
 
     public static ActionResult fillTechSpec(String euro, String standard, String nonStandardNumber, HttpServletRequest req) {
         Validator.checkUnlogged(req);
-        Validator.isEmptyTechSpec(euro, standard, nonStandardNumber);
+        Violation emptyTechSpec = Validator.isEmptyTechSpec(euro, standard, nonStandardNumber, req);
+        if (emptyTechSpec != null) {
+            req.setAttribute("violation", emptyTechSpec.getViolation());
+            return new ActionResult("services");
+        }
         if (euro == null) euro = "0";
         if (standard == null) standard = "0";
         req.setAttribute("euro", euro);
@@ -127,7 +134,8 @@ public class ActionService {
         ContractDao contractDao = dao.getContractDao();
         contractDao.updateStatus(((Contract) req.getSession(false).getAttribute("contract")).getId(), Status.SUBMITTED);
         dao.close();
-        req.setAttribute("statusMessage", "Contract successfully submitted");
+        bundle = ResourceBundle.getBundle("other-text", Locale.forLanguageTag(req.getSession(false).getAttribute("locale").toString()));
+        req.setAttribute("statusMessage", bundle.getString("status.submitted"));
         return new ActionResult("contract-status");
     }
 
@@ -196,14 +204,15 @@ public class ActionService {
         String summa = ((Contract) req.getSession(false).getAttribute("contract")).getContractAmount().toString();
         String userId = ((Contract) req.getSession(false).getAttribute("contract")).getUser().getWallet().getId().toString();
         String providerId = userDao.findByLogin("admin").getWallet().getId().toString();
+        bundle = ResourceBundle.getBundle("other-text", Locale.forLanguageTag(req.getSession(false).getAttribute("locale").toString()));
         if (transaction.transfer(summa, userId, providerId) == 1) {
             contractDao.update(((Contract) req.getSession(false).getAttribute("contract")).getId(), DateTime.now().toString("dd.MM.YYYY HH:mm"), Status.AGREED);
             dao.close();
-            req.setAttribute("statusMessage", "Contract successfully agreed");
+            req.setAttribute("statusMessage", bundle.getString("status.agreed"));
             return new ActionResult("contract-status");
         } else {
             dao.close();
-            req.setAttribute("statusMessage", "Contract not agreed, try later");
+            req.setAttribute("statusMessage", bundle.getString("status.agree-error"));
             return new ActionResult("contract-status");
         }
     }
@@ -213,7 +222,8 @@ public class ActionService {
         ContractDao contractDao = dao.getContractDao();
         contractDao.updateStatus(((Contract) req.getSession(false).getAttribute("contract")).getId(), Status.DENIED);
         dao.close();
-        req.setAttribute("statusMessage", "Contract successfully denied");
+        bundle = ResourceBundle.getBundle("other-text", Locale.forLanguageTag(req.getSession(false).getAttribute("locale").toString()));
+        req.setAttribute("statusMessage", bundle.getString("status.denied"));
         return new ActionResult("contract-status");
     }
 
@@ -289,16 +299,18 @@ public class ActionService {
         return showAllUsers(1, 13, req);
     }
 
-    public static ActionResult showRegister(HttpServletRequest req, List<String> userParamList, List<String> violations, List<String> values) {
+    public static ActionResult showRegister(HttpServletRequest req, List<String> userParamList, List<String> userParamName, List<String> violations, List<String> values) {
         req.setAttribute("userParamList", userParamList);
+        req.setAttribute("userParamName", userParamName);
         req.setAttribute("violations", violations);
         req.setAttribute("values", values);
 
         return new ActionResult("register");
     }
 
-    public static ActionResult showPersonalCabinet(HttpServletRequest req, List<String> userParamList, List<String> violations, List<String> values) {
+    public static ActionResult showPersonalCabinet(HttpServletRequest req, List<String> userParamList, List<String> userParamName, List<String> violations, List<String> values) {
         req.setAttribute("userParamList", userParamList);
+        req.setAttribute("userParamName", userParamName);
         req.setAttribute("violations", violations);
         req.setAttribute("values", values);
 
@@ -317,5 +329,31 @@ public class ActionService {
         values.add(user.getBankName());
         values.add(user.getBankAccount());
         return values;
+    }
+
+    public static List<String> getRegisterParameterNames(HttpServletRequest req) {
+        List<String> userParamName = new ArrayList<>();
+        if (req.getSession(false).getAttribute("locale").equals("ru")) {
+            userParamName.add("Логин");
+            userParamName.add("Пароль");
+            userParamName.add("Email");
+            userParamName.add("Имя");
+            userParamName.add("Фамилия");
+            userParamName.add("Номер телефона");
+            userParamName.add("Основной адрес");
+            userParamName.add("Банк");
+            userParamName.add("Банковский счет");
+        } else {
+            userParamName.add("Login");
+            userParamName.add("Password");
+            userParamName.add("Email");
+            userParamName.add("FirstName");
+            userParamName.add("LastName");
+            userParamName.add("PhoneNumber");
+            userParamName.add("MainAddress");
+            userParamName.add("Bank");
+            userParamName.add("BankAccount");
+        }
+        return userParamName;
     }
 }
