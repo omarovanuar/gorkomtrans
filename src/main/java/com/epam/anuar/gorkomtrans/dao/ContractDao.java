@@ -2,23 +2,21 @@ package com.epam.anuar.gorkomtrans.dao;
 
 import com.epam.anuar.gorkomtrans.entity.Contract;
 import com.epam.anuar.gorkomtrans.entity.Status;
+import com.epam.anuar.gorkomtrans.service.DaoService;
 import org.joda.money.Money;
-import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ContractDao {
     private static Logger log = LoggerFactory.getLogger(ContractDao.class.getName());
     private Connection con;
     private List<String> parameters = new ArrayList<>();
+    private ResourceBundle rb = ResourceBundle.getBundle("sql");
 
     public ContractDao(Connection con) {
         this.con = con;
@@ -31,13 +29,13 @@ public class ContractDao {
         parameters.add(contract.getContractAmount().toString());
         parameters.add(contract.getProvidingMonthNumber().toString());
         parameters.add(contract.getContractTotalCapacityString());
-        String value = "INSERT INTO CONTRACT VALUES (?, ?, ?, ?, ?, '', 'NEW', ?)";
+        String value = rb.getString("insert.contract");
         DaoService.executeStatement(con, value, parameters);
         parameters.clear();
     }
 
     public Contract findById(Integer id) {
-        String value = "SELECT * FROM CONTRACT TABLE WHERE ID = ?";
+        String value = rb.getString("find-contract.id");
         parameters.add(id.toString());
         PreparedStatement ps = DaoService.getStatement(con, value, parameters);
         parameters.clear();
@@ -50,7 +48,7 @@ public class ContractDao {
     }
 
     public List<Contract> findByUserId(Integer id) {
-        String value = "SELECT * FROM CONTRACT TABLE WHERE USERID = ?";
+        String value = rb.getString("find-contract.user-id");
         parameters.add(id.toString());
         PreparedStatement ps = DaoService.getStatement(con, value, parameters);
         List<Contract> contracts = getContractFromDb(ps, parameters);
@@ -59,7 +57,7 @@ public class ContractDao {
     }
 
     public List<Contract> findByUserId(Integer id, Integer offset, Integer noOfRecords) {
-        String value = "SELECT * FROM CONTRACT TABLE WHERE USERID = ? LIMIT ?, ?";
+        String value = rb.getString("find-contract.user-id-row");
         parameters.add(id.toString());
         parameters.add(offset.toString());
         parameters.add(noOfRecords.toString());
@@ -70,7 +68,7 @@ public class ContractDao {
     }
 
     public List<Contract> findAll(Integer offset, Integer noOfRecords) {
-        String value = "SELECT * FROM CONTRACT TABLE LIMIT ?, ?";
+        String value = rb.getString("find-contract.all");
         parameters.add(offset.toString());
         parameters.add(noOfRecords.toString());
         PreparedStatement ps = DaoService.getStatement(con, value, parameters);
@@ -85,7 +83,7 @@ public class ContractDao {
     }
 
     public int allRowsNumber() {
-        String value = "SELECT ROWNUM(), * FROM CONTRACT";
+        String value = rb.getString("row-contract.all");
         return DaoService.calculateRowNumber(value, con);
     }
 
@@ -130,7 +128,7 @@ public class ContractDao {
     }
 
     public void update(Integer id, String signDate, Status status) {
-        String value = "UPDATE CONTRACT SET SIGNDATE = ?, STATUS = ? WHERE ID = ?";
+        String value = rb.getString("update-contract.signdate-status");
         parameters.add(signDate);
         parameters.add(status.toString());
         parameters.add(id.toString());
@@ -139,7 +137,7 @@ public class ContractDao {
     }
 
     public void updateStatus(Integer id, Status status) {
-        String value = "UPDATE CONTRACT SET STATUS = ? WHERE ID = ?";
+        String value = rb.getString("update-contract.status");
         parameters.add(status.toString());
         parameters.add(id.toString());
         DaoService.executeStatement(con, value, parameters);

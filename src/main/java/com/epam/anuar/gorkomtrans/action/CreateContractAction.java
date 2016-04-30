@@ -7,10 +7,10 @@ import com.epam.anuar.gorkomtrans.util.Violation;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.util.*;
 
-import static com.epam.anuar.gorkomtrans.action.ActionService.*;
+import static com.epam.anuar.gorkomtrans.service.ContractService.createContract;
+import static com.epam.anuar.gorkomtrans.service.TechSpecService.createTechSpec;
 
 public class CreateContractAction implements Action {
     String attributeName;

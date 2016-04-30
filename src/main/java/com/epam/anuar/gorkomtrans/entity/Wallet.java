@@ -6,9 +6,6 @@ public class Wallet extends BaseEntity {
     private String account;
     private Money money;
 
-    public Wallet() {
-    }
-
     public Wallet(Integer id, String account, Money money) {
         super(id);
         this.account = account;

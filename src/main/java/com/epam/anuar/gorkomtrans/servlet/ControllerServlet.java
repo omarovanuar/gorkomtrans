@@ -3,19 +3,11 @@ package com.epam.anuar.gorkomtrans.servlet;
 import com.epam.anuar.gorkomtrans.action.Action;
 import com.epam.anuar.gorkomtrans.action.ActionFactory;
 import com.epam.anuar.gorkomtrans.action.ActionResult;
-import com.epam.anuar.gorkomtrans.dao.DaoFactory;
-import com.epam.anuar.gorkomtrans.dao.DaoService;
-import com.epam.anuar.gorkomtrans.dao.UserDao;
-import com.epam.anuar.gorkomtrans.entity.Provider;
-import com.epam.anuar.gorkomtrans.entity.User;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.xml.crypto.dsig.DigestMethod;
 import java.io.IOException;
 
 public class ControllerServlet extends HttpServlet {

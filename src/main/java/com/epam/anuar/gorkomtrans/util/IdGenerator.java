@@ -4,12 +4,11 @@ import com.epam.anuar.gorkomtrans.dao.ContractDao;
 import com.epam.anuar.gorkomtrans.dao.TechSpecDao;
 import com.epam.anuar.gorkomtrans.dao.UserDao;
 import com.epam.anuar.gorkomtrans.dao.WalletDao;
-import com.epam.anuar.gorkomtrans.entity.Wallet;
 
 import java.util.Random;
 
 public class IdGenerator {
-    
+
     public static Integer generateID(UserDao userDao) {
         Random random = new Random();
         Integer id = random.nextInt(10000);

@@ -1,4 +1,4 @@
-package com.epam.anuar.gorkomtrans;
+package com.epam.anuar.gorkomtrans.service;
 
 import com.epam.anuar.gorkomtrans.entity.GarbageContainerType;
 

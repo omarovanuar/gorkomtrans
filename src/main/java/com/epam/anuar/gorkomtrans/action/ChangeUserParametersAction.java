@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static com.epam.anuar.gorkomtrans.service.UserService.changeUserParameters;
+
 public class ChangeUserParametersAction implements Action {
     @Override
     public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) {
@@ -18,6 +20,6 @@ public class ChangeUserParametersAction implements Action {
         parameters.put("Bank", req.getParameter("Bank"));
         parameters.put("BankAccount", req.getParameter("BankAccount"));
         String id = req.getParameter("id");
-        return ActionService.changeUserParameters(id, parameters, req);
+        return changeUserParameters(id, parameters, req);
     }
 }

@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
+import static com.epam.anuar.gorkomtrans.service.UserService.changeUserView;
+
 public class ChangeUserViewAction implements Action {
     @Override
     public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) {
@@ -17,6 +19,6 @@ public class ChangeUserViewAction implements Action {
         symbols.setDecimalSeparator('.');
         DecimalFormat df = new DecimalFormat("###.##", symbols);
         balance = df.format(Double.parseDouble(balance));
-        return  ActionService.changeUserView(id, password, email, role, balance, req);
+        return  changeUserView(id, password, email, role, balance, req);
     }
 }

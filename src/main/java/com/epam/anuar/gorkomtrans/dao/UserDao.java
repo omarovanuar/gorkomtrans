@@ -1,16 +1,17 @@
 package com.epam.anuar.gorkomtrans.dao;
 
 import com.epam.anuar.gorkomtrans.entity.User;
+import com.epam.anuar.gorkomtrans.service.DaoService;
 
 import java.sql.*;
 import java.util.*;
 
-import static com.epam.anuar.gorkomtrans.dao.DaoService.*;
+import static com.epam.anuar.gorkomtrans.service.DaoService.*;
 
 public class UserDao {
     private Connection con;
     private List<String> parameters = new ArrayList<>();
-    private ResourceBundle rb = ResourceBundle.getBundle("user-sql");
+    private ResourceBundle rb = ResourceBundle.getBundle("sql");
 
     public UserDao(Connection con) {
         this.con = con;
@@ -28,14 +29,14 @@ public class UserDao {
         this.parameters.add(parameters.get("Bank"));
         this.parameters.add(parameters.get("BankAccount"));
         this.parameters.add(parameters.get("WalletId"));
-        String value = rb.getString("insert.parameters");
+        String value = rb.getString("insert-user.parameters");
         byte result = executeStatement(con, value, this.parameters);
         this.parameters.clear();
         return result;
     }
 
     public User findById(Integer id) {
-        String value = rb.getString("find.id");
+        String value = rb.getString("find-user.id");
         parameters.add(id.toString());
         PreparedStatement ps = getStatement(con, value, parameters);
         parameters.clear();
@@ -48,7 +49,7 @@ public class UserDao {
     }
 
     public User findByLogin(String login) {
-        String value = rb.getString("find.login");
+        String value = rb.getString("find-user.login");
         parameters.add(login);
         PreparedStatement ps = getStatement(con, value, parameters);
         parameters.clear();
@@ -61,7 +62,7 @@ public class UserDao {
     }
 
     public User findByEmail(String email) {
-        String value = rb.getString("find.email");
+        String value = rb.getString("find-user.email");
         parameters.add(email);
         PreparedStatement ps = getStatement(con, value, parameters);
         parameters.clear();
@@ -74,7 +75,7 @@ public class UserDao {
     }
 
     public User findByCredentials(String login, String password) {
-        String value = rb.getString("find.login-pass");
+        String value = rb.getString("find-user.login-pass");
         parameters.add(login);
         parameters.add(password);
         PreparedStatement ps = getStatement(con, value, parameters);
@@ -88,7 +89,7 @@ public class UserDao {
     }
 
     public List<User> findAll(Integer offset, Integer noOfRecords) {
-        String value = "SELECT * FROM USER TABLE LIMIT ?, ?";
+        String value = rb.getString("find-user.all");
         parameters.add(offset.toString());
         parameters.add(noOfRecords.toString());
         PreparedStatement ps = DaoService.getStatement(con, value, parameters);
@@ -137,7 +138,7 @@ public class UserDao {
     }
 
     public byte update(String id, Map<String, String> parameters) {
-        String value = rb.getString("update.all");
+        String value = rb.getString("update-user.all");
         this.parameters.add(parameters.get("Password"));
         this.parameters.add(parameters.get("Email"));
         this.parameters.add(parameters.get("FirstName"));
@@ -153,7 +154,7 @@ public class UserDao {
     }
 
     public byte updateWithWallet(String id, Map<String, String> parameters, String walletId) {
-        String value = rb.getString("update.all-with-wallet");
+        String value = rb.getString("update-user.all-with-wallet");
         this.parameters.add(parameters.get("Password"));
         this.parameters.add(parameters.get("Email"));
         this.parameters.add(parameters.get("FirstName"));
@@ -170,7 +171,7 @@ public class UserDao {
     }
 
     public byte updatePassEmailRole(String id, String password, String email, String role) {
-        String value = rb.getString("update.pass-email-role");
+        String value = rb.getString("update-user.pass-email-role");
         if (findByEmail(email) != null && (!findById(Integer.parseInt(id)).getEmail().equals(email))) return 2;
         if (password.equals("") || email.equals("")) return 3;
         parameters.add(password);
@@ -184,13 +185,13 @@ public class UserDao {
 
     public void deleteById(String id) {
         parameters.add(id);
-        String value = "DELETE FROM USER WHERE ID = ?";
+        String value = rb.getString("delete-user.id");
         DaoService.executeStatement(con, value, parameters);
         parameters.clear();
     }
 
     public int allRowsNumber() {
-        String value = "SELECT ROWNUM(), * FROM USER";
+        String value = rb.getString("row-user.all");
         return DaoService.calculateRowNumber(value, con);
     }
 

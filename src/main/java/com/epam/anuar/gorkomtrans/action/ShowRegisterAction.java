@@ -5,6 +5,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.epam.anuar.gorkomtrans.service.ActionService.showRegister;
+import static com.epam.anuar.gorkomtrans.service.UserService.getRegisterParameterNames;
+
 public class ShowRegisterAction implements Action {
     @Override
     public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) {
@@ -18,7 +21,7 @@ public class ShowRegisterAction implements Action {
         userParamList.add("MainAddress");
         userParamList.add("Bank");
         userParamList.add("BankAccount");
-        List<String> userParamName = ActionService.getRegisterParameterNames(req);
+        List<String> userParamName = getRegisterParameterNames(req);
         List<String> violations = new ArrayList<>();
         for (int i = 0; i < userParamList.size(); i++) {
             violations.add(i, "");
@@ -27,7 +30,7 @@ public class ShowRegisterAction implements Action {
         for (int i = 0; i < userParamList.size(); i++) {
             values.add(i, "");
         }
-        return ActionService.showRegister(req, userParamList, userParamName, violations, values);
+        return showRegister(req, userParamList, userParamName, violations, values);
     }
 
 

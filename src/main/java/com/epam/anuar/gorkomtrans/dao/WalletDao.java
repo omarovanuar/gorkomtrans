@@ -1,26 +1,25 @@
 package com.epam.anuar.gorkomtrans.dao;
 
 import com.epam.anuar.gorkomtrans.entity.Wallet;
+import com.epam.anuar.gorkomtrans.service.DaoService;
 import org.joda.money.Money;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static com.epam.anuar.gorkomtrans.dao.DaoService.*;
+import static com.epam.anuar.gorkomtrans.service.DaoService.*;
 
 public class WalletDao {
     private Connection con;
     private List<String> parameters = new ArrayList<>();
+    private ResourceBundle rb = ResourceBundle.getBundle("sql");
 
     public WalletDao(Connection con) {
         this.con = con;
     }
 
     public Wallet findById(Integer id) {
-        String value = "SELECT * FROM WALLET WHERE ID = ?";
+        String value = rb.getString("find-wallet.id");
         parameters.add(id.toString());
         PreparedStatement ps = getStatement(con, value, parameters);
         parameters.clear();
@@ -33,7 +32,7 @@ public class WalletDao {
     }
 
     public Wallet findByAccount(String account) {
-        String value = "SELECT * FROM WALLET WHERE ACCOUNT = ?";
+        String value = rb.getString("find-wallet.account");
         parameters.add(account);
         PreparedStatement ps = getStatement(con, value, parameters);
         parameters.clear();
@@ -43,6 +42,31 @@ public class WalletDao {
         } else {
             return null;
         }
+    }
+
+    public void insert(Integer id, String account) {
+        parameters.add(id.toString());
+        parameters.add(account);
+        String value = rb.getString("insert.wallet");
+        executeStatement(con, value, parameters);
+        parameters.clear();
+    }
+
+    public byte updateBalance(String id, String money) {
+        String value = rb.getString("update-wallet.balance");
+        if (Double.parseDouble(money) < 0) return 4;
+        parameters.add("KZT " + money);
+        parameters.add(id);
+        byte result = executeStatement(con, value, parameters);
+        parameters.clear();
+        return result;
+    }
+
+    public void deleteById(String id) {
+        parameters.add(id);
+        String value = rb.getString("delete-wallet.id");
+        DaoService.executeStatement(con, value, parameters);
+        parameters.clear();
     }
 
     private List<Wallet> getWalletFromDb(PreparedStatement ps, List<String> parameters) {
@@ -70,30 +94,5 @@ public class WalletDao {
             closeStatement(ps);
         }
         return wallets;
-    }
-
-    public void insert(Integer id, String account) {
-        parameters.add(id.toString());
-        parameters.add(account);
-        String value = "INSERT INTO WALLET VALUES(?, ?, 'KZT 0.00')";
-        executeStatement(con, value, parameters);
-        parameters.clear();
-    }
-
-    public byte updateBalance(String id, String money) {
-        String value = "UPDATE WALLET SET MONEY = ? WHERE ID = ?";
-        if (Double.parseDouble(money) < 0) return 4;
-        parameters.add("KZT " + money);
-        parameters.add(id);
-        byte result = executeStatement(con, value, parameters);
-        parameters.clear();
-        return result;
-    }
-
-    public void deleteById(String id) {
-        parameters.add(id);
-        String value = "DELETE FROM WALLET WHERE ID = ?";
-        DaoService.executeStatement(con, value, parameters);
-        parameters.clear();
     }
 }

@@ -1,5 +1,6 @@
-package com.epam.anuar.gorkomtrans.dao;
+package com.epam.anuar.gorkomtrans.service;
 
+import com.epam.anuar.gorkomtrans.dao.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +13,7 @@ import java.util.List;
 public class DaoService {
     private static Logger log = LoggerFactory.getLogger(DaoService.class.getName());
 
-    protected static PreparedStatement getStatement(Connection con, String value, List<String> parameters) {
+    public static PreparedStatement getStatement(Connection con, String value, List<String> parameters) {
         PreparedStatement ps;
         try {
             ps = con.prepareStatement(value);
@@ -27,7 +28,7 @@ public class DaoService {
         return ps;
     }
 
-    protected static byte executeStatement(Connection con, String value, List<String> parameters) {
+    public static byte executeStatement(Connection con, String value, List<String> parameters) {
         PreparedStatement ps = null;
         byte isExecuted = 4;
         try {
@@ -46,7 +47,7 @@ public class DaoService {
         return isExecuted;
     }
 
-    protected static int calculateRowNumber(String value, Connection con) {
+    public static int calculateRowNumber(String value, Connection con) {
         PreparedStatement ps = null;
         ResultSet rs = null;
         int noOfRecords = 0;
@@ -64,7 +65,7 @@ public class DaoService {
         return noOfRecords;
     }
 
-    protected static void closeStatement(PreparedStatement ps) {
+    public static void closeStatement(PreparedStatement ps) {
         try {
             if (ps != null) ps.close();
         } catch (SQLException e) {
@@ -73,7 +74,7 @@ public class DaoService {
         }
     }
 
-    protected static void closeResultSet(ResultSet rs) {
+    public static void closeResultSet(ResultSet rs) {
         try {
             if (rs != null) rs.close();
         } catch (SQLException e1) {

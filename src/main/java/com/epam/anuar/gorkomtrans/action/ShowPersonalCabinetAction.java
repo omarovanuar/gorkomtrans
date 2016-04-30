@@ -7,6 +7,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.epam.anuar.gorkomtrans.service.ActionService.showPersonalCabinet;
+import static com.epam.anuar.gorkomtrans.service.UserService.getRegisterParameterNames;
+
 public class ShowPersonalCabinetAction implements Action {
     @Override
     public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) {
@@ -23,7 +26,7 @@ public class ShowPersonalCabinetAction implements Action {
         for (int i = 0; i < userParamList.size(); i++) {
             violations.add(i, "");
         }
-        List<String> userParamName = ActionService.getRegisterParameterNames(req);
+        List<String> userParamName = getRegisterParameterNames(req);
         userParamName.remove(0);
         List<String> values = new ArrayList<>();
         User user = (User) req.getSession(false).getAttribute("user");
@@ -36,6 +39,6 @@ public class ShowPersonalCabinetAction implements Action {
         values.add(user.getBankName());
         values.add(user.getBankAccount());
 
-        return ActionService.showPersonalCabinet(req, userParamList, userParamName, violations, values);
+        return showPersonalCabinet(req, userParamList, userParamName, violations, values);
     }
 }

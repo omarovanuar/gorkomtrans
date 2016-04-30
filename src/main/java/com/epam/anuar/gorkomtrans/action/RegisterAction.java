@@ -2,12 +2,10 @@ package com.epam.anuar.gorkomtrans.action;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
-import static com.epam.anuar.gorkomtrans.action.ActionService.registerUser;
+import static com.epam.anuar.gorkomtrans.service.UserService.registerUser;
 
 public class RegisterAction implements Action {
     @Override

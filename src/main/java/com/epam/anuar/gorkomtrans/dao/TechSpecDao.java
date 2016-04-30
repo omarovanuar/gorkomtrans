@@ -2,16 +2,15 @@ package com.epam.anuar.gorkomtrans.dao;
 
 import com.epam.anuar.gorkomtrans.entity.GarbageContainerType;
 import com.epam.anuar.gorkomtrans.entity.GarbageTechSpecification;
+import com.epam.anuar.gorkomtrans.service.DaoService;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TechSpecDao {
     private Connection con;
     private List<String> parameters = new ArrayList<>();
+    private ResourceBundle rb = ResourceBundle.getBundle("sql");
 
 
     public TechSpecDao(Connection con) {
@@ -30,21 +29,13 @@ public class TechSpecDao {
         addContainer(techSpec, parameters, "NON_STANDARD4", 0);
         addContainer(techSpec, parameters, "NON_STANDARD4", 1);
         parameters.add(techSpec.getRemovePerMonth().toString());
-        String value = "INSERT INTO TECHSPEC VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String value = rb.getString("insert.techspec");
         DaoService.executeStatement(con, value, parameters);
         parameters.clear();
     }
 
-    private void addContainer(GarbageTechSpecification techSpec, List<String> parameters, String container, Integer numberOrCapacity) {
-        if (techSpec.getGarbageContainerParameters().get(container).get(numberOrCapacity) != null) {
-            parameters.add(techSpec.getGarbageContainerParameters().get(container).get(numberOrCapacity));
-        } else {
-            parameters.add("0");
-        }
-    }
-
     public GarbageTechSpecification findById(Integer id) {
-        String value = "SELECT * FROM TECHSPEC WHERE ID = ?";
+        String value = rb.getString("find-techspec.id");
         parameters.add(id.toString());
         PreparedStatement ps = DaoService.getStatement(con, value, parameters);
         parameters.clear();
@@ -56,6 +47,12 @@ public class TechSpecDao {
         }
     }
 
+    public void deleteById(String id) {
+        parameters.add(id);
+        String value = rb.getString("delete-techspec.id");
+        DaoService.executeStatement(con, value, parameters);
+        parameters.clear();
+    }
 
     private List<GarbageTechSpecification> getTechSpecFromDb(PreparedStatement ps, List<String> parameters) {
         List<GarbageTechSpecification> techSpecs = new ArrayList<>();
@@ -116,10 +113,11 @@ public class TechSpecDao {
         return garbageContainerParameters;
     }
 
-    public void deleteById(String id) {
-        parameters.add(id);
-        String value = "DELETE FROM TECHSPEC WHERE ID = ?";
-        DaoService.executeStatement(con, value, parameters);
-        parameters.clear();
+    private void addContainer(GarbageTechSpecification techSpec, List<String> parameters, String container, Integer numberOrCapacity) {
+        if (techSpec.getGarbageContainerParameters().get(container).get(numberOrCapacity) != null) {
+            parameters.add(techSpec.getGarbageContainerParameters().get(container).get(numberOrCapacity));
+        } else {
+            parameters.add("0");
+        }
     }
 }
