@@ -21,10 +21,12 @@
                     <fmt:message key="services.tech-spec-text" bundle="${rb}"/>
                 </p>
                 <li>
-                    <input id="euro-type" type="checkbox" name="euro-type" value="1"><fmt:message key="services.euro" bundle="${rb}"/>
+                    <input id="euro-type" type="checkbox" name="euro-type" value="1"><fmt:message key="services.euro"
+                                                                                                  bundle="${rb}"/>
                 </li>
                 <li>
-                    <input id="standard-type" type="checkbox" name="standard-type" value="1"><fmt:message key="services.standard" bundle="${rb}"/>
+                    <input id="standard-type" type="checkbox" name="standard-type" value="1"><fmt:message
+                        key="services.standard" bundle="${rb}"/>
                 </li>
                 <li>
                     <fmt:message key="services.non-standard" bundle="${rb}"/>

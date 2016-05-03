@@ -28,15 +28,23 @@
                         <th align="left"><fmt:message key="user.role" bundle="${rb}"/>:</th>
                         <td>
                             <select id="role-select" name="role-select">
-                                <option <c:if test="${userParam.role.roleCode eq 0}">selected</c:if> value="0">REGISTERED USER</option>
-                                <option <c:if test="${userParam.role.roleCode eq 1}">selected</c:if> value="1">MODERATOR</option>
-                                <option <c:if test="${userParam.role.roleCode eq 2}">selected</c:if> value="2">ADMIN</option>
+                                <option
+                                        <c:if test="${userParam.role.roleCode eq 0}">selected</c:if> value="0">
+                                    REGISTERED USER
+                                </option>
+                                <option
+                                        <c:if test="${userParam.role.roleCode eq 1}">selected</c:if> value="1">MODERATOR
+                                </option>
+                                <option
+                                        <c:if test="${userParam.role.roleCode eq 2}">selected</c:if> value="2">ADMIN
+                                </option>
                             </select>
                         </td>
                     </tr>
                     <tr>
                         <th align="left"><fmt:message key="personal.balance" bundle="${rb}"/>:</th>
-                        <td><input id="balance" type="text" name="balance" value="${userParam.wallet.money.amount.toString()}"/></td>
+                        <td><input id="balance" type="text" name="balance"
+                                   value="${userParam.wallet.money.amount.toString()}"/></td>
                     </tr>
                 </table>
                 <input type="submit" value="<fmt:message key="personal.button" bundle="${rb}"/>">

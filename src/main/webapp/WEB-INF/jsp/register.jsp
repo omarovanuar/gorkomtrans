@@ -29,7 +29,8 @@
                     <li>
                         <input type="submit" value="<fmt:message key="register.button" bundle="${rb}"/>">
                     </li>
-                    <p><a href="<c:url value="/do/welcome"/>"><fmt:message key="register.login-page" bundle="${rb}"/></a></p>
+                    <p><a href="<c:url value="/do/welcome"/>"><fmt:message key="register.login-page"
+                                                                           bundle="${rb}"/></a></p>
                 </ul>
             </form>
         </section>

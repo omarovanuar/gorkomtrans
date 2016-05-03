@@ -14,10 +14,12 @@
                 <ul>
                     <p><fmt:message key="login.main-text" bundle="${rb}"/>:</p>
                     <li><fmt:message key="login.login" bundle="${rb}"/>:
-                        <input id="login" type="text" name="login" placeholder="<fmt:message key="login.login" bundle="${rb}"/>"/>
+                        <input id="login" type="text" name="login"
+                               placeholder="<fmt:message key="login.login" bundle="${rb}"/>"/>
                     </li>
                     <li><fmt:message key="login.password" bundle="${rb}"/>:
-                        <input id="password" type="password" name="password" placeholder="<fmt:message key="login.password" bundle="${rb}"/>"/>
+                        <input id="password" type="password" name="password"
+                               placeholder="<fmt:message key="login.password" bundle="${rb}"/>"/>
                     </li>
                     <li>
                         <input type="submit" value="<fmt:message key="login.button" bundle="${rb}"/>">

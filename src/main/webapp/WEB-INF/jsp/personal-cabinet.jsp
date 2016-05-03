@@ -22,7 +22,8 @@
                     <c:forEach items="${userParamList}" var="userParam" varStatus="i">
                         <tr>
                             <td>${userParamName.get(i.index)}</td>
-                                <td><input id="${userParam}" type="text" name="${userParam}" value="${values.get(i.index)}"/></td>
+                            <td><input id="${userParam}" type="text" name="${userParam}"
+                                       value="${values.get(i.index)}"/></td>
                             <td>${violations.get(i.index)}</td>
                         </tr>
                     </c:forEach>
@@ -30,7 +31,8 @@
                         <th align="left"><fmt:message key="personal.balance" bundle="${rb}"/>:</th>
                     </tr>
                     <tr>
-                        <td><input disabled id="balance" type="text" name="balance" value="${user.wallet.money.toString()}"/></td>
+                        <td><input disabled id="balance" type="text" name="balance"
+                                   value="${user.wallet.money.toString()}"/></td>
                     </tr>
                 </table>
                 <input type="submit" value="<fmt:message key="personal.button" bundle="${rb}"/>">

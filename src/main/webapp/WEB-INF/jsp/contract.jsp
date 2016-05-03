@@ -13,18 +13,18 @@
     <h2 align="center"><fmt:message key="contract.contract" bundle="${rb}"/> ¹${contract.id}</h2>
     <div class="main-text">
         <p>${contract.user.fullName}, <fmt:message key="contract.text1" bundle="${rb}"/>
-         ${provider.organizationName}, <fmt:message key="contract.text2" bundle="${rb}"/>.</p>
-        <p> <fmt:message key="contract.text3" bundle="${rb}"/></p>
+                ${provider.organizationName}, <fmt:message key="contract.text2" bundle="${rb}"/>.</p>
+        <p><fmt:message key="contract.text3" bundle="${rb}"/></p>
         <p> 1. <fmt:message key="contract.text4" bundle="${rb}"/></p>
         <p> 2. <fmt:message key="contract.text5" bundle="${rb}"/></p>
         <p> 3. <fmt:message key="contract.text6" bundle="${rb}"/></p>
         <p> 4. <fmt:message key="contract.text7" bundle="${rb}"/></p>
-        <p> <fmt:message key="contract.text8" bundle="${rb}"/></p>
+        <p><fmt:message key="contract.text8" bundle="${rb}"/></p>
         <p> - <fmt:message key="contract.text9" bundle="${rb}"/></p>
-        <p> <fmt:message key="contract.text10" bundle="${rb}"/></p>
+        <p><fmt:message key="contract.text10" bundle="${rb}"/></p>
         <p> - <fmt:message key="contract.text11" bundle="${rb}"/></p>
-        <p> <fmt:message key="contract.text12" bundle="${rb}"/></p>
-        <p> <fmt:message key="contract.text13" bundle="${rb}"/></p>
+        <p><fmt:message key="contract.text12" bundle="${rb}"/></p>
+        <p><fmt:message key="contract.text13" bundle="${rb}"/></p>
     </div>
     <div class="contract-details">
         <div class="customer-req">

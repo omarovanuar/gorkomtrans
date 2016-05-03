@@ -56,7 +56,8 @@
             </c:forEach>
         </table>
         <c:if test="${currentPage != 1}">
-            <div id="next"><a href="${pageContext.request.contextPath}/do/admin-cabinet?page=${currentPage - 1}">Previous</a></div>
+            <div id="next"><a href="${pageContext.request.contextPath}/do/admin-cabinet?page=${currentPage - 1}">Previous</a>
+            </div>
         </c:if>
         <div>
             <table id="contract-pagination" border="1" cellpadding="5" cellspacing="5">
@@ -68,7 +69,8 @@
                                 <td>${i}</td>
                             </c:when>
                             <c:otherwise>
-                                <td><a href="${pageContext.request.contextPath}/do/admin-cabinet?page=${i}">${i}</a></td>
+                                <td><a href="${pageContext.request.contextPath}/do/admin-cabinet?page=${i}">${i}</a>
+                                </td>
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>
@@ -76,7 +78,8 @@
             </table>
         </div>
         <c:if test="${currentPage lt noOfPages}">
-            <div id="prev"><a href="${pageContext.request.contextPath}/do/admin-cabinet?page=${currentPage + 1}">Next</a>
+            <div id="prev"><a
+                    href="${pageContext.request.contextPath}/do/admin-cabinet?page=${currentPage + 1}">Next</a>
             </div>
         </c:if>
     </div>
