@@ -1,6 +1,7 @@
 package com.epam.anuar.gorkomtrans.dao;
 
 import com.epam.anuar.gorkomtrans.entity.Contract;
+import com.epam.anuar.gorkomtrans.entity.GarbageTechSpecification;
 import com.epam.anuar.gorkomtrans.entity.Status;
 import com.epam.anuar.gorkomtrans.service.DaoService;
 import org.joda.money.Money;
@@ -45,6 +46,54 @@ public class ContractDao {
         } else {
             return null;
         }
+    }
+
+    public List<Contract> searchByAddress(List<GarbageTechSpecification> techSpecs, String userId, Integer offset, Integer noOfRecords) {
+        String value = "SELECT * FROM CONTRACT TABLE WHERE USERID = ? AND (";
+        parameters.add(userId);
+        for (int i = 0; i < techSpecs.size(); i++) {
+            String techSpecId = techSpecs.get(i).getId().toString();
+            value += "TECHSPECID = ?";
+            if (i != techSpecs.size() - 1) value += " OR ";
+            else value += ')';
+            parameters.add(techSpecId);
+        }
+        value += "LIMIT ?, ?";
+        parameters.add(offset.toString());
+        parameters.add(noOfRecords.toString());
+        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        List<Contract> contracts = getContractFromDb(ps, parameters);
+        parameters.clear();
+        return contracts;
+    }
+
+    public List<Contract> searchByAddress(List<GarbageTechSpecification> techSpecs, Integer offset, Integer noOfRecords) {
+        String value = "SELECT * FROM CONTRACT TABLE WHERE ";
+        for (int i = 0; i < techSpecs.size(); i++) {
+            String techSpecId = techSpecs.get(i).getId().toString();
+            value += "TECHSPECID = ?";
+            if (i != techSpecs.size() - 1) value += " OR ";
+            parameters.add(techSpecId);
+        }
+        value += "LIMIT ?, ?";
+        parameters.add(offset.toString());
+        parameters.add(noOfRecords.toString());
+        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        List<Contract> contracts = getContractFromDb(ps, parameters);
+        parameters.clear();
+        return contracts;
+    }
+
+    public List<Contract> searchByStatus(String id, String status, Integer offset, Integer noOfRecords) {
+        String value = "SELECT * FROM CONTRACT TABLE WHERE ID = ?, STATUS LIKE ? LIMIT ?, ?";
+        parameters.add(id);
+        parameters.add(status);
+        parameters.add(offset.toString());
+        parameters.add(noOfRecords.toString());
+        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        List<Contract> contracts = getContractFromDb(ps, parameters);
+        parameters.clear();
+        return contracts;
     }
 
     public List<Contract> findByUserId(Integer id) {
@@ -144,9 +193,16 @@ public class ContractDao {
         parameters.clear();
     }
 
+    public void deleteById(String id) {
+        parameters.add(id);
+        String value = rb.getString("delete-contract.id");
+        DaoService.executeStatement(con, value, parameters);
+        parameters.clear();
+    }
+
     public void deleteByUserId(String id) {
         parameters.add(id);
-        String value = "DELETE FROM CONTRACT WHERE USERID = ?";
+        String value = rb.getString("delete-contract.user-id");
         DaoService.executeStatement(con, value, parameters);
         parameters.clear();
     }

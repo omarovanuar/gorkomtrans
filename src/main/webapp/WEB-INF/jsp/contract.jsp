@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=windows-1251" language="java" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <fmt:setBundle basename="other-text" var="rb"/>
 <%--@elvariable id="contract" type="com.epam.anuar.gorkomtrans.entity.Contract"--%>
@@ -10,7 +10,7 @@
 <%--@elvariable id="locale" type="java.lang.String"--%>
 
 <t:authorizedpage>
-    <h2 align="center"><fmt:message key="contract.contract" bundle="${rb}"/> â„–${contract.id}</h2>
+    <h2 align="center"><fmt:message key="contract.contract" bundle="${rb}"/> ¹${contract.id}</h2>
     <div class="main-text">
         <p>${contract.user.fullName}, <fmt:message key="contract.text1" bundle="${rb}"/>
          ${provider.organizationName}, <fmt:message key="contract.text2" bundle="${rb}"/>.</p>

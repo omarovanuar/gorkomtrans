@@ -1,10 +1,15 @@
 package com.epam.anuar.gorkomtrans.service;
 
+import com.epam.anuar.gorkomtrans.entity.Contract;
 import com.epam.anuar.gorkomtrans.entity.GarbageContainerType;
+import com.epam.anuar.gorkomtrans.entity.User;
 
 import java.util.*;
 
 public class Service {
+
+    public static final Comparator<User> USER_ID_COMPARATOR = (o1, o2) -> o1.getId().compareTo(o2.getId());
+    public static final Comparator<Contract> CONTRACT_ID_COMPARATOR = (o1, o2) -> o1.getId().compareTo(o2.getId());
 
     public static Map<String, List<String>> createGarbageContainerParameters(String euroNumber, String standardNumber, List<String> parameters) {
         Map<String, List<String>> techSpecParameters = new HashMap<>();

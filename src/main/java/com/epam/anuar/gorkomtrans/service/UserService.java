@@ -9,6 +9,8 @@ import com.epam.anuar.gorkomtrans.util.Validator;
 import com.epam.anuar.gorkomtrans.util.Violation;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.*;
 
 import static com.epam.anuar.gorkomtrans.util.IdGenerator.generateID;
@@ -107,6 +109,7 @@ public class UserService {
         int noOfRecords = userDao.allRowsNumber();
         int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
         if (noOfPages == 0) noOfPages = 1;
+        Collections.sort(users, Service.USER_ID_COMPARATOR);
         req.setAttribute("allUsers", users);
         req.setAttribute("noOfPages", noOfPages);
         req.setAttribute("currentPage", page);
@@ -127,6 +130,16 @@ public class UserService {
         Validator.checkAdmin(req);
         UserDao userDao = dao.getUserDao();
         User user = userDao.findById(Integer.parseInt(id));
+        if (Validator.validateDouble(balance, req) != null) {
+            req.setAttribute("updateUserParamError", "Invalid balance");
+            req.setAttribute("userParam", userDao.findById(Integer.parseInt(id)));
+            dao.close();
+            return new ActionResult("user-view");
+        }
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator('.');
+        DecimalFormat df = new DecimalFormat("###.##", symbols);
+        balance = df.format(Double.parseDouble(balance));
         switch (userDao.updatePassEmailRole(id, password, email, role)) {
             case 0:
                 WalletDao walletDao = dao.getWalletDao();
@@ -210,5 +223,28 @@ public class UserService {
             userParamName.add("BankAccount");
         }
         return userParamName;
+    }
+
+    public static ActionResult searchByLogin(String loginPart, Integer page, Integer recordsPerPage, HttpServletRequest req) {
+        Validator.checkAdmin(req);
+        UserDao userDao = dao.getUserDao();
+        List<User> users = userDao.searchByLogin(loginPart, (page - 1) * recordsPerPage, recordsPerPage);
+        if (users.size() == 0) {
+            req.setAttribute("noOfPages", 1);
+            req.setAttribute("currentPage", 1);
+            req.setAttribute("searchValue", loginPart);
+            dao.close();
+            return new ActionResult("admin-cabinet");
+        }
+        int noOfRecords = users.size();
+        int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
+        if (noOfPages == 0) noOfPages = 1;
+        Collections.sort(users, Service.USER_ID_COMPARATOR);
+        req.setAttribute("allUsers", users);
+        req.setAttribute("noOfPages", noOfPages);
+        req.setAttribute("currentPage", page);
+        req.setAttribute("searchValue", loginPart);
+        dao.close();
+        return new ActionResult("admin-cabinet");
     }
 }

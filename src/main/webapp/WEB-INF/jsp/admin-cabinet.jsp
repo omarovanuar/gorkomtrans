@@ -1,14 +1,23 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=windows-1251" language="java" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <fmt:setBundle basename="other-text" var="rb"/>
 <%--@elvariable id="allUsers" type="java.util.List"--%>
 <%--@elvariable id="item" type="com.epam.anuar.gorkomtrans.entity.User"--%>
 <%--@elvariable id="noOfPages" type="java.lang.Integer"--%>
 <%--@elvariable id="currentPage" type="java.lang.Integer"--%>
+<%--@elvariable id="searchValue" type="java.lang.String"--%>
 
 <t:authorizedpage>
+    <div>
+        <form action="<c:url value="/do/login-search"/>" method="post">
+            <fmt:message key="user.login" bundle="${rb}"/>:
+            <input id="login-search" type="text" name="login-search"
+                   placeholder="<fmt:message key="user.login" bundle="${rb}"/>" value="${searchValue}">
+            <input type="submit" value="<fmt:message key="action.search" bundle="${rb}"/>">
+        </form>
+    </div>
     <div class="contract-list">
         <table>
             <tr>

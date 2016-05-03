@@ -236,6 +236,24 @@ input[type=submit] {
     font-size: 14pt;
 }
 
+input[disabled][type=submit] {
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    background: gainsboro; /* Old browsers */
+    background: -moz-linear-gradient(top,  gainsboro 0%, gray 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,gainsboro), color-stop(100%,gray)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  gainsboro 0%,gray 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  gainsboro 0%,gray 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  gainsboro 0%,gray 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  gainsboro 0%,gray 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#64c8ef', endColorstr='#00a2e2',GradientType=0 ); /* IE6-9 */
+    color: #fff;
+    border-radius: 3px;
+    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3);
+    font-size: 14pt;
+    padding: 0;
+    margin: 0;
+}
+
 .service li {
     list-style-type: none;
 }

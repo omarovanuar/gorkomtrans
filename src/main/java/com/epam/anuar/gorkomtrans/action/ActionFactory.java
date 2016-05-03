@@ -39,8 +39,13 @@ public class ActionFactory {
         actions.put(rb.getString("showUserView"), new UserViewAction());
         actions.put(rb.getString("doChangeUserView"), new ChangeUserViewAction());
         actions.put(rb.getString("doDeleteUser"), new DeleteUserAction());
+        actions.put(rb.getString("doDeleteContract"), new DeleteContractAction());
+        actions.put(rb.getString("doDeleteUserContract"), new DeleteUserContractAction());
         actions.put(rb.getString("doSetRu"), new SetRuLanguage());
         actions.put(rb.getString("doSetEn"), new SetEnLanguage());
+        actions.put(rb.getString("doAddressSearch"), new SearchAddressAction());
+        actions.put(rb.getString("doAllAddressSearch"), new SearchAllAddressAction());
+        actions.put(rb.getString("doSearchLogin"), new SearchLoginAction());
     }
 
     public Action getAction(String actionName) {

@@ -15,10 +15,6 @@ public class ChangeUserViewAction implements Action {
         String email = req.getParameter("email");
         String role = req.getParameter("role-select");
         String balance = req.getParameter("balance");
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-        symbols.setDecimalSeparator('.');
-        DecimalFormat df = new DecimalFormat("###.##", symbols);
-        balance = df.format(Double.parseDouble(balance));
         return  changeUserView(id, password, email, role, balance, req);
     }
 }

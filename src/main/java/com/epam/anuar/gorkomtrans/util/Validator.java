@@ -190,6 +190,16 @@ public class Validator {
         return null;
     }
 
+    public static Violation validateDouble(String validatingString, HttpServletRequest req) {
+        bundle = ResourceBundle.getBundle("error", Locale.forLanguageTag(req.getSession(false).getAttribute("locale").toString()));
+        if (validatingString.isEmpty()) {
+            return new Violation(validatingString + " " + bundle.getString("empty.all"), 0);
+        } else if (!DOUBLE_VALUE.matcher(validatingString).matches()) {
+            return new Violation(validatingString + " " + bundle.getString("not.double"), 0);
+        }
+        return null;
+    }
+
     private static Violation validatePhoneNumber(Map<String, String> parameters, Integer violationNumber) {
         if (parameters.get("PhoneNumber").isEmpty()) {
             return new Violation(bundle.getString("empty.phone"), violationNumber);

@@ -47,6 +47,15 @@ public class TechSpecDao {
         }
     }
 
+    public List<GarbageTechSpecification> searchByAddress(String addressPart) {
+        String value = "SELECT * FROM TECHSPEC TABLE WHERE ADDRESS LIKE ?";
+        parameters.add(addressPart + '%');
+        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        List<GarbageTechSpecification> techSpecs = getTechSpecFromDb(ps, parameters);
+        parameters.clear();
+        return techSpecs;
+    }
+
     public void deleteById(String id) {
         parameters.add(id);
         String value = rb.getString("delete-techspec.id");

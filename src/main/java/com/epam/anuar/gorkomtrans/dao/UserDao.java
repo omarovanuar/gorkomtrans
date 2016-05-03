@@ -196,4 +196,14 @@ public class UserDao {
     }
 
 
+    public List<User> searchByLogin(String loginPart, Integer offset, Integer noOfRecords) {
+        String value = "SELECT * FROM USER TABLE WHERE LOGIN LIKE ? LIMIT ?, ?";
+        parameters.add(loginPart + '%');
+        parameters.add(offset.toString());
+        parameters.add(noOfRecords.toString());
+        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        List<User> users = getUserFromDb(ps, parameters);
+        parameters.clear();
+        return users;
+    }
 }
