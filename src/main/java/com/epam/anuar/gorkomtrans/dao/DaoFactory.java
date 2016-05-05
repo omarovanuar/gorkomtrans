@@ -1,6 +1,6 @@
 package com.epam.anuar.gorkomtrans.dao;
 
-import com.epam.anuar.gorkomtrans.db.ConnectionPool;
+import com.epam.anuar.gorkomtrans.connection.ConnectionPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +31,7 @@ public class DaoFactory {
     }
 
     public void close() {
+        checkConnection();
         pool.releaseConnection(this.con);
         this.con = null;
     }
@@ -53,11 +54,6 @@ public class DaoFactory {
     public WalletDao getWalletDao() {
         checkConnection();
         return new WalletDao(this.con);
-    }
-
-    public ContractPayTransaction getContractPayTransaction() {
-        checkConnection();
-        return new ContractPayTransaction(this.con);
     }
 
     private void checkConnection() {

@@ -12,11 +12,6 @@ public class ErrorHandler extends HttpServlet {
         Throwable throwable = (Throwable) req.getAttribute("javax.servlet.error.exception");
         String message = throwable.getMessage();
         Integer statusCode = (Integer) req.getAttribute("javax.servlet.error.status_code");
-        if (message.equals("Please, login")) {
-            statusCode = 401;
-        } else if (message.equals("You have not admin or moderator role") || message.equals("You have not admin role")) {
-            statusCode = 406;
-        }
         String servletName = (String) req.getAttribute("javax.servlet.error.servlet_name");
         if (servletName == null) {
             servletName = "Unknown";
@@ -33,6 +28,5 @@ public class ErrorHandler extends HttpServlet {
 
         String path = "/WEB-INF/jsp/error-page.jsp";
         req.getRequestDispatcher(path).forward(req, resp);
-
     }
 }

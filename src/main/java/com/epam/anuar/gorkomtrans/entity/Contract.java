@@ -9,6 +9,8 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
 public class Contract extends BaseEntity {
+    private static Logger log = LoggerFactory.getLogger(Contract.class.getName());
+
     private User user;
     private GarbageTechSpecification gts;
     private Double contractTotalCapacity;
@@ -16,8 +18,6 @@ public class Contract extends BaseEntity {
     private Integer providingMonthNumber;
     private DateTime signDate;
     private Status status;
-
-    private static Logger log = LoggerFactory.getLogger(Contract.class.getName());
 
     public Contract() {
     }

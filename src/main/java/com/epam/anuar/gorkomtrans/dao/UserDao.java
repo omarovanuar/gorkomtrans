@@ -1,20 +1,39 @@
 package com.epam.anuar.gorkomtrans.dao;
 
 import com.epam.anuar.gorkomtrans.entity.User;
-import com.epam.anuar.gorkomtrans.service.DaoService;
 
 import java.sql.*;
 import java.util.*;
 
-import static com.epam.anuar.gorkomtrans.service.DaoService.*;
+import static com.epam.anuar.gorkomtrans.dao.DaoControl.*;
 
 public class UserDao {
     private Connection con;
     private List<String> parameters = new ArrayList<>();
     private ResourceBundle rb = ResourceBundle.getBundle("sql");
+    public static final Integer ID_QUANTITY_USERDAO = 10000;
+    public static final Integer ID_SHIFT_USERDAO = 0;
 
     public UserDao(Connection con) {
         this.con = con;
+    }
+
+    public byte insertUser(User user) {
+        this.parameters.add(user.getId().toString());
+        this.parameters.add(user.getLogin());
+        this.parameters.add(user.getPassword());
+        this.parameters.add(user.getEmail());
+        this.parameters.add(user.getFirstName());
+        this.parameters.add(user.getLastName());
+        this.parameters.add(user.getPhoneNumber());
+        this.parameters.add(user.getMainAddress());
+        this.parameters.add(user.getBankName());
+        this.parameters.add(user.getBankAccount());
+        this.parameters.add(user.getWallet().getId().toString());
+        String value = rb.getString("insert-user.parameters");
+        byte result = executeStatement(con, value, this.parameters);
+        this.parameters.clear();
+        return result;
     }
 
     public byte insertByParameters(Map<String, String> parameters) {
@@ -92,7 +111,7 @@ public class UserDao {
         String value = rb.getString("find-user.all");
         parameters.add(offset.toString());
         parameters.add(noOfRecords.toString());
-        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        PreparedStatement ps = DaoControl.getStatement(con, value, parameters);
         parameters.clear();
         return getUserFromDb(ps, parameters);
     }
@@ -186,22 +205,22 @@ public class UserDao {
     public void deleteById(String id) {
         parameters.add(id);
         String value = rb.getString("delete-user.id");
-        DaoService.executeStatement(con, value, parameters);
+        DaoControl.executeStatement(con, value, parameters);
         parameters.clear();
     }
 
     public int allRowsNumber() {
         String value = rb.getString("row-user.all");
-        return DaoService.calculateRowNumber(value, con);
+        return DaoControl.calculateRowNumber(value, con);
     }
 
 
     public List<User> searchByLogin(String loginPart, Integer offset, Integer noOfRecords) {
-        String value = "SELECT * FROM USER TABLE WHERE LOGIN LIKE ? LIMIT ?, ?";
+        String value = rb.getString("search-user.login");
         parameters.add(loginPart + '%');
         parameters.add(offset.toString());
         parameters.add(noOfRecords.toString());
-        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        PreparedStatement ps = DaoControl.getStatement(con, value, parameters);
         List<User> users = getUserFromDb(ps, parameters);
         parameters.clear();
         return users;

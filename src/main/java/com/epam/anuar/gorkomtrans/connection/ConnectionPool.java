@@ -1,4 +1,4 @@
-package com.epam.anuar.gorkomtrans.db;
+package com.epam.anuar.gorkomtrans.connection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

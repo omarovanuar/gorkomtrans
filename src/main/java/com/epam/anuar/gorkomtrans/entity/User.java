@@ -17,6 +17,11 @@ public class User extends BaseEntity {
     public User() {
     }
 
+    public User(String login, String password){
+        this.login = login;
+        this.password = password;
+    }
+
     public User(Integer id, String email, String login, String password) {
         super(id);
         this.email = email;
@@ -24,7 +29,20 @@ public class User extends BaseEntity {
         this.password = password;
     }
 
-    public User(Integer id, String email, String login, String password, String firstName, String lastName, String phoneNumber,
+    public User(Integer id, String password, String email, String firstName, String lastName, String phoneNumber,
+                String mainAddress, String bankName, String bankAccount) {
+        super(id);
+        this.email = email;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.mainAddress = mainAddress;
+        this.bankName = bankName;
+        this.bankAccount = bankAccount;
+    }
+
+    public User(Integer id, String login, String password, String email, String firstName, String lastName, String phoneNumber,
                 String mainAddress, String bankName, String bankAccount) {
         super(id);
         this.email = email;

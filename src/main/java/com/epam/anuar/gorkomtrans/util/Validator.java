@@ -67,17 +67,33 @@ public class Validator {
         return returnViolations;
     }
 
+    public static Violation InvalidLoginPass(HttpServletRequest req) {
+        bundle = ResourceBundle.getBundle("error", Locale.forLanguageTag(req.getSession(false).getAttribute("locale").toString()));
+        return new Violation(bundle.getString("invalid.login-pass"));
+    }
+
     public static Set<Violation> validatePersonalCabinet(Map<String, String> parameters, HttpServletRequest req) {
         bundle = ResourceBundle.getBundle("error", Locale.forLanguageTag(req.getSession(false).getAttribute("locale").toString()));
         Set<Violation> returnViolations = new HashSet<>();
         putViolation(validatePassword(parameters, 0));
-        putViolation(validateEmail(parameters, 1, req));
+        putViolation(validatePersonalEmail(parameters, 1, req));
         putViolation(validateIsEmpty(parameters, 2, "FirstName"));
         putViolation(validateIsEmpty(parameters, 3, "LastName"));
         putViolation(validatePhoneNumber(parameters, 4));
         putViolation(validateIsEmpty(parameters, 5, "MainAddress"));
         putViolation(validateIsEmpty(parameters, 6, "Bank"));
         putViolation(validateChangeBankAccount(parameters, 7, req));
+        returnViolations.addAll(violations);
+        violations.clear();
+        return returnViolations;
+    }
+
+    public static Set<Violation> validateUserView(Map<String, String> parameters, HttpServletRequest req) {
+        bundle = ResourceBundle.getBundle("error", Locale.forLanguageTag(req.getSession(false).getAttribute("locale").toString()));
+        Set<Violation> returnViolations = new HashSet<>();
+        putViolation(validatePassword(parameters, 0));
+        putViolation(validateEmail(parameters, 1, req));
+        putViolation(validateDouble(parameters, 2, "balance"));
         returnViolations.addAll(violations);
         violations.clear();
         return returnViolations;
@@ -149,13 +165,29 @@ public class Validator {
         return null;
     }
 
-    private static Violation validateEmail(Map<String, String> parameters, Integer violationNumber, HttpServletRequest req) {
+    private static Violation validatePersonalEmail(Map<String, String> parameters, Integer violationNumber, HttpServletRequest req) {
         DaoFactory dao = DaoFactory.getInstance();
         UserDao userDao = dao.getUserDao();
         if (parameters.get("Email").isEmpty()) {
             return new Violation(bundle.getString("empty.email"), violationNumber);
         } else if (userDao.findByEmail(parameters.get("Email")) != null &&
                 !((User) req.getSession(false).getAttribute("user")).getEmail().equals(parameters.get("Email"))) {
+            dao.close();
+            return new Violation(bundle.getString("exist.email"), violationNumber);
+        } else if (!EMAIL.matcher(parameters.get("Email")).matches()) {
+            return new Violation(bundle.getString("not.email"), violationNumber);
+        }
+        dao.close();
+        return null;
+    }
+
+    private static Violation validateEmail(Map<String, String> parameters, Integer violationNumber, HttpServletRequest req) {
+        DaoFactory dao = DaoFactory.getInstance();
+        UserDao userDao = dao.getUserDao();
+        if (parameters.get("Email").isEmpty()) {
+            return new Violation(bundle.getString("empty.email"), violationNumber);
+        } else if (userDao.findByEmail(parameters.get("Email")) != null &&
+                !(userDao.findById(Integer.parseInt(parameters.get("id")))).getEmail().equals(parameters.get("Email"))) {
             dao.close();
             return new Violation(bundle.getString("exist.email"), violationNumber);
         } else if (!EMAIL.matcher(parameters.get("Email")).matches()) {
@@ -186,16 +218,6 @@ public class Validator {
             return new Violation(validatingString + " " + bundle.getString("empty.all"), violationNumber);
         } else if (!DOUBLE_VALUE.matcher(parameters.get(validatingString)).matches()) {
             return new Violation(validatingString + " " + bundle.getString("not.double"), violationNumber);
-        }
-        return null;
-    }
-
-    public static Violation validateDouble(String validatingString, HttpServletRequest req) {
-        bundle = ResourceBundle.getBundle("error", Locale.forLanguageTag(req.getSession(false).getAttribute("locale").toString()));
-        if (validatingString.isEmpty()) {
-            return new Violation(validatingString + " " + bundle.getString("empty.all"), 0);
-        } else if (!DOUBLE_VALUE.matcher(validatingString).matches()) {
-            return new Violation(validatingString + " " + bundle.getString("not.double"), 0);
         }
         return null;
     }

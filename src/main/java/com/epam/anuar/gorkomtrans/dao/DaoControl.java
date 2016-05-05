@@ -1,6 +1,5 @@
-package com.epam.anuar.gorkomtrans.service;
+package com.epam.anuar.gorkomtrans.dao;
 
-import com.epam.anuar.gorkomtrans.dao.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,8 +9,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class DaoService {
-    private static Logger log = LoggerFactory.getLogger(DaoService.class.getName());
+public class DaoControl {
+    private static Logger log = LoggerFactory.getLogger(DaoControl.class.getName());
 
     public static PreparedStatement getStatement(Connection con, String value, List<String> parameters) {
         PreparedStatement ps;
@@ -59,8 +58,8 @@ public class DaoService {
             log.warn("Statement can't be executed");
             throw new DaoException();
         } finally {
-            DaoService.closeResultSet(rs);
-            DaoService.closeStatement(ps);
+            DaoControl.closeResultSet(rs);
+            DaoControl.closeStatement(ps);
         }
         return noOfRecords;
     }

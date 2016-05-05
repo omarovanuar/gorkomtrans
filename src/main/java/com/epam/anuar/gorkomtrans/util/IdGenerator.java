@@ -4,43 +4,34 @@ import com.epam.anuar.gorkomtrans.dao.ContractDao;
 import com.epam.anuar.gorkomtrans.dao.TechSpecDao;
 import com.epam.anuar.gorkomtrans.dao.UserDao;
 import com.epam.anuar.gorkomtrans.dao.WalletDao;
+import com.epam.anuar.gorkomtrans.entity.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.Arrays;
 import java.util.Random;
 
 public class IdGenerator {
+    private static Logger log = LoggerFactory.getLogger(ContractDao.class.getName());
 
-    public static Integer generateID(UserDao userDao) {
+    public static Integer generateID(Object object) {
         Random random = new Random();
-        Integer id = random.nextInt(10000);
-        if (userDao.findById(id) != null) {
-            id = generateID(userDao);
-        }
-        return id;
-    }
-
-    public static Integer generateID(TechSpecDao techSpecDao) {
-        Random random = new Random();
-        Integer id = random.nextInt(45000) + 10000;
-        if (techSpecDao.findById(id) != null) {
-            id = generateID(techSpecDao);
-        }
-        return id;
-    }
-
-    public static Integer generateID(ContractDao contractDao) {
-        Random random = new Random();
-        Integer id = random.nextInt(45000) + 55000;
-        if (contractDao.findById(id) != null) {
-            id = generateID(contractDao);
-        }
-        return id;
-    }
-
-    public static Integer generateID(WalletDao walletDao) {
-        Random random = new Random();
-        Integer id = random.nextInt(20000) + 100000;
-        if (walletDao.findById(id) != null) {
-            id = generateID(walletDao);
+        Integer id;
+        Class[] args = new Class[]{Integer.class};
+        try {
+            String objName = object.getClass().getSimpleName().toUpperCase();
+            id = random.nextInt((Integer) (object.getClass().getField("ID_QUANTITY_" + objName).get(object))) +
+                    (Integer) (object.getClass().getField("ID_SHIFT_" + objName).get(object));
+            if (object.getClass().getMethod("findById", args).invoke(object, id) != null) {
+                id = generateID(object);
+            }
+        } catch (NoSuchFieldException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            log.warn("Can't generate id " + e);
+            throw new RuntimeException();
         }
         return id;
     }

@@ -4,6 +4,10 @@ public class Violation {
     private String violation;
     private Integer fieldNumber;
 
+    public Violation(String violation) {
+        this.violation = violation;
+    }
+
     public Violation(String violation, Integer fieldNumber) {
         this.violation = violation;
         this.fieldNumber = fieldNumber;

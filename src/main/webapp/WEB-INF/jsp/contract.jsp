@@ -107,16 +107,20 @@
                     ${contract.status.toString()}
                 </c:otherwise>
             </c:choose></span>
-            <c:if test="${status == 0}">
-                <form action="<c:url value="/do/submitted-contract"/>" method="post">
-                    <input id="submit" type="submit" value="<fmt:message key="contract.button1" bundle="${rb}"/>">
-                </form>
+            <c:if test="${status == 0 && user.roleByCode != 1}">
+                <div id="submit-contract">
+                    <form action="<c:url value="/do/submitted-contract"/>" method="post">
+                        <input id="submit" type="submit" value="<fmt:message key="contract.button1" bundle="${rb}"/>">
+                    </form>
+                </div>
             </c:if>
             <c:if test="${status == 1 && user.roleByCode >= 1}">
-                <div id="ag-de-contract">
+                <div id="agree-contract">
                     <form action="<c:url value="/do/agree-contract"/>" method="post">
                         <input id="agree" type="submit" value="<fmt:message key="contract.button2" bundle="${rb}"/>">
                     </form>
+                </div>
+                <div id="deny-contract">
                     <form action="<c:url value="/do/deny-contract"/>" method="post">
                         <input id="deny" type="submit" value="<fmt:message key="contract.button3" bundle="${rb}"/>">
                     </form>

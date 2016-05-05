@@ -1,6 +1,6 @@
-package com.epam.anuar.gorkomtrans;
+package com.epam.anuar.gorkomtrans.listener;
 
-import com.epam.anuar.gorkomtrans.db.ConnectionPool;
+import com.epam.anuar.gorkomtrans.connection.ConnectionPool;
 import com.epam.anuar.gorkomtrans.entity.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,9 +8,6 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 public class ContextListener implements ServletContextListener {
     private static Logger log = LoggerFactory.getLogger(ContextListener.class.getName());

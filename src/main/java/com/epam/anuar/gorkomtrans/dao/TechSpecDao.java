@@ -2,7 +2,6 @@ package com.epam.anuar.gorkomtrans.dao;
 
 import com.epam.anuar.gorkomtrans.entity.GarbageContainerType;
 import com.epam.anuar.gorkomtrans.entity.GarbageTechSpecification;
-import com.epam.anuar.gorkomtrans.service.DaoService;
 
 import java.sql.*;
 import java.util.*;
@@ -11,6 +10,8 @@ public class TechSpecDao {
     private Connection con;
     private List<String> parameters = new ArrayList<>();
     private ResourceBundle rb = ResourceBundle.getBundle("sql");
+    public static final Integer ID_QUANTITY_TECHSPECDAO = 45000;
+    public static final Integer ID_SHIFT_TECHSPECDAO = 10000;
 
 
     public TechSpecDao(Connection con) {
@@ -30,14 +31,14 @@ public class TechSpecDao {
         addContainer(techSpec, parameters, "NON_STANDARD4", 1);
         parameters.add(techSpec.getRemovePerMonth().toString());
         String value = rb.getString("insert.techspec");
-        DaoService.executeStatement(con, value, parameters);
+        DaoControl.executeStatement(con, value, parameters);
         parameters.clear();
     }
 
     public GarbageTechSpecification findById(Integer id) {
         String value = rb.getString("find-techspec.id");
         parameters.add(id.toString());
-        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        PreparedStatement ps = DaoControl.getStatement(con, value, parameters);
         parameters.clear();
         List<GarbageTechSpecification> techSpecs = getTechSpecFromDb(ps, parameters);
         if (techSpecs.size() != 0) {
@@ -48,9 +49,9 @@ public class TechSpecDao {
     }
 
     public List<GarbageTechSpecification> searchByAddress(String addressPart) {
-        String value = "SELECT * FROM TECHSPEC TABLE WHERE ADDRESS LIKE ?";
+        String value = rb.getString("search-techspec.address");
         parameters.add(addressPart + '%');
-        PreparedStatement ps = DaoService.getStatement(con, value, parameters);
+        PreparedStatement ps = DaoControl.getStatement(con, value, parameters);
         List<GarbageTechSpecification> techSpecs = getTechSpecFromDb(ps, parameters);
         parameters.clear();
         return techSpecs;
@@ -59,7 +60,7 @@ public class TechSpecDao {
     public void deleteById(String id) {
         parameters.add(id);
         String value = rb.getString("delete-techspec.id");
-        DaoService.executeStatement(con, value, parameters);
+        DaoControl.executeStatement(con, value, parameters);
         parameters.clear();
     }
 
@@ -90,8 +91,8 @@ public class TechSpecDao {
         } catch (SQLException e) {
             throw new DaoException();
         } finally {
-            DaoService.closeResultSet(rs);
-            DaoService.closeStatement(ps);
+            DaoControl.closeResultSet(rs);
+            DaoControl.closeStatement(ps);
         }
         return techSpecs;
     }

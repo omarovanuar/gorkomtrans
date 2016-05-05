@@ -1,45 +1,66 @@
 package com.epam.anuar.gorkomtrans.service;
 
-import com.epam.anuar.gorkomtrans.action.ActionResult;
 import com.epam.anuar.gorkomtrans.dao.DaoFactory;
 import com.epam.anuar.gorkomtrans.dao.TechSpecDao;
+import com.epam.anuar.gorkomtrans.entity.GarbageContainerType;
 import com.epam.anuar.gorkomtrans.entity.GarbageTechSpecification;
-import com.epam.anuar.gorkomtrans.util.Validator;
-import com.epam.anuar.gorkomtrans.util.Violation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.epam.anuar.gorkomtrans.util.IdGenerator.generateID;
 
 public class TechSpecService {
-    private static DaoFactory dao = DaoFactory.getInstance();
+    private final static Logger log = LoggerFactory.getLogger(TechSpecService.class);
+    private DaoFactory dao;
+    private TechSpecDao techSpecDao;
 
-    public static ActionResult fillTechSpec(String euro, String standard, String nonStandardNumber, HttpServletRequest req) {
-        Validator.checkUnlogged(req);
-        Violation emptyTechSpec = Validator.isEmptyTechSpec(euro, standard, nonStandardNumber, req);
-        if (emptyTechSpec != null) {
-            req.setAttribute("violation", emptyTechSpec.getViolation());
-            return new ActionResult("services");
-        }
-        if (euro == null) euro = "0";
-        if (standard == null) standard = "0";
-        req.setAttribute("euro", euro);
-        req.setAttribute("standard", standard);
-        req.setAttribute("nonStandardNumber", nonStandardNumber);
-        return new ActionResult("tech-spec");
+    public TechSpecService() {
+        dao = DaoFactory.getInstance();
+        techSpecDao = dao.getTechSpecDao();
     }
 
-    public static GarbageTechSpecification createTechSpec(String address, String euroNumber, String standardNumber,
-                                                          List<String> parameters, String perMonth, HttpServletRequest req) {
-        Validator.checkUnlogged(req);
-        TechSpecDao techSpecDao = dao.getTechSpecDao();
+    public GarbageTechSpecification getNewTechSpec(String address, Map<String, List<String>> garbageParameters, String perMonth) {
         Integer id = generateID(techSpecDao);
-        Map<String, List<String>> garbageParameters = Service.createGarbageContainerParameters(euroNumber, standardNumber, parameters);
         GarbageTechSpecification techSpecification = new GarbageTechSpecification(id, address, garbageParameters, Integer.parseInt(perMonth));
         techSpecDao.insert(techSpecification);
         dao.close();
         return techSpecification;
+    }
+
+    public List<GarbageTechSpecification> getTechSpecByAddressPart(String addressPart) {
+        List<GarbageTechSpecification> techSpecs = techSpecDao.searchByAddress(addressPart);
+        dao.close();
+        return techSpecs;
+    }
+
+    public Map<String, List<String>> createGarbageContainerParameters(String euroNumber, String standardNumber, List<String> parameters) {
+        Map<String, List<String>> techSpecParameters = new HashMap<>();
+        GarbageContainerType tempType = GarbageContainerType.EURO;
+        techSpecParameters = fillParameters(tempType.toString(), euroNumber, tempType.getContainerCapacity().toString(), techSpecParameters);
+        tempType = GarbageContainerType.STANDARD;
+        techSpecParameters = fillParameters(tempType.toString(), standardNumber, tempType.getContainerCapacity().toString(), techSpecParameters);
+        for (Integer i = 0; i < parameters.size(); i += 2) {
+            tempType = GarbageContainerType.NON_STANDARD;
+            techSpecParameters = fillParameters(tempType.toString() + i.toString(), parameters.get(i), parameters.get(i+1), techSpecParameters);
+        }
+        return techSpecParameters;
+    }
+
+    private Map<String, List<String>> fillParameters(String typeString, String containerNumber, String containerCapacity, Map<String, List<String>> techSpecParameters) {
+        List<String> numberAndCapacity = new ArrayList<>();
+        numberAndCapacity.add(containerNumber);
+        numberAndCapacity.add(containerCapacity);
+        techSpecParameters.put(typeString, numberAndCapacity);
+        return techSpecParameters;
+    }
+
+    public void deleteTechSpecById(String id) {
+        techSpecDao.deleteById(id);
+        dao.close();
     }
 }

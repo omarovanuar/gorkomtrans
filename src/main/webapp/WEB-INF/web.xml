@@ -28,6 +28,6 @@
         <location>/error</location>
     </error-page>
     <listener>
-        <listener-class>com.epam.anuar.gorkomtrans.ContextListener</listener-class>
+        <listener-class>com.epam.anuar.gorkomtrans.listener.ContextListener</listener-class>
     </listener>
 </web-app>

@@ -1,18 +1,19 @@
 package com.epam.anuar.gorkomtrans.dao;
 
 import com.epam.anuar.gorkomtrans.entity.Wallet;
-import com.epam.anuar.gorkomtrans.service.DaoService;
 import org.joda.money.Money;
 
 import java.sql.*;
 import java.util.*;
 
-import static com.epam.anuar.gorkomtrans.service.DaoService.*;
+import static com.epam.anuar.gorkomtrans.dao.DaoControl.*;
 
 public class WalletDao {
     private Connection con;
     private List<String> parameters = new ArrayList<>();
     private ResourceBundle rb = ResourceBundle.getBundle("sql");
+    public static final Integer ID_QUANTITY_WALLETDAO = 20000;
+    public static final Integer ID_SHIFT_WALLETDAO = 100000;
 
     public WalletDao(Connection con) {
         this.con = con;
@@ -65,7 +66,14 @@ public class WalletDao {
     public void deleteById(String id) {
         parameters.add(id);
         String value = rb.getString("delete-wallet.id");
-        DaoService.executeStatement(con, value, parameters);
+        DaoControl.executeStatement(con, value, parameters);
+        parameters.clear();
+    }
+
+    public void deleteByAccount(String account) {
+        parameters.add(account);
+        String value = rb.getString("delete-wallet.account");
+        DaoControl.executeStatement(con, value, parameters);
         parameters.clear();
     }
 
@@ -83,7 +91,8 @@ public class WalletDao {
                 for (int i = 1; i < rsmd.getColumnCount() + 1; i++) {
                     parametersFromDb.put(rsmd.getColumnName(i), rs.getString(i));
                 }
-                wallet = new Wallet(Integer.parseInt(parametersFromDb.get("ID")), parametersFromDb.get("ACCOUNT"), Money.parse(parametersFromDb.get("MONEY")));
+                wallet = new Wallet(Integer.parseInt(parametersFromDb.get("ID")), parametersFromDb.get("ACCOUNT"),
+                        Money.parse(parametersFromDb.get("MONEY")));
                 wallets.add(wallet);
                 parameters.clear();
             }
@@ -95,4 +104,6 @@ public class WalletDao {
         }
         return wallets;
     }
+
+
 }

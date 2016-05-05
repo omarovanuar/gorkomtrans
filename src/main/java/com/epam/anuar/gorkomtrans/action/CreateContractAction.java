@@ -1,7 +1,10 @@
 package com.epam.anuar.gorkomtrans.action;
 
+import com.epam.anuar.gorkomtrans.entity.Contract;
 import com.epam.anuar.gorkomtrans.entity.GarbageTechSpecification;
 import com.epam.anuar.gorkomtrans.entity.User;
+import com.epam.anuar.gorkomtrans.service.ContractService;
+import com.epam.anuar.gorkomtrans.service.TechSpecService;
 import com.epam.anuar.gorkomtrans.util.Validator;
 import com.epam.anuar.gorkomtrans.util.Violation;
 
@@ -9,14 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
-import static com.epam.anuar.gorkomtrans.service.ContractService.createContract;
-import static com.epam.anuar.gorkomtrans.service.TechSpecService.createTechSpec;
-
 public class CreateContractAction implements Action {
     String attributeName;
 
     @Override
     public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) {
+        Validator.checkUnlogged(req);
         int count = 0;
         int euro = 0;
         int standard = 0;
@@ -58,8 +59,8 @@ public class CreateContractAction implements Action {
             if (entry.getKey().contains("standard")) {
                 standard = 1;
             }
-
         }
+
         Set<Violation> tempViolations = Validator.validateTechSpec(parameterMap, req);
         if (!tempViolations.isEmpty()) {
             List<String> violations = new ArrayList<>();
@@ -77,9 +78,15 @@ public class CreateContractAction implements Action {
             return new ActionResult("tech-spec");
         }
 
-        User user = (User) req.getSession(false).getAttribute("user");
+        TechSpecService techSpecService = new TechSpecService();
+        Map<String, List<String>> garbageParameters = techSpecService.createGarbageContainerParameters(euroNumber, standardNumber, parameters);
+        GarbageTechSpecification techSpecification = techSpecService.getNewTechSpec(address, garbageParameters, perMonth);
 
-        GarbageTechSpecification techSpecification = createTechSpec(address, euroNumber, standardNumber, parameters, perMonth, req);
-        return createContract(user, techSpecification, providingMonthNumber, req);
+        ContractService contractService = new ContractService();
+        User user = (User) req.getSession(false).getAttribute("user");
+        Contract contract = contractService.getNewContract(user, techSpecification, providingMonthNumber);
+        req.getSession(false).setAttribute("contract", contract);
+        req.getSession(false).setAttribute("status", 0);
+        return new ActionResult("contract", true);
     }
 }

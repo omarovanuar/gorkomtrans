@@ -1,11 +1,9 @@
-package com.epam.anuar.gorkomtrans.service;
-
-import com.epam.anuar.gorkomtrans.action.ActionResult;
+package com.epam.anuar.gorkomtrans.action;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-public class ActionService {
+public class ShowPageAttributesAction {
 
     public static ActionResult showRegister(HttpServletRequest req, List<String> userParamList, List<String> userParamName, List<String> violations, List<String> values) {
         req.setAttribute("userParamList", userParamList);

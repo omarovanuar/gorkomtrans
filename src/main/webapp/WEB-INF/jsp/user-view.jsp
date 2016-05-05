@@ -3,8 +3,8 @@
 <%@ page contentType="text/html;charset=windows-1251" language="java" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <fmt:setBundle basename="other-text" var="rb"/>
+<%--@elvariable id="violations" type="java.util.List"--%>
 <%--@elvariable id="userParam" type="com.epam.anuar.gorkomtrans.entity.User"--%>
-<%--@elvariable id="updateUserParamError" type="java.lang.String"--%>
 
 <t:authorizedpage>
     <div id="personal-cabinet" align="left">
@@ -13,16 +13,17 @@
                 <table class="user-data-table" id="user-data-table">
                     <tr>
                         <th align="left"><fmt:message key="personal.user-data" bundle="${rb}"/>:</th>
-                        <th style="color:red">${updateUserParamError}</th>
                         <input type="hidden" name="id" value="${userParam.id}"/>
                     </tr>
                     <tr>
                         <td><fmt:message key="user.password" bundle="${rb}"/>:</td>
-                        <td><input id="password" type="text" name="password" value="${userParam.password}"/></td>
+                        <td><input id="password" type="text" name="Password" value="${userParam.password}"/></td>
+                        <td><div style="color: red">${violations.get(0)}</div></td>
                     </tr>
                     <tr>
                         <td><fmt:message key="user.email" bundle="${rb}"/>:</td>
-                        <td><input id="email" type="email" name="email" value="${userParam.email}"/></td>
+                        <td><input id="email" type="email" name="Email" value="${userParam.email}"/></td>
+                        <td><div style="color: red">${violations.get(1)}</div></td>
                     </tr>
                     <tr>
                         <th align="left"><fmt:message key="user.role" bundle="${rb}"/>:</th>
@@ -45,6 +46,7 @@
                         <th align="left"><fmt:message key="personal.balance" bundle="${rb}"/>:</th>
                         <td><input id="balance" type="text" name="balance"
                                    value="${userParam.wallet.money.amount.toString()}"/></td>
+                        <td><div style="color: red">${violations.get(2)}</div></td>
                     </tr>
                 </table>
                 <input type="submit" value="<fmt:message key="personal.button" bundle="${rb}"/>">
