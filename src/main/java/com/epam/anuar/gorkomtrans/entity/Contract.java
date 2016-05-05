@@ -68,6 +68,10 @@ public class Contract extends BaseEntity {
     }
 
     public Double getContractTotalCapacity() {
+        return contractTotalCapacity;
+    }
+
+    public Double getTotalCapacity() {
         return gts.getCapacityPerMonth() * providingMonthNumber;
     }
 
@@ -75,11 +79,11 @@ public class Contract extends BaseEntity {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
         symbols.setDecimalSeparator('.');
         DecimalFormat df = new DecimalFormat("###.##", symbols);
-        return df.format(getContractTotalCapacity());
+        return df.format(getTotalCapacity());
     }
 
     private Money calculateContractAmount() {
-        Double cost = getContractTotalCapacity() * 1411.9;
+        Double cost = getTotalCapacity() * 1411.9;
         return Money.parse("KZT " + Math.round(cost));
     }
 

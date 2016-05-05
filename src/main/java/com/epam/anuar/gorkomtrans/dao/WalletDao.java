@@ -6,7 +6,7 @@ import org.joda.money.Money;
 import java.sql.*;
 import java.util.*;
 
-import static com.epam.anuar.gorkomtrans.dao.DaoControl.*;
+import static com.epam.anuar.gorkomtrans.dao.Statement.*;
 
 public class WalletDao {
     private Connection con;
@@ -66,14 +66,14 @@ public class WalletDao {
     public void deleteById(String id) {
         parameters.add(id);
         String value = rb.getString("delete-wallet.id");
-        DaoControl.executeStatement(con, value, parameters);
+        Statement.executeStatement(con, value, parameters);
         parameters.clear();
     }
 
     public void deleteByAccount(String account) {
         parameters.add(account);
         String value = rb.getString("delete-wallet.account");
-        DaoControl.executeStatement(con, value, parameters);
+        Statement.executeStatement(con, value, parameters);
         parameters.clear();
     }
 

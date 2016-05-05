@@ -3,7 +3,6 @@ package com.epam.anuar.gorkomtrans.action;
 import com.epam.anuar.gorkomtrans.entity.Contract;
 import com.epam.anuar.gorkomtrans.entity.GarbageTechSpecification;
 import com.epam.anuar.gorkomtrans.service.ContractService;
-import com.epam.anuar.gorkomtrans.service.Service;
 import com.epam.anuar.gorkomtrans.service.TechSpecService;
 import com.epam.anuar.gorkomtrans.util.Validator;
 
@@ -15,8 +14,8 @@ public class SearchAllAddressAction implements Action {
     @Override
     public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) {
         Validator.checkUnlogged(req);
-        int page = Service.ALL_CONTRACTS_PAGE;
-        int recordsPerPage = Service.ALL_CONTRACTS_RECORDS;
+        int page = ContractService.ALL_CONTRACTS_PAGE;
+        int recordsPerPage = ContractService.ALL_CONTRACTS_RECORDS;
         String addressPart = req.getParameter("address-search");
         List<GarbageTechSpecification> techSpecs = new TechSpecService().getTechSpecByAddressPart(addressPart);
         if (techSpecs.size() == 0) {

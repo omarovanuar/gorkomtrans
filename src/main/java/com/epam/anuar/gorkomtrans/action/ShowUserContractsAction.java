@@ -3,7 +3,6 @@ package com.epam.anuar.gorkomtrans.action;
 import com.epam.anuar.gorkomtrans.entity.Contract;
 import com.epam.anuar.gorkomtrans.entity.User;
 import com.epam.anuar.gorkomtrans.service.ContractService;
-import com.epam.anuar.gorkomtrans.service.Service;
 import com.epam.anuar.gorkomtrans.util.Validator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,8 +13,8 @@ public class ShowUserContractsAction implements Action {
     @Override
     public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) {
         Validator.checkUnlogged(req);
-        int page = Service.USER_CONTRACT_PAGE;
-        int recordsPerPage = Service.USER_CONTRACT_RECORDS;
+        int page = ContractService.USER_CONTRACT_PAGE;
+        int recordsPerPage = ContractService.USER_CONTRACT_RECORDS;
         if(req.getParameter("page") != null) page = Integer.parseInt(req.getParameter("page"));
 
         User user = (User) req.getSession(false).getAttribute("user");

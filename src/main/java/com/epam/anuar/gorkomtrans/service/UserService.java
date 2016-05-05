@@ -9,12 +9,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 import static com.epam.anuar.gorkomtrans.util.IdGenerator.generateID;
 
 public class UserService {
+    public static final int ALL_USER_PAGE = 1;
+    public static final int ALL_USER_RECORDS = 13;
+    private static final Comparator<User> USER_ID_COMPARATOR = (o1, o2) -> o1.getId().compareTo(o2.getId());
     private final static Logger log = LoggerFactory.getLogger(UserService.class);
     private DaoFactory dao;
     private UserDao userDao;
@@ -87,7 +91,7 @@ public class UserService {
 
     public List<User> getAllUsersPerPage(int page, int recordsPerPage) {
         List<User> users = userDao.findAll((page - 1) * recordsPerPage, recordsPerPage);
-        Collections.sort(users, Service.USER_ID_COMPARATOR);
+        Collections.sort(users, USER_ID_COMPARATOR);
         dao.close();
         return users;
     }
@@ -96,7 +100,7 @@ public class UserService {
     public List<User> getUserByLoginPart(String loginPart, int page, int recordsPerPage) {
         List<User> users = userDao.searchByLogin(loginPart, (page - 1) * recordsPerPage, recordsPerPage);
         dao.close();
-        Collections.sort(users, Service.USER_ID_COMPARATOR);
+        Collections.sort(users, USER_ID_COMPARATOR);
         return users;
     }
 

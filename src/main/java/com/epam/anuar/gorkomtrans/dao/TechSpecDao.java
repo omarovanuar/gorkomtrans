@@ -31,14 +31,14 @@ public class TechSpecDao {
         addContainer(techSpec, parameters, "NON_STANDARD4", 1);
         parameters.add(techSpec.getRemovePerMonth().toString());
         String value = rb.getString("insert.techspec");
-        DaoControl.executeStatement(con, value, parameters);
+        Statement.executeStatement(con, value, parameters);
         parameters.clear();
     }
 
     public GarbageTechSpecification findById(Integer id) {
         String value = rb.getString("find-techspec.id");
         parameters.add(id.toString());
-        PreparedStatement ps = DaoControl.getStatement(con, value, parameters);
+        PreparedStatement ps = Statement.getStatement(con, value, parameters);
         parameters.clear();
         List<GarbageTechSpecification> techSpecs = getTechSpecFromDb(ps, parameters);
         if (techSpecs.size() != 0) {
@@ -51,7 +51,7 @@ public class TechSpecDao {
     public List<GarbageTechSpecification> searchByAddress(String addressPart) {
         String value = rb.getString("search-techspec.address");
         parameters.add(addressPart + '%');
-        PreparedStatement ps = DaoControl.getStatement(con, value, parameters);
+        PreparedStatement ps = Statement.getStatement(con, value, parameters);
         List<GarbageTechSpecification> techSpecs = getTechSpecFromDb(ps, parameters);
         parameters.clear();
         return techSpecs;
@@ -60,7 +60,7 @@ public class TechSpecDao {
     public void deleteById(String id) {
         parameters.add(id);
         String value = rb.getString("delete-techspec.id");
-        DaoControl.executeStatement(con, value, parameters);
+        Statement.executeStatement(con, value, parameters);
         parameters.clear();
     }
 
@@ -91,8 +91,8 @@ public class TechSpecDao {
         } catch (SQLException e) {
             throw new DaoException();
         } finally {
-            DaoControl.closeResultSet(rs);
-            DaoControl.closeStatement(ps);
+            Statement.closeResultSet(rs);
+            Statement.closeStatement(ps);
         }
         return techSpecs;
     }

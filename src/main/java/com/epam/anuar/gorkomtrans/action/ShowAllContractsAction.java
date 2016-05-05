@@ -2,7 +2,6 @@ package com.epam.anuar.gorkomtrans.action;
 
 import com.epam.anuar.gorkomtrans.entity.Contract;
 import com.epam.anuar.gorkomtrans.service.ContractService;
-import com.epam.anuar.gorkomtrans.service.Service;
 import com.epam.anuar.gorkomtrans.util.Validator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,8 +12,8 @@ public class ShowAllContractsAction implements Action {
     @Override
     public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) {
         Validator.checkAdminOrModer(req);
-        int page = Service.ALL_CONTRACTS_PAGE;
-        int recordsPerPage = Service.ALL_CONTRACTS_RECORDS;
+        int page = ContractService.ALL_CONTRACTS_PAGE;
+        int recordsPerPage = ContractService.ALL_CONTRACTS_RECORDS;
         if(req.getParameter("page") != null) page = Integer.parseInt(req.getParameter("page"));
 
         ContractService contractService = new ContractService();

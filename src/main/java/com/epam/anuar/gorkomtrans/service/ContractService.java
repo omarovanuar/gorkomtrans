@@ -11,11 +11,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.epam.anuar.gorkomtrans.util.IdGenerator.generateID;
 
 public class ContractService {
+    public static final int USER_CONTRACT_PAGE = 1;
+    public static final int USER_CONTRACT_RECORDS = 13;
+    public static final int ALL_CONTRACTS_PAGE = 1;
+    public static final int ALL_CONTRACTS_RECORDS = 13;
+    private static final Comparator<Contract> CONTRACT_ID_COMPARATOR = (o1, o2) -> o1.getId().compareTo(o2.getId());
     private final static Logger log = LoggerFactory.getLogger(ContractService.class);
     private DaoFactory dao;
     private ContractDao contractDao;
@@ -41,7 +47,7 @@ public class ContractService {
 
     public List<Contract> getUserContactsPerPage(User user, int page, int recordsPerPage) {
         List<Contract> contracts = contractDao.findByUserId(user.getId(), (page - 1) * recordsPerPage, recordsPerPage);
-        Collections.sort(contracts, Service.CONTRACT_ID_COMPARATOR);
+        Collections.sort(contracts, CONTRACT_ID_COMPARATOR);
         dao.close();
         return contracts;
     }
@@ -54,21 +60,21 @@ public class ContractService {
 
     public List<Contract> getUserContractByTechSpec(List<GarbageTechSpecification> techSpecs, String userId, int page, int recordsPerPage) {
         List<Contract> contracts = contractDao.searchByAddress(techSpecs, userId, (page - 1) * recordsPerPage, recordsPerPage);
-        Collections.sort(contracts, Service.CONTRACT_ID_COMPARATOR);
+        Collections.sort(contracts, CONTRACT_ID_COMPARATOR);
         dao.close();
         return contracts;
     }
 
     public List<Contract> getContractsByTechSpec(List<GarbageTechSpecification> techSpecs, int page, int recordsPerPage) {
         List<Contract> contracts = contractDao.searchByAddress(techSpecs, (page - 1) * recordsPerPage, recordsPerPage);
-        Collections.sort(contracts, Service.CONTRACT_ID_COMPARATOR);
+        Collections.sort(contracts, CONTRACT_ID_COMPARATOR);
         dao.close();
         return contracts;
     }
 
     public List<Contract> getAllContactsPerPage(int page, int recordsPerPage) {
         List<Contract> contracts = contractDao.findAll((page - 1) * recordsPerPage, recordsPerPage);
-        Collections.sort(contracts, Service.CONTRACT_ID_COMPARATOR);
+        Collections.sort(contracts, CONTRACT_ID_COMPARATOR);
         dao.close();
         return contracts;
     }

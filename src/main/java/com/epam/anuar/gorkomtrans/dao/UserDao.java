@@ -5,7 +5,7 @@ import com.epam.anuar.gorkomtrans.entity.User;
 import java.sql.*;
 import java.util.*;
 
-import static com.epam.anuar.gorkomtrans.dao.DaoControl.*;
+import static com.epam.anuar.gorkomtrans.dao.Statement.*;
 
 public class UserDao {
     private Connection con;
@@ -111,7 +111,7 @@ public class UserDao {
         String value = rb.getString("find-user.all");
         parameters.add(offset.toString());
         parameters.add(noOfRecords.toString());
-        PreparedStatement ps = DaoControl.getStatement(con, value, parameters);
+        PreparedStatement ps = Statement.getStatement(con, value, parameters);
         parameters.clear();
         return getUserFromDb(ps, parameters);
     }
@@ -205,22 +205,16 @@ public class UserDao {
     public void deleteById(String id) {
         parameters.add(id);
         String value = rb.getString("delete-user.id");
-        DaoControl.executeStatement(con, value, parameters);
+        Statement.executeStatement(con, value, parameters);
         parameters.clear();
     }
-
-    public int allRowsNumber() {
-        String value = rb.getString("row-user.all");
-        return DaoControl.calculateRowNumber(value, con);
-    }
-
 
     public List<User> searchByLogin(String loginPart, Integer offset, Integer noOfRecords) {
         String value = rb.getString("search-user.login");
         parameters.add(loginPart + '%');
         parameters.add(offset.toString());
         parameters.add(noOfRecords.toString());
-        PreparedStatement ps = DaoControl.getStatement(con, value, parameters);
+        PreparedStatement ps = Statement.getStatement(con, value, parameters);
         List<User> users = getUserFromDb(ps, parameters);
         parameters.clear();
         return users;

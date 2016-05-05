@@ -1,7 +1,6 @@
 package com.epam.anuar.gorkomtrans.action;
 
 import com.epam.anuar.gorkomtrans.entity.User;
-import com.epam.anuar.gorkomtrans.service.Service;
 import com.epam.anuar.gorkomtrans.service.UserService;
 import com.epam.anuar.gorkomtrans.util.Validator;
 
@@ -13,8 +12,8 @@ public class SearchLoginAction implements Action {
     @Override
     public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) {
         Validator.checkAdmin(req);
-        int page = Service.ALL_USER_PAGE;
-        int recordsPerPage = Service.ALL_USER_RECORDS;
+        int page = UserService.ALL_USER_PAGE;
+        int recordsPerPage = UserService.ALL_USER_RECORDS;
         String loginPart = req.getParameter("login-search");
         List<User> users = new UserService().getUserByLoginPart(loginPart, page, recordsPerPage);
         if (users.size() == 0) {

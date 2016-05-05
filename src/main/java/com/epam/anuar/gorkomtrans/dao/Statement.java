@@ -9,8 +9,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class DaoControl {
-    private static Logger log = LoggerFactory.getLogger(DaoControl.class.getName());
+public class Statement {
+    private static Logger log = LoggerFactory.getLogger(Statement.class.getName());
 
     public static PreparedStatement getStatement(Connection con, String value, List<String> parameters) {
         PreparedStatement ps;
@@ -44,24 +44,6 @@ public class DaoControl {
             closeStatement(ps);
         }
         return isExecuted;
-    }
-
-    public static int calculateRowNumber(String value, Connection con) {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        int noOfRecords = 0;
-        try {
-            ps = con.prepareStatement(value);
-            rs = ps.executeQuery();
-            while (rs.next()) noOfRecords = rs.getInt(1);
-        } catch (SQLException e) {
-            log.warn("Statement can't be executed");
-            throw new DaoException();
-        } finally {
-            DaoControl.closeResultSet(rs);
-            DaoControl.closeStatement(ps);
-        }
-        return noOfRecords;
     }
 
     public static void closeStatement(PreparedStatement ps) {

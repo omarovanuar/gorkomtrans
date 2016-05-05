@@ -4,7 +4,6 @@ import com.epam.anuar.gorkomtrans.entity.Contract;
 import com.epam.anuar.gorkomtrans.entity.GarbageTechSpecification;
 import com.epam.anuar.gorkomtrans.entity.User;
 import com.epam.anuar.gorkomtrans.service.ContractService;
-import com.epam.anuar.gorkomtrans.service.Service;
 import com.epam.anuar.gorkomtrans.service.TechSpecService;
 import com.epam.anuar.gorkomtrans.util.Validator;
 
@@ -16,8 +15,8 @@ public class SearchAddressAction implements Action {
     @Override
     public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) {
         Validator.checkUnlogged(req);
-        int page = Service.USER_CONTRACT_PAGE;
-        int recordsPerPage = Service.USER_CONTRACT_RECORDS;
+        int page = ContractService.USER_CONTRACT_PAGE;
+        int recordsPerPage = ContractService.USER_CONTRACT_RECORDS;
         String addressPart = req.getParameter("address-search");
         User user = (User) req.getSession(false).getAttribute("user");
         String userId = user.getId().toString();

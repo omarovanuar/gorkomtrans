@@ -32,14 +32,14 @@ public class ContractDao {
         parameters.add(contract.getProvidingMonthNumber().toString());
         parameters.add(contract.getContractTotalCapacityString());
         String value = rb.getString("insert.contract");
-        DaoControl.executeStatement(con, value, parameters);
+        Statement.executeStatement(con, value, parameters);
         parameters.clear();
     }
 
     public Contract findById(Integer id) {
         String value = rb.getString("find-contract.id");
         parameters.add(id.toString());
-        PreparedStatement ps = DaoControl.getStatement(con, value, parameters);
+        PreparedStatement ps = Statement.getStatement(con, value, parameters);
         parameters.clear();
         List<Contract> contracts = getContractFromDb(ps, parameters);
         if (contracts.size() != 0) {
@@ -62,7 +62,7 @@ public class ContractDao {
         value += "LIMIT ?, ?";
         parameters.add(offset.toString());
         parameters.add(noOfRecords.toString());
-        PreparedStatement ps = DaoControl.getStatement(con, value, parameters);
+        PreparedStatement ps = Statement.getStatement(con, value, parameters);
         List<Contract> contracts = getContractFromDb(ps, parameters);
         parameters.clear();
         return contracts;
@@ -79,7 +79,7 @@ public class ContractDao {
         value += "LIMIT ?, ?";
         parameters.add(offset.toString());
         parameters.add(noOfRecords.toString());
-        PreparedStatement ps = DaoControl.getStatement(con, value, parameters);
+        PreparedStatement ps = Statement.getStatement(con, value, parameters);
         List<Contract> contracts = getContractFromDb(ps, parameters);
         parameters.clear();
         return contracts;
@@ -91,7 +91,7 @@ public class ContractDao {
         parameters.add(status);
         parameters.add(offset.toString());
         parameters.add(noOfRecords.toString());
-        PreparedStatement ps = DaoControl.getStatement(con, value, parameters);
+        PreparedStatement ps = Statement.getStatement(con, value, parameters);
         List<Contract> contracts = getContractFromDb(ps, parameters);
         parameters.clear();
         return contracts;
@@ -100,7 +100,7 @@ public class ContractDao {
     public List<Contract> findByUserId(Integer id) {
         String value = rb.getString("find-contract.user-id");
         parameters.add(id.toString());
-        PreparedStatement ps = DaoControl.getStatement(con, value, parameters);
+        PreparedStatement ps = Statement.getStatement(con, value, parameters);
         List<Contract> contracts = getContractFromDb(ps, parameters);
         parameters.clear();
         return contracts;
@@ -111,7 +111,7 @@ public class ContractDao {
         parameters.add(id.toString());
         parameters.add(offset.toString());
         parameters.add(noOfRecords.toString());
-        PreparedStatement ps = DaoControl.getStatement(con, value, parameters);
+        PreparedStatement ps = Statement.getStatement(con, value, parameters);
         List<Contract> contracts = getContractFromDb(ps, parameters);
         parameters.clear();
         return contracts;
@@ -121,7 +121,7 @@ public class ContractDao {
         String value = rb.getString("find-contract.all");
         parameters.add(offset.toString());
         parameters.add(noOfRecords.toString());
-        PreparedStatement ps = DaoControl.getStatement(con, value, parameters);
+        PreparedStatement ps = Statement.getStatement(con, value, parameters);
         List<Contract> contracts = getContractFromDb(ps, parameters);
         parameters.clear();
         return contracts;
@@ -161,8 +161,8 @@ public class ContractDao {
         } catch (SQLException e) {
             throw new DaoException();
         } finally {
-            DaoControl.closeResultSet(rs);
-            DaoControl.closeStatement(ps);
+            Statement.closeResultSet(rs);
+            Statement.closeStatement(ps);
         }
         return contracts;
     }
@@ -172,7 +172,7 @@ public class ContractDao {
         parameters.add(signDate);
         parameters.add(status.toString());
         parameters.add(id.toString());
-        DaoControl.executeStatement(con, value, parameters);
+        Statement.executeStatement(con, value, parameters);
         parameters.clear();
     }
 
@@ -180,28 +180,28 @@ public class ContractDao {
         String value = rb.getString("update-contract.status");
         parameters.add(status.toString());
         parameters.add(id.toString());
-        DaoControl.executeStatement(con, value, parameters);
+        Statement.executeStatement(con, value, parameters);
         parameters.clear();
     }
 
     public void deleteById(String id) {
         parameters.add(id);
         String value = rb.getString("delete-contract.id");
-        DaoControl.executeStatement(con, value, parameters);
+        Statement.executeStatement(con, value, parameters);
         parameters.clear();
     }
 
     public void deleteByUserId(String id) {
         parameters.add(id);
         String value = rb.getString("delete-contract.user-id");
-        DaoControl.executeStatement(con, value, parameters);
+        Statement.executeStatement(con, value, parameters);
         parameters.clear();
     }
 
     public synchronized byte transfer(String summa, String customerWalletId, String providerWalletId) {
         byte result = 0;
         try {
-            Statement st = null;
+            java.sql.Statement st = null;
             try {
                 con.setAutoCommit(false);
                 Money sum = Money.parse(summa);
