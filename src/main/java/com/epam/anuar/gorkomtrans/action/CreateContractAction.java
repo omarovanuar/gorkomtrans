@@ -4,19 +4,23 @@ import com.epam.anuar.gorkomtrans.entity.Contract;
 import com.epam.anuar.gorkomtrans.entity.GarbageTechSpecification;
 import com.epam.anuar.gorkomtrans.entity.User;
 import com.epam.anuar.gorkomtrans.service.ContractService;
+import com.epam.anuar.gorkomtrans.service.ServiceException;
 import com.epam.anuar.gorkomtrans.service.TechSpecService;
 import com.epam.anuar.gorkomtrans.util.Validator;
 import com.epam.anuar.gorkomtrans.util.Violation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 public class CreateContractAction implements Action {
+    private final static Logger log = LoggerFactory.getLogger(CreateContractAction.class);
     String attributeName;
 
     @Override
-    public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) {
+    public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) throws ActionException {
         Validator.checkUnlogged(req);
         int count = 0;
         int euro = 0;
@@ -78,15 +82,20 @@ public class CreateContractAction implements Action {
             return new ActionResult("tech-spec");
         }
 
-        TechSpecService techSpecService = new TechSpecService();
-        Map<String, List<String>> garbageParameters = techSpecService.createGarbageContainerParameters(euroNumber, standardNumber, parameters);
-        GarbageTechSpecification techSpecification = techSpecService.getNewTechSpec(address, garbageParameters, perMonth);
+        try {
+            TechSpecService techSpecService = new TechSpecService();
+            Map<String, List<String>> garbageParameters = techSpecService.createGarbageContainerParameters(euroNumber, standardNumber, parameters);
+            GarbageTechSpecification techSpecification = techSpecService.getNewTechSpec(address, garbageParameters, perMonth);
 
-        ContractService contractService = new ContractService();
-        User user = (User) req.getSession(false).getAttribute("user");
-        Contract contract = contractService.getNewContract(user, techSpecification, providingMonthNumber);
-        req.getSession(false).setAttribute("contract", contract);
-        req.getSession(false).setAttribute("status", 0);
+            ContractService contractService = new ContractService();
+            User user = (User) req.getSession(false).getAttribute("user");
+            Contract contract = contractService.getNewContract(user, techSpecification, providingMonthNumber);
+            req.getSession(false).setAttribute("contract", contract);
+            req.getSession(false).setAttribute("status", 0);
+        } catch (ServiceException e) {
+            log.warn("Services error: " + e.toString());
+            throw new ActionException();
+        }
         return new ActionResult("contract", true);
     }
 }

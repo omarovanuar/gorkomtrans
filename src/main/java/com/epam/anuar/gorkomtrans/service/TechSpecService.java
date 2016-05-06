@@ -1,5 +1,6 @@
 package com.epam.anuar.gorkomtrans.service;
 
+import com.epam.anuar.gorkomtrans.dao.DaoException;
 import com.epam.anuar.gorkomtrans.dao.DaoFactory;
 import com.epam.anuar.gorkomtrans.dao.TechSpecDao;
 import com.epam.anuar.gorkomtrans.entity.GarbageContainerType;
@@ -24,17 +25,30 @@ public class TechSpecService {
         techSpecDao = dao.getTechSpecDao();
     }
 
-    public GarbageTechSpecification getNewTechSpec(String address, Map<String, List<String>> garbageParameters, String perMonth) {
+    public GarbageTechSpecification getNewTechSpec(String address, Map<String, List<String>> garbageParameters, String perMonth) throws ServiceException {
         Integer id = generateID(techSpecDao);
         GarbageTechSpecification techSpecification = new GarbageTechSpecification(id, address, garbageParameters, Integer.parseInt(perMonth));
-        techSpecDao.insert(techSpecification);
-        dao.close();
+        try {
+            techSpecDao.insert(techSpecification);
+        } catch (DaoException e) {
+            log.warn("Can't insert new technical specification");
+            throw new ServiceException();
+        } finally {
+            dao.close();
+        }
         return techSpecification;
     }
 
-    public List<GarbageTechSpecification> getTechSpecByAddressPart(String addressPart) {
-        List<GarbageTechSpecification> techSpecs = techSpecDao.searchByAddress(addressPart);
-        dao.close();
+    public List<GarbageTechSpecification> getTechSpecByAddressPart(String addressPart) throws ServiceException {
+        List<GarbageTechSpecification> techSpecs;
+        try {
+            techSpecs = techSpecDao.searchByAddress(addressPart);
+        } catch (DaoException e) {
+            log.warn("Can't search technical specification by address");
+            throw new ServiceException();
+        } finally {
+            dao.close();
+        }
         return techSpecs;
     }
 
@@ -59,8 +73,14 @@ public class TechSpecService {
         return techSpecParameters;
     }
 
-    public void deleteTechSpecById(String id) {
-        techSpecDao.deleteById(id);
-        dao.close();
+    public void deleteTechSpecById(String id) throws ServiceException {
+        try {
+            techSpecDao.deleteById(id);
+        } catch (DaoException e) {
+            log.warn("Can't delete technical specification by id");
+            throw new ServiceException();
+        } finally {
+            dao.close();
+        }
     }
 }

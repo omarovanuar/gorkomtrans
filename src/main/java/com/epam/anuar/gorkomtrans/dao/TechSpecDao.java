@@ -18,7 +18,7 @@ public class TechSpecDao {
         this.con = con;
     }
 
-    public void insert(GarbageTechSpecification techSpec) {
+    public void insert(GarbageTechSpecification techSpec) throws DaoException {
         parameters.add(techSpec.getId().toString());
         parameters.add(techSpec.getAddress());
         addContainer(techSpec, parameters, "EURO", 0);
@@ -35,7 +35,7 @@ public class TechSpecDao {
         parameters.clear();
     }
 
-    public GarbageTechSpecification findById(Integer id) {
+    public GarbageTechSpecification findById(Integer id) throws DaoException {
         String value = rb.getString("find-techspec.id");
         parameters.add(id.toString());
         PreparedStatement ps = Statement.getStatement(con, value, parameters);
@@ -48,7 +48,7 @@ public class TechSpecDao {
         }
     }
 
-    public List<GarbageTechSpecification> searchByAddress(String addressPart) {
+    public List<GarbageTechSpecification> searchByAddress(String addressPart) throws DaoException {
         String value = rb.getString("search-techspec.address");
         parameters.add(addressPart + '%');
         PreparedStatement ps = Statement.getStatement(con, value, parameters);
@@ -57,14 +57,14 @@ public class TechSpecDao {
         return techSpecs;
     }
 
-    public void deleteById(String id) {
+    public void deleteById(String id) throws DaoException {
         parameters.add(id);
         String value = rb.getString("delete-techspec.id");
         Statement.executeStatement(con, value, parameters);
         parameters.clear();
     }
 
-    private List<GarbageTechSpecification> getTechSpecFromDb(PreparedStatement ps, List<String> parameters) {
+    private List<GarbageTechSpecification> getTechSpecFromDb(PreparedStatement ps, List<String> parameters) throws DaoException {
         List<GarbageTechSpecification> techSpecs = new ArrayList<>();
         GarbageTechSpecification techSpec;
         ResultSet rs = null;

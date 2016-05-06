@@ -18,7 +18,7 @@ public class UserDao {
         this.con = con;
     }
 
-    public byte insertUser(User user) {
+    public byte insertUser(User user) throws DaoException {
         this.parameters.add(user.getId().toString());
         this.parameters.add(user.getLogin());
         this.parameters.add(user.getPassword());
@@ -36,7 +36,7 @@ public class UserDao {
         return result;
     }
 
-    public byte insertByParameters(Map<String, String> parameters) {
+    public byte insertByParameters(Map<String, String> parameters) throws DaoException {
         this.parameters.add(parameters.get("Id"));
         this.parameters.add(parameters.get("Login"));
         this.parameters.add(parameters.get("Password"));
@@ -54,7 +54,7 @@ public class UserDao {
         return result;
     }
 
-    public User findById(Integer id) {
+    public User findById(Integer id) throws DaoException {
         String value = rb.getString("find-user.id");
         parameters.add(id.toString());
         PreparedStatement ps = getStatement(con, value, parameters);
@@ -67,7 +67,7 @@ public class UserDao {
         }
     }
 
-    public User findByLogin(String login) {
+    public User findByLogin(String login) throws DaoException {
         String value = rb.getString("find-user.login");
         parameters.add(login);
         PreparedStatement ps = getStatement(con, value, parameters);
@@ -80,7 +80,7 @@ public class UserDao {
         }
     }
 
-    public User findByEmail(String email) {
+    public User findByEmail(String email) throws DaoException {
         String value = rb.getString("find-user.email");
         parameters.add(email);
         PreparedStatement ps = getStatement(con, value, parameters);
@@ -93,7 +93,7 @@ public class UserDao {
         }
     }
 
-    public User findByCredentials(String login, String password) {
+    public User findByCredentials(String login, String password) throws DaoException {
         String value = rb.getString("find-user.login-pass");
         parameters.add(login);
         parameters.add(password);
@@ -107,7 +107,7 @@ public class UserDao {
         }
     }
 
-    public List<User> findAll(Integer offset, Integer noOfRecords) {
+    public List<User> findAll(Integer offset, Integer noOfRecords) throws DaoException {
         String value = rb.getString("find-user.all");
         parameters.add(offset.toString());
         parameters.add(noOfRecords.toString());
@@ -116,7 +116,7 @@ public class UserDao {
         return getUserFromDb(ps, parameters);
     }
 
-    private List<User> getUserFromDb(PreparedStatement ps, List<String> parameters) {
+    private List<User> getUserFromDb(PreparedStatement ps, List<String> parameters) throws DaoException {
         List<User> users = new ArrayList<>();
         User user;
         ResultSet rs = null;
@@ -156,7 +156,7 @@ public class UserDao {
         return users;
     }
 
-    public byte update(String id, Map<String, String> parameters) {
+    public byte update(String id, Map<String, String> parameters) throws DaoException {
         String value = rb.getString("update-user.all");
         this.parameters.add(parameters.get("Password"));
         this.parameters.add(parameters.get("Email"));
@@ -172,7 +172,7 @@ public class UserDao {
         return result;
     }
 
-    public byte updateWithWallet(String id, Map<String, String> parameters, String walletId) {
+    public byte updateWithWallet(String id, Map<String, String> parameters, String walletId) throws DaoException {
         String value = rb.getString("update-user.all-with-wallet");
         this.parameters.add(parameters.get("Password"));
         this.parameters.add(parameters.get("Email"));
@@ -189,7 +189,7 @@ public class UserDao {
         return result;
     }
 
-    public byte updatePassEmailRole(String id, String password, String email, String role) {
+    public byte updatePassEmailRole(String id, String password, String email, String role) throws DaoException {
         String value = rb.getString("update-user.pass-email-role");
         if (findByEmail(email) != null && (!findById(Integer.parseInt(id)).getEmail().equals(email))) return 2;
         if (password.equals("") || email.equals("")) return 3;
@@ -202,14 +202,14 @@ public class UserDao {
         return result;
     }
 
-    public void deleteById(String id) {
+    public void deleteById(String id) throws DaoException {
         parameters.add(id);
         String value = rb.getString("delete-user.id");
         Statement.executeStatement(con, value, parameters);
         parameters.clear();
     }
 
-    public List<User> searchByLogin(String loginPart, Integer offset, Integer noOfRecords) {
+    public List<User> searchByLogin(String loginPart, Integer offset, Integer noOfRecords) throws DaoException {
         String value = rb.getString("search-user.login");
         parameters.add(loginPart + '%');
         parameters.add(offset.toString());

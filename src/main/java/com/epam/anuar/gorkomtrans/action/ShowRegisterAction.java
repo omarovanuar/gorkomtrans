@@ -5,8 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.epam.anuar.gorkomtrans.action.ShowPageAttributesAction.showRegister;
 import static com.epam.anuar.gorkomtrans.action.ActionFunctions.getRegisterParameterNames;
+import static com.epam.anuar.gorkomtrans.action.ActionFunctions.showRegister;
 
 public class ShowRegisterAction implements Action {
     @Override

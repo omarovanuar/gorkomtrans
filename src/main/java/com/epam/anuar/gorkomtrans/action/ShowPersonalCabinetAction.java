@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.epam.anuar.gorkomtrans.action.ShowPageAttributesAction.showPersonalCabinet;
+import static com.epam.anuar.gorkomtrans.action.ActionFunctions.*;
 import static com.epam.anuar.gorkomtrans.action.ActionFunctions.getRegisterParameterNames;
 
 public class ShowPersonalCabinetAction implements Action {

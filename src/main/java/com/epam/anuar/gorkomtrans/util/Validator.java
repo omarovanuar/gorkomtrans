@@ -1,18 +1,22 @@
 package com.epam.anuar.gorkomtrans.util;
 
-import com.epam.anuar.gorkomtrans.action.UnloggedException;
+import com.epam.anuar.gorkomtrans.action.AccessException;
+import com.epam.anuar.gorkomtrans.dao.DaoException;
 import com.epam.anuar.gorkomtrans.dao.DaoFactory;
 import com.epam.anuar.gorkomtrans.dao.UserDao;
 import com.epam.anuar.gorkomtrans.dao.WalletDao;
 import com.epam.anuar.gorkomtrans.entity.RoleType;
 import com.epam.anuar.gorkomtrans.entity.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.regex.Pattern;
 
 public class Validator {
-    private static final Pattern EMAIL = Pattern.compile("(?:(?:\\r\\n)?[ \\t])*(?:(?:(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*))*@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*|(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)*\\<(?:(?:\\r\\n)?[ \\t])*(?:@(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*(?:,@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*)*:(?:(?:\\r\\n)?[ \\t])*)?(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*))*@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*\\>(?:(?:\\r\\n)?[ \\t])*)|(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)*:(?:(?:\\r\\n)?[ \\t])*(?:(?:(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*))*@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*|(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)*\\<(?:(?:\\r\\n)?[ \\t])*(?:@(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*(?:,@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*)*:(?:(?:\\r\\n)?[ \\t])*)?(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*))*@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*\\>(?:(?:\\r\\n)?[ \\t])*)(?:,\\s*(?:(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*))*@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*|(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)*\\<(?:(?:\\r\\n)?[ \\t])*(?:@(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*(?:,@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*)*:(?:(?:\\r\\n)?[ \\t])*)?(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*))*@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*\\>(?:(?:\\r\\n)?[ \\t])*))*)?;\\s*)");
+    private final static Logger log = LoggerFactory.getLogger(Validator.class);
+    private static final Pattern EMAIL = Pattern.compile(".+@.+\\..+");
     private static final Pattern BANK_ACCOUNT = Pattern.compile("[A-Z]{2}\\d{4}-\\d{4}-\\d{4}-\\d{4}");
     private static final Pattern PHONE_NUMBER = Pattern.compile("\\d-\\d{3}-\\d{7}");
     private static final Pattern INTEGER_VALUE = Pattern.compile("[1-9]\\d*");
@@ -23,7 +27,8 @@ public class Validator {
     public static void checkUnlogged(HttpServletRequest req) {
         if (req.getSession(false).getAttribute("user") == null) {
             bundle = ResourceBundle.getBundle("error", Locale.forLanguageTag(req.getSession(false).getAttribute("locale").toString()));
-            throw new UnloggedException(bundle.getString("not.logged"));
+            log.info("Unlogged access");
+            throw new AccessException(bundle.getString("not.logged"));
         }
     }
 
@@ -31,7 +36,8 @@ public class Validator {
         User user = (User) req.getSession(false).getAttribute("user");
         if (!(user.getRole().equals(RoleType.ADMIN))) {
             bundle = ResourceBundle.getBundle("error", Locale.forLanguageTag(req.getSession(false).getAttribute("locale").toString()));
-            throw new UnloggedException(bundle.getString("not.admin"));
+            log.warn("Not admin access: " + user.getLogin());
+            throw new AccessException(bundle.getString("not.admin"));
         }
     }
 
@@ -39,7 +45,8 @@ public class Validator {
         User user = (User) req.getSession(false).getAttribute("user");
         if (!(user.getRole().equals(RoleType.ADMIN) || user.getRole().equals(RoleType.MODERATOR))) {
             bundle = ResourceBundle.getBundle("error", Locale.forLanguageTag(req.getSession(false).getAttribute("locale").toString()));
-            throw new UnloggedException(bundle.getString("not.admin-moder"));
+            log.warn("Not admin or moderator access: " + user.getLogin());
+            throw new AccessException(bundle.getString("not.admin-moder"));
         }
     }
 
@@ -50,7 +57,7 @@ public class Validator {
         } else return null;
     }
 
-    public static Set<Violation> validateRegister(Map<String, String> parameters, HttpServletRequest req) {
+    public static Set<Violation> validateRegister(Map<String, String> parameters, HttpServletRequest req) throws ViolationException {
         bundle = ResourceBundle.getBundle("error", Locale.forLanguageTag(req.getSession(false).getAttribute("locale").toString()));
         Set<Violation> returnViolations = new HashSet<>();
         putViolation(validateLogin(parameters, 0));
@@ -72,7 +79,7 @@ public class Validator {
         return new Violation(bundle.getString("invalid.login-pass"));
     }
 
-    public static Set<Violation> validatePersonalCabinet(Map<String, String> parameters, HttpServletRequest req) {
+    public static Set<Violation> validatePersonalCabinet(Map<String, String> parameters, HttpServletRequest req) throws ViolationException {
         bundle = ResourceBundle.getBundle("error", Locale.forLanguageTag(req.getSession(false).getAttribute("locale").toString()));
         Set<Violation> returnViolations = new HashSet<>();
         putViolation(validatePassword(parameters, 0));
@@ -88,11 +95,11 @@ public class Validator {
         return returnViolations;
     }
 
-    public static Set<Violation> validateUserView(Map<String, String> parameters, HttpServletRequest req) {
+    public static Set<Violation> validateUserView(Map<String, String> parameters, HttpServletRequest req) throws ViolationException {
         bundle = ResourceBundle.getBundle("error", Locale.forLanguageTag(req.getSession(false).getAttribute("locale").toString()));
         Set<Violation> returnViolations = new HashSet<>();
         putViolation(validatePassword(parameters, 0));
-        putViolation(validateEmail(parameters, 1, req));
+        putViolation(validateEmail(parameters, 1));
         putViolation(validateDouble(parameters, 2, "balance"));
         returnViolations.addAll(violations);
         violations.clear();
@@ -130,15 +137,21 @@ public class Validator {
         else return 1;
     }
 
-    private static Violation validateLogin(Map<String, String> parameters, Integer violationNumber) {
+    private static Violation validateLogin(Map<String, String> parameters, Integer violationNumber) throws ViolationException {
         DaoFactory dao = DaoFactory.getInstance();
         UserDao userDao = dao.getUserDao();
-        if (parameters.get("Login").isEmpty()) {
-            return new Violation(bundle.getString("empty.login"), violationNumber);
-        } else if (userDao.findByLogin(parameters.get("Login")) != null) {
-            return new Violation(bundle.getString("exist.login"), violationNumber);
+        try {
+            if (parameters.get("Login").isEmpty()) {
+                return new Violation(bundle.getString("empty.login"), violationNumber);
+            } else if (userDao.findByLogin(parameters.get("Login")) != null) {
+                return new Violation(bundle.getString("exist.login"), violationNumber);
+            }
+        } catch (DaoException e) {
+            log.warn("Can't find user by login");
+            throw new ViolationException();
+        } finally {
+            dao.close();
         }
-        dao.close();
         return null;
     }
 
@@ -151,55 +164,73 @@ public class Validator {
         return null;
     }
 
-    private static Violation validateRegisterEmail(Map<String, String> parameters, Integer violationNumber) {
+    private static Violation validateRegisterEmail(Map<String, String> parameters, Integer violationNumber) throws ViolationException {
         DaoFactory dao = DaoFactory.getInstance();
         UserDao userDao = dao.getUserDao();
-        if (parameters.get("Email").isEmpty()) {
-            return new Violation(bundle.getString("empty.email"), violationNumber);
-        } else if (userDao.findByEmail(parameters.get("Email")) != null) {
-            return new Violation(bundle.getString("exist.email"), violationNumber);
-        } else if (!EMAIL.matcher(parameters.get("Email")).matches()) {
-            return new Violation(bundle.getString("not.email"), violationNumber);
+        try {
+            if (parameters.get("Email").isEmpty()) {
+                return new Violation(bundle.getString("empty.email"), violationNumber);
+            } else if (userDao.findByEmail(parameters.get("Email")) != null) {
+                return new Violation(bundle.getString("exist.email"), violationNumber);
+            } else if (!EMAIL.matcher(parameters.get("Email")).matches()) {
+                return new Violation(bundle.getString("not.email"), violationNumber);
+            }
+        } catch (DaoException e) {
+            log.warn("Can't find user by email");
+            throw new ViolationException();
+        } finally {
+            dao.close();
         }
-        dao.close();
         return null;
     }
 
-    private static Violation validatePersonalEmail(Map<String, String> parameters, Integer violationNumber, HttpServletRequest req) {
+    private static Violation validatePersonalEmail(Map<String, String> parameters, Integer violationNumber, HttpServletRequest req) throws ViolationException {
         DaoFactory dao = DaoFactory.getInstance();
         UserDao userDao = dao.getUserDao();
-        if (parameters.get("Email").isEmpty()) {
-            return new Violation(bundle.getString("empty.email"), violationNumber);
-        } else if (userDao.findByEmail(parameters.get("Email")) != null &&
-                !((User) req.getSession(false).getAttribute("user")).getEmail().equals(parameters.get("Email"))) {
+        try {
+            if (parameters.get("Email").isEmpty()) {
+                return new Violation(bundle.getString("empty.email"), violationNumber);
+            } else if (userDao.findByEmail(parameters.get("Email")) != null &&
+                    !((User) req.getSession(false).getAttribute("user")).getEmail().equals(parameters.get("Email"))) {
+                dao.close();
+                return new Violation(bundle.getString("exist.email"), violationNumber);
+            } else if (!EMAIL.matcher(parameters.get("Email")).matches()) {
+                return new Violation(bundle.getString("not.email"), violationNumber);
+            }
+        } catch (DaoException e) {
+            log.warn("Can't find user by email");
+            throw new ViolationException();
+        } finally {
             dao.close();
-            return new Violation(bundle.getString("exist.email"), violationNumber);
-        } else if (!EMAIL.matcher(parameters.get("Email")).matches()) {
-            return new Violation(bundle.getString("not.email"), violationNumber);
         }
-        dao.close();
         return null;
     }
 
-    private static Violation validateEmail(Map<String, String> parameters, Integer violationNumber, HttpServletRequest req) {
+    private static Violation validateEmail(Map<String, String> parameters, Integer violationNumber) throws ViolationException {
         DaoFactory dao = DaoFactory.getInstance();
         UserDao userDao = dao.getUserDao();
-        if (parameters.get("Email").isEmpty()) {
-            return new Violation(bundle.getString("empty.email"), violationNumber);
-        } else if (userDao.findByEmail(parameters.get("Email")) != null &&
-                !(userDao.findById(Integer.parseInt(parameters.get("id")))).getEmail().equals(parameters.get("Email"))) {
+        try {
+            if (parameters.get("Email").isEmpty()) {
+                return new Violation(bundle.getString("empty.email"), violationNumber);
+            } else if (userDao.findByEmail(parameters.get("Email")) != null &&
+                    !(userDao.findById(Integer.parseInt(parameters.get("id")))).getEmail().equals(parameters.get("Email"))) {
+                dao.close();
+                return new Violation(bundle.getString("exist.email"), violationNumber);
+            } else if (!EMAIL.matcher(parameters.get("Email")).matches()) {
+                return new Violation(bundle.getString("not.email"), violationNumber);
+            }
+        } catch (DaoException e) {
+            log.warn("Can't find user by id or email");
+            throw new ViolationException();
+        } finally {
             dao.close();
-            return new Violation(bundle.getString("exist.email"), violationNumber);
-        } else if (!EMAIL.matcher(parameters.get("Email")).matches()) {
-            return new Violation(bundle.getString("not.email"), violationNumber);
         }
-        dao.close();
         return null;
     }
 
     private static Violation validateIsEmpty(Map<String, String> parameters, Integer violationNumber, String emptyParam) {
         if (parameters.get(emptyParam).isEmpty()) {
-            return new Violation(emptyParam + " " + bundle.getString("empty.all"), violationNumber);
+            return new Violation(bundle.getString("empty.all"), violationNumber);
         }
         return null;
     }
@@ -231,35 +262,47 @@ public class Validator {
         return null;
     }
 
-    private static Violation validateBankAccount(Map<String, String> parameters, Integer violationNumber) {
+    private static Violation validateBankAccount(Map<String, String> parameters, Integer violationNumber) throws ViolationException {
         DaoFactory dao = DaoFactory.getInstance();
         WalletDao walletDao = dao.getWalletDao();
-        if (parameters.get("BankAccount").isEmpty()) {
-            return new Violation(bundle.getString("empty.bank-account"), violationNumber);
-        } else if (!BANK_ACCOUNT.matcher(parameters.get("BankAccount")).matches()) {
-            return new Violation(bundle.getString("not.bank-account"), violationNumber);
-        } else if (walletDao.findByAccount(parameters.get("Bank") + " " + parameters.get("BankAccount")) != null) {
+        try {
+            if (parameters.get("BankAccount").isEmpty()) {
+                return new Violation(bundle.getString("empty.bank-account"), violationNumber);
+            } else if (!BANK_ACCOUNT.matcher(parameters.get("BankAccount")).matches()) {
+                return new Violation(bundle.getString("not.bank-account"), violationNumber);
+            } else if (walletDao.findByAccount(parameters.get("Bank") + " " + parameters.get("BankAccount")) != null) {
+                dao.close();
+                return new Violation(bundle.getString("exist.bank-account"), violationNumber);
+            }
+        } catch (DaoException e) {
+            log.warn("Can't find wallet by account");
+            throw new ViolationException();
+        } finally {
             dao.close();
-            return new Violation(bundle.getString("exist.bank-account"), violationNumber);
         }
-        dao.close();
         return null;
     }
 
-    private static Violation validateChangeBankAccount(Map<String, String> parameters, Integer violationNumber, HttpServletRequest req) {
+    private static Violation validateChangeBankAccount(Map<String, String> parameters, Integer violationNumber, HttpServletRequest req) throws ViolationException {
         DaoFactory dao = DaoFactory.getInstance();
         WalletDao walletDao = dao.getWalletDao();
-        if (parameters.get("BankAccount").isEmpty()) {
-            return new Violation(bundle.getString("empty.bank-account"), violationNumber);
-        } else if (!BANK_ACCOUNT.matcher(parameters.get("BankAccount")).matches()) {
-            return new Violation(bundle.getString("not.bank-account"), violationNumber);
-        } else if (walletDao.findByAccount(parameters.get("Bank") + " " + parameters.get("BankAccount")) != null &&
-                !((User) req.getSession(false).getAttribute("user")).getBankRequisitions().equals(parameters.get("Bank") + " "
-                        + parameters.get("BankAccount"))) {
+        try {
+            if (parameters.get("BankAccount").isEmpty()) {
+                return new Violation(bundle.getString("empty.bank-account"), violationNumber);
+            } else if (!BANK_ACCOUNT.matcher(parameters.get("BankAccount")).matches()) {
+                return new Violation(bundle.getString("not.bank-account"), violationNumber);
+            } else if (walletDao.findByAccount(parameters.get("Bank") + " " + parameters.get("BankAccount")) != null &&
+                    !((User) req.getSession(false).getAttribute("user")).getBankRequisitions().equals(parameters.get("Bank") + " "
+                            + parameters.get("BankAccount"))) {
+                dao.close();
+                return new Violation(bundle.getString("exist.bank-account"), violationNumber);
+            }
+        } catch (DaoException e) {
+            log.warn("Can't find wallet by account");
+            throw new ViolationException();
+        } finally {
             dao.close();
-            return new Violation(bundle.getString("exist.bank-account"), violationNumber);
         }
-        dao.close();
         return null;
     }
 

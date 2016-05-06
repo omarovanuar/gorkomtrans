@@ -12,7 +12,7 @@ import java.util.List;
 public class Statement {
     private static Logger log = LoggerFactory.getLogger(Statement.class.getName());
 
-    public static PreparedStatement getStatement(Connection con, String value, List<String> parameters) {
+    public static PreparedStatement getStatement(Connection con, String value, List<String> parameters) throws DaoException {
         PreparedStatement ps;
         try {
             ps = con.prepareStatement(value);
@@ -27,7 +27,7 @@ public class Statement {
         return ps;
     }
 
-    public static byte executeStatement(Connection con, String value, List<String> parameters) {
+    public static byte executeStatement(Connection con, String value, List<String> parameters) throws DaoException {
         PreparedStatement ps = null;
         byte isExecuted = 4;
         try {
@@ -46,7 +46,7 @@ public class Statement {
         return isExecuted;
     }
 
-    public static void closeStatement(PreparedStatement ps) {
+    public static void closeStatement(PreparedStatement ps) throws DaoException {
         try {
             if (ps != null) ps.close();
         } catch (SQLException e) {
@@ -55,7 +55,7 @@ public class Statement {
         }
     }
 
-    public static void closeResultSet(ResultSet rs) {
+    public static void closeResultSet(ResultSet rs) throws DaoException {
         try {
             if (rs != null) rs.close();
         } catch (SQLException e1) {

@@ -1,7 +1,7 @@
 package com.epam.anuar.gorkomtrans.entity;
 
 public enum Status {
-    SUBMITTED("нропюбкем"), NEW("мнбши"), AGREED("србепфдем"), DENIED("нрйкнмем");
+    SUBMITTED("п·п╒п÷п═п░п▓п⌡п∙п²"), NEW("п²п·п▓п╚п≥"), AGREED("пёп╒п▓п∙п═п√п■п∙п²"), DENIED("п·п╒п п⌡п·п²п∙п²");
     String ru;
 
     Status(String ru) {

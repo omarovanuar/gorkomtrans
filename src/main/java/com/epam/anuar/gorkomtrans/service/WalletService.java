@@ -1,5 +1,6 @@
 package com.epam.anuar.gorkomtrans.service;
 
+import com.epam.anuar.gorkomtrans.dao.DaoException;
 import com.epam.anuar.gorkomtrans.dao.DaoFactory;
 import com.epam.anuar.gorkomtrans.dao.WalletDao;
 import com.epam.anuar.gorkomtrans.entity.Wallet;
@@ -19,26 +20,50 @@ public class WalletService {
         walletDao = dao.getWalletDao();
     }
 
-    public Wallet addNewWallet(String account) {
+    public Wallet addNewWallet(String account) throws ServiceException {
         Integer walletId = generateID(walletDao);
-        walletDao.insert(walletId, account);
+        try {
+            walletDao.insert(walletId, account);
+        } catch (DaoException e) {
+            log.warn("Can't insert new wallet");
+            throw new ServiceException();
+        } finally {
+            dao.close();
+        }
         Wallet wallet = new Wallet(walletId, account, Money.parse("KZT 0.00"));
-        dao.close();
         return wallet;
     }
 
-    public void removeWallet(String account) {
-        walletDao.deleteByAccount(account);
-        dao.close();
+    public void removeWallet(String account) throws ServiceException {
+        try {
+            walletDao.deleteByAccount(account);
+        } catch (DaoException e) {
+            log.warn("Can't delete wallet by account");
+            throw new ServiceException();
+        } finally {
+            dao.close();
+        }
     }
 
-    public void deleteById(String id) {
-        walletDao.deleteById(id);
-        dao.close();
+    public void deleteById(String id) throws ServiceException {
+        try {
+            walletDao.deleteById(id);
+        } catch (DaoException e) {
+            log.warn("Can't delete wallet by id");
+            throw new ServiceException();
+        } finally {
+            dao.close();
+        }
     }
 
-    public void updateWallet(String id, String balance) {
-        walletDao.updateBalance(id, balance);
-        dao.close();
+    public void updateWallet(String id, String balance) throws ServiceException {
+        try {
+            walletDao.updateBalance(id, balance);
+        } catch (DaoException e) {
+            log.warn("Can't update balance of the wallet");
+            throw new ServiceException();
+        } finally {
+            dao.close();
+        }
     }
 }

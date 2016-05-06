@@ -24,7 +24,7 @@ public class ContractDao {
         this.con = con;
     }
 
-    public void insert(Contract contract) {
+    public void insert(Contract contract) throws DaoException {
         parameters.add(contract.getId().toString());
         parameters.add(contract.getUser().getId().toString());
         parameters.add(contract.getGarbageTechSpecification().getId().toString());
@@ -36,7 +36,7 @@ public class ContractDao {
         parameters.clear();
     }
 
-    public Contract findById(Integer id) {
+    public Contract findById(Integer id) throws DaoException {
         String value = rb.getString("find-contract.id");
         parameters.add(id.toString());
         PreparedStatement ps = Statement.getStatement(con, value, parameters);
@@ -49,7 +49,7 @@ public class ContractDao {
         }
     }
 
-    public List<Contract> searchByAddress(List<GarbageTechSpecification> techSpecs, String userId, Integer offset, Integer noOfRecords) {
+    public List<Contract> searchByAddress(List<GarbageTechSpecification> techSpecs, String userId, Integer offset, Integer noOfRecords) throws DaoException {
         String value = "SELECT * FROM CONTRACT TABLE WHERE USERID = ? AND (";
         parameters.add(userId);
         for (int i = 0; i < techSpecs.size(); i++) {
@@ -68,7 +68,7 @@ public class ContractDao {
         return contracts;
     }
 
-    public List<Contract> searchByAddress(List<GarbageTechSpecification> techSpecs, Integer offset, Integer noOfRecords) {
+    public List<Contract> searchByAddress(List<GarbageTechSpecification> techSpecs, Integer offset, Integer noOfRecords) throws DaoException {
         String value = "SELECT * FROM CONTRACT TABLE WHERE ";
         for (int i = 0; i < techSpecs.size(); i++) {
             String techSpecId = techSpecs.get(i).getId().toString();
@@ -85,7 +85,7 @@ public class ContractDao {
         return contracts;
     }
 
-    public List<Contract> searchByStatus(String id, String status, Integer offset, Integer noOfRecords) {
+    public List<Contract> searchByStatus(String id, String status, Integer offset, Integer noOfRecords) throws DaoException {
         String value = "SELECT * FROM CONTRACT TABLE WHERE ID = ?, STATUS LIKE ? LIMIT ?, ?";
         parameters.add(id);
         parameters.add(status);
@@ -97,7 +97,7 @@ public class ContractDao {
         return contracts;
     }
 
-    public List<Contract> findByUserId(Integer id) {
+    public List<Contract> findByUserId(Integer id) throws DaoException {
         String value = rb.getString("find-contract.user-id");
         parameters.add(id.toString());
         PreparedStatement ps = Statement.getStatement(con, value, parameters);
@@ -106,7 +106,7 @@ public class ContractDao {
         return contracts;
     }
 
-    public List<Contract> findByUserId(Integer id, Integer offset, Integer noOfRecords) {
+    public List<Contract> findByUserId(Integer id, Integer offset, Integer noOfRecords) throws DaoException {
         String value = rb.getString("find-contract.user-id-row");
         parameters.add(id.toString());
         parameters.add(offset.toString());
@@ -117,7 +117,7 @@ public class ContractDao {
         return contracts;
     }
 
-    public List<Contract> findAll(Integer offset, Integer noOfRecords) {
+    public List<Contract> findAll(Integer offset, Integer noOfRecords) throws DaoException {
         String value = rb.getString("find-contract.all");
         parameters.add(offset.toString());
         parameters.add(noOfRecords.toString());
@@ -127,7 +127,7 @@ public class ContractDao {
         return contracts;
     }
 
-    private List<Contract> getContractFromDb(PreparedStatement ps, List<String> parameters) {
+    private List<Contract> getContractFromDb(PreparedStatement ps, List<String> parameters) throws DaoException {
         List<Contract> contracts = new ArrayList<>();
         Contract contract;
         ResultSet rs = null;
@@ -167,7 +167,7 @@ public class ContractDao {
         return contracts;
     }
 
-    public void update(Integer id, String signDate, Status status) {
+    public void update(Integer id, String signDate, Status status) throws DaoException {
         String value = rb.getString("update-contract.signdate-status");
         parameters.add(signDate);
         parameters.add(status.toString());
@@ -176,7 +176,7 @@ public class ContractDao {
         parameters.clear();
     }
 
-    public void updateStatus(Integer id, Status status) {
+    public void updateStatus(Integer id, Status status) throws DaoException {
         String value = rb.getString("update-contract.status");
         parameters.add(status.toString());
         parameters.add(id.toString());
@@ -184,21 +184,21 @@ public class ContractDao {
         parameters.clear();
     }
 
-    public void deleteById(String id) {
+    public void deleteById(String id) throws DaoException {
         parameters.add(id);
         String value = rb.getString("delete-contract.id");
         Statement.executeStatement(con, value, parameters);
         parameters.clear();
     }
 
-    public void deleteByUserId(String id) {
+    public void deleteByUserId(String id) throws DaoException {
         parameters.add(id);
         String value = rb.getString("delete-contract.user-id");
         Statement.executeStatement(con, value, parameters);
         parameters.clear();
     }
 
-    public synchronized byte transfer(String summa, String customerWalletId, String providerWalletId) {
+    public synchronized byte transfer(String summa, String customerWalletId, String providerWalletId) throws DaoException {
         byte result = 0;
         try {
             java.sql.Statement st = null;

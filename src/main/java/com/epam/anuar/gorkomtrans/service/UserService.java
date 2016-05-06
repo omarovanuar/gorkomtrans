@@ -1,9 +1,11 @@
 package com.epam.anuar.gorkomtrans.service;
 
+import com.epam.anuar.gorkomtrans.dao.DaoException;
 import com.epam.anuar.gorkomtrans.dao.DaoFactory;
 import com.epam.anuar.gorkomtrans.dao.UserDao;
 import com.epam.anuar.gorkomtrans.entity.User;
 import com.epam.anuar.gorkomtrans.entity.Wallet;
+import com.epam.anuar.gorkomtrans.util.ViolationException;
 import org.joda.money.Money;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +18,10 @@ import java.util.Map;
 import static com.epam.anuar.gorkomtrans.util.IdGenerator.generateID;
 
 public class UserService {
-    public static final int ALL_USER_PAGE = 1;
-    public static final int ALL_USER_RECORDS = 13;
-    private static final Comparator<User> USER_ID_COMPARATOR = (o1, o2) -> o1.getId().compareTo(o2.getId());
     private final static Logger log = LoggerFactory.getLogger(UserService.class);
+    public static final int ALL_USER_PAGE = 1;
+    public static final int ALL_USER_RECORDS = 12;
+    private static final Comparator<User> USER_ID_COMPARATOR = (o1, o2) -> o1.getId().compareTo(o2.getId());
     private DaoFactory dao;
     private UserDao userDao;
 
@@ -28,58 +30,89 @@ public class UserService {
         userDao = dao.getUserDao();
     }
 
-    public User getLoginUser(String login, String password) throws ServiceException {
-        User loginUser = userDao.findByCredentials(login, password);
-        dao.close();
-        if (loginUser == null) {
+    public User getLoginUser(String login, String password) throws ServiceException, ViolationException {
+        User user;
+        try {
+            user = userDao.findByCredentials(login, password);
+        } catch (DaoException e) {
+            log.warn("Can't find user by credentials");
+            throw new ServiceException();
+        } finally {
+            dao.close();
+        }
+        if (user == null) {
             log.info("Invalid login or pass");
-            throw new ServiceException("Invalid login or pass");
+            throw new ViolationException("Invalid login or pass");
         } else {
-            return loginUser;
+            return user;
         }
     }
 
-
-    public User getViewingUser(String id) {
-        User user = userDao.findById(Integer.parseInt(id));
-        dao.close();
+    public User getUserByLogin(String login) throws ServiceException {
+        User user;
+        try {
+            user = userDao.findByLogin(login);
+        } catch (DaoException e) {
+            log.warn("Can't find user by login");
+            throw new ServiceException();
+        } finally {
+            dao.close();
+        }
         return user;
     }
 
-    public User getUserByLogin(String login) {
-        User user = userDao.findByLogin(login);
-        dao.close();
+    public User getUserById(String id) throws ServiceException {
+        User user;
+        try {
+            user = userDao.findById(Integer.parseInt(id));
+        } catch (DaoException e) {
+            log.warn("Can't find user by id");
+            throw new ServiceException();
+        } finally {
+            dao.close();
+        }
         return user;
     }
 
-    public User getUserById(String id) {
-        User user = userDao.findById(Integer.parseInt(id));
-        dao.close();
-        return user;
-    }
-
-    public User addNewUser(Map<String, String> parameters) {
+    public User addNewUser(Map<String, String> parameters) throws ServiceException {
         Integer id = generateID(userDao);
         parameters.put("Id", id.toString());
-        userDao.insertByParameters(parameters);
-        User user = new User(id, parameters.get("Email"), parameters.get("Login"), parameters.get("Password"));
-        dao.close();
-        return user;
+        try {
+            userDao.insertByParameters(parameters);
+        } catch (DaoException e) {
+            log.warn("Can't insert user by parameters");
+            throw new ServiceException();
+        } finally {
+            dao.close();
+        }
+        return new User(id, parameters.get("Email"), parameters.get("Login"), parameters.get("Password"));
     }
 
-    public User getUserWithNewWallet(String id, Map<String, String> parameters, String walletId) {
-        userDao.updateWithWallet(id, parameters, walletId);
+    public User getUserWithNewWallet(String id, Map<String, String> parameters, String walletId) throws ServiceException {
+        try {
+            userDao.updateWithWallet(id, parameters, walletId);
+        } catch (DaoException e) {
+            log.warn("Can't update user with wallet");
+            throw new ServiceException();
+        } finally {
+            dao.close();
+        }
         User user = getUserByParameters(id, parameters);
         user.setWallet(new Wallet(Integer.parseInt(walletId), user.getBankRequisitions(), Money.parse("KZT 0.00")));
-        dao.close();
         return user;
     }
 
-    public User getUpdatedUser(String id, Map<String, String> parameters, Wallet wallet) {
-        userDao.update(id, parameters);
+    public User getUpdatedUser(String id, Map<String, String> parameters, Wallet wallet) throws ServiceException {
+        try {
+            userDao.update(id, parameters);
+        } catch (DaoException e) {
+            log.warn("Can't update user");
+            throw new ServiceException();
+        } finally {
+            dao.close();
+        }
         User user = getUserByParameters(id, parameters);
         user.setWallet(wallet);
-        dao.close();
         return user;
     }
 
@@ -89,29 +122,52 @@ public class UserService {
                 parameters.get("MainAddress"), parameters.get("Bank"), parameters.get("BankAccount"));
     }
 
-    public List<User> getAllUsersPerPage(int page, int recordsPerPage) {
-        List<User> users = userDao.findAll((page - 1) * recordsPerPage, recordsPerPage);
+    public List<User> getAllUsersPerPage(int page, int recordsPerPage) throws ServiceException {
+        List<User> users;
+        try {
+            users = userDao.findAll((page - 1) * recordsPerPage, recordsPerPage);
+        } catch (DaoException e) {
+            log.warn("Can't find all users");
+            throw new ServiceException();
+        } finally {
+            dao.close();
+        }
         Collections.sort(users, USER_ID_COMPARATOR);
-        dao.close();
         return users;
     }
 
 
-    public List<User> getUserByLoginPart(String loginPart, int page, int recordsPerPage) {
-        List<User> users = userDao.searchByLogin(loginPart, (page - 1) * recordsPerPage, recordsPerPage);
+    public List<User> getUserByLoginPart(String loginPart, int page, int recordsPerPage) throws ServiceException {
+        List<User> users;
+        try {
+            users = userDao.searchByLogin(loginPart, (page - 1) * recordsPerPage, recordsPerPage);
+        } catch (DaoException e) {
+            log.warn("Can't search user by login");
+            throw new ServiceException();
+        }
         dao.close();
         Collections.sort(users, USER_ID_COMPARATOR);
         return users;
     }
 
-    public void updateUserView(Map<String, String> parameters) {
-        userDao.updatePassEmailRole(parameters.get("id"), parameters.get("Password"),
-                parameters.get("Email"), parameters.get("role-select"));
+    public void updateUserView(Map<String, String> parameters) throws ServiceException {
+        try {
+            userDao.updatePassEmailRole(parameters.get("id"), parameters.get("Password"),
+                    parameters.get("Email"), parameters.get("role-select"));
+        } catch (DaoException e) {
+            log.warn("Can't update user password, email, role");
+            throw new ServiceException();
+        }
         dao.close();
     }
 
-    public void deleteUserById(String id) {
-        userDao.deleteById(id);
+    public void deleteUserById(String id) throws ServiceException {
+        try {
+            userDao.deleteById(id);
+        } catch (DaoException e) {
+            log.warn("Can't delete user by id");
+            throw new ServiceException();
+        }
         dao.close();
     }
 }

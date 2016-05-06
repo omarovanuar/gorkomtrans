@@ -1,22 +1,24 @@
 package com.epam.anuar.gorkomtrans.action;
 
-import com.epam.anuar.gorkomtrans.entity.Contract;
-import com.epam.anuar.gorkomtrans.service.ContractService;
-import com.epam.anuar.gorkomtrans.service.TechSpecService;
+import com.epam.anuar.gorkomtrans.service.ServiceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class DeleteContractAction implements Action {
+    private final static Logger log = LoggerFactory.getLogger(DeleteContractAction.class);
+
     @Override
-    public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) {
+    public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) throws ActionException {
         String id = req.getParameter("current-contract");
-        ContractService contractService = new ContractService();
-        TechSpecService techSpecService = new TechSpecService();
-        Contract contract = contractService.getContractById(id);
-        String techSpecId = contract.getGarbageTechSpecification().getId().toString();
-        techSpecService.deleteTechSpecById(techSpecId);
-        contractService.deleteById(id);
+        try {
+            ActionFunctions.deleteContract(id);
+        } catch (ServiceException e) {
+            log.warn("Services error: " + e.toString());
+            throw new ActionException();
+        }
         return new ShowUserContractsAction().execute(req, resp);
     }
 }

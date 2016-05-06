@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=windows-1251" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <fmt:setBundle basename="other-text" var="rb"/>
@@ -51,7 +51,7 @@
                 <c:forEach var="currentNonStandard" begin="1" end="${nonStandardNumber}">
                     <tr>
                         <td><fmt:message key="tech-spec.non-standard-container" bundle="${rb}"/>
-                            ¹${currentNonStandard}:
+                            â„–${currentNonStandard}:
                         </td>
                         <td><input id="container-number-${currentNonStandard.toString()}" type="text"
                                    name="container-number-${currentNonStandard.toString()}"

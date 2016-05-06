@@ -1,6 +1,6 @@
 package com.epam.anuar.gorkomtrans.dao;
 
-public class DaoException extends RuntimeException{
+public class DaoException extends Exception{
     public DaoException() {
     }
 

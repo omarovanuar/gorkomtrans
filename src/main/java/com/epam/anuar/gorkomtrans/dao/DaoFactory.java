@@ -62,7 +62,7 @@ public class DaoFactory {
                 this.open();
             }
         } catch (SQLException e) {
-            throw new DaoException();
+            throw new RuntimeException();
         }
     }
 }

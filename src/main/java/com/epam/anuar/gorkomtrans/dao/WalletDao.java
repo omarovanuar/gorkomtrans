@@ -19,7 +19,7 @@ public class WalletDao {
         this.con = con;
     }
 
-    public Wallet findById(Integer id) {
+    public Wallet findById(Integer id) throws DaoException {
         String value = rb.getString("find-wallet.id");
         parameters.add(id.toString());
         PreparedStatement ps = getStatement(con, value, parameters);
@@ -32,7 +32,7 @@ public class WalletDao {
         }
     }
 
-    public Wallet findByAccount(String account) {
+    public Wallet findByAccount(String account) throws DaoException {
         String value = rb.getString("find-wallet.account");
         parameters.add(account);
         PreparedStatement ps = getStatement(con, value, parameters);
@@ -45,7 +45,7 @@ public class WalletDao {
         }
     }
 
-    public void insert(Integer id, String account) {
+    public void insert(Integer id, String account) throws DaoException {
         parameters.add(id.toString());
         parameters.add(account);
         String value = rb.getString("insert.wallet");
@@ -53,7 +53,7 @@ public class WalletDao {
         parameters.clear();
     }
 
-    public byte updateBalance(String id, String money) {
+    public byte updateBalance(String id, String money) throws DaoException {
         String value = rb.getString("update-wallet.balance");
         if (Double.parseDouble(money) < 0) return 4;
         parameters.add("KZT " + money);
@@ -63,21 +63,21 @@ public class WalletDao {
         return result;
     }
 
-    public void deleteById(String id) {
+    public void deleteById(String id) throws DaoException {
         parameters.add(id);
         String value = rb.getString("delete-wallet.id");
         Statement.executeStatement(con, value, parameters);
         parameters.clear();
     }
 
-    public void deleteByAccount(String account) {
+    public void deleteByAccount(String account) throws DaoException {
         parameters.add(account);
         String value = rb.getString("delete-wallet.account");
         Statement.executeStatement(con, value, parameters);
         parameters.clear();
     }
 
-    private List<Wallet> getWalletFromDb(PreparedStatement ps, List<String> parameters) {
+    private List<Wallet> getWalletFromDb(PreparedStatement ps, List<String> parameters) throws DaoException {
         List<Wallet> wallets = new ArrayList<>();
         Wallet wallet;
         ResultSet rs = null;
