@@ -4,9 +4,9 @@ import com.epam.anuar.gorkomtrans.entity.User;
 import com.epam.anuar.gorkomtrans.service.ServiceException;
 import com.epam.anuar.gorkomtrans.service.UserService;
 import com.epam.anuar.gorkomtrans.service.WalletService;
-import com.epam.anuar.gorkomtrans.util.Validator;
-import com.epam.anuar.gorkomtrans.util.Violation;
-import com.epam.anuar.gorkomtrans.util.ViolationException;
+import com.epam.anuar.gorkomtrans.validator.Validator;
+import com.epam.anuar.gorkomtrans.validator.Violation;
+import com.epam.anuar.gorkomtrans.validator.ViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,14 +21,9 @@ public class ChangeUserViewAction implements Action {
     @Override
     public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) throws ActionException {
         Validator.checkAdmin(req);
-        Map<String, String> parameters = new LinkedHashMap<>();
-        Map<String, String[]> parameterMap = req.getParameterMap();
-        for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
-            parameters.put(entry.getKey(), entry.getValue()[0]);
-        }
+        Map<String, String> parameters = ActionFunctions.getParameterMap(req);
         UserService userService = new UserService();
         User user;
-
         try {
             user = userService.getUserById(parameters.get("id"));
             try {

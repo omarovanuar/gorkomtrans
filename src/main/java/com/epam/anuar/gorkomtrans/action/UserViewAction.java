@@ -3,7 +3,7 @@ package com.epam.anuar.gorkomtrans.action;
 import com.epam.anuar.gorkomtrans.entity.User;
 import com.epam.anuar.gorkomtrans.service.ServiceException;
 import com.epam.anuar.gorkomtrans.service.UserService;
-import com.epam.anuar.gorkomtrans.util.Validator;
+import com.epam.anuar.gorkomtrans.validator.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,8 +16,8 @@ public class UserViewAction implements Action {
     @Override
     public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) throws ActionException {
         Validator.checkAdmin(req);
-        UserService userService = new UserService();
         try {
+            UserService userService = new UserService();
             User user = userService.getUserById(req.getParameter("current-user"));
             req.setAttribute("userParam", user);
         } catch (ServiceException e) {

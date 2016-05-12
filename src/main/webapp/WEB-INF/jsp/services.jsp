@@ -3,7 +3,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <fmt:setBundle basename="other-text" var="rb"/>
-<%--@elvariable id="violation" type="java.lang.String"--%>
 
 
 <t:authorizedpage>

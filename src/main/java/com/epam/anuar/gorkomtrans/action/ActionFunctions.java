@@ -4,7 +4,7 @@ import com.epam.anuar.gorkomtrans.entity.Contract;
 import com.epam.anuar.gorkomtrans.service.ContractService;
 import com.epam.anuar.gorkomtrans.service.ServiceException;
 import com.epam.anuar.gorkomtrans.service.TechSpecService;
-import com.epam.anuar.gorkomtrans.util.Violation;
+import com.epam.anuar.gorkomtrans.validator.Violation;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -24,22 +24,6 @@ public class ActionFunctions {
         userParamName.add(bundle.getString("login.bank"));
         userParamName.add(bundle.getString("login.bank-account"));
         return userParamName;
-    }
-
-    protected static ActionResult showRegister(HttpServletRequest req, List<String> userParamList, List<String> userParamName, List<String> violations, List<String> values) {
-        req.setAttribute("userParamList", userParamList);
-        req.setAttribute("userParamName", userParamName);
-        req.setAttribute("violations", violations);
-        req.setAttribute("values", values);
-        return new ActionResult("register");
-    }
-
-    protected static ActionResult showPersonalCabinet(HttpServletRequest req, List<String> userParamList, List<String> userParamName, List<String> violations, List<String> values) {
-        req.setAttribute("userParamList", userParamList);
-        req.setAttribute("userParamName", userParamName);
-        req.setAttribute("violations", violations);
-        req.setAttribute("values", values);
-        return new ActionResult("personal-cabinet");
     }
 
     protected static void violationView(Set<Violation> tempViolations, Map<String, String> parameters, HttpServletRequest req) {
@@ -69,5 +53,14 @@ public class ActionFunctions {
         String techSpecId = contract.getGarbageTechSpecification().getId().toString();
         techSpecService.deleteTechSpecById(techSpecId);
         contractService.deleteById(id);
+    }
+
+    protected static Map<String, String> getParameterMap(HttpServletRequest req) {
+        Map<String, String[]> parameterMap = req.getParameterMap();
+        Map<String, String> parameters = new LinkedHashMap<>();
+        for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
+            parameters.put(entry.getKey(), entry.getValue()[0]);
+        }
+        return parameters;
     }
 }

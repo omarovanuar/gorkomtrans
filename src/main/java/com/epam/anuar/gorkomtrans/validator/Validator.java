@@ -1,4 +1,4 @@
-package com.epam.anuar.gorkomtrans.util;
+package com.epam.anuar.gorkomtrans.validator;
 
 import com.epam.anuar.gorkomtrans.action.AccessException;
 import com.epam.anuar.gorkomtrans.dao.DaoException;

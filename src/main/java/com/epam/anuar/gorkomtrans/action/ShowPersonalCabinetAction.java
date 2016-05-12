@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.epam.anuar.gorkomtrans.action.ActionFunctions.*;
 import static com.epam.anuar.gorkomtrans.action.ActionFunctions.getRegisterParameterNames;
 
 public class ShowPersonalCabinetAction implements Action {
@@ -39,6 +38,10 @@ public class ShowPersonalCabinetAction implements Action {
         values.add(user.getBankName());
         values.add(user.getBankAccount());
 
-        return showPersonalCabinet(req, userParamList, userParamName, violations, values);
+        req.setAttribute("userParamList", userParamList);
+        req.setAttribute("userParamName", userParamName);
+        req.setAttribute("violations", violations);
+        req.setAttribute("values", values);
+        return new ActionResult("personal-cabinet");
     }
 }

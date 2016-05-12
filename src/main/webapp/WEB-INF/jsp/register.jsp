@@ -2,10 +2,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
-<%--@elvariable id="userParamList" type="java.util.List"--%>
-<%--@elvariable id="violations" type="java.util.List"--%>
-<%--@elvariable id="values" type="java.util.List"--%>
-<%--@elvariable id="userParamName" type="java.util.List"--%>
 <fmt:setBundle basename="login-register" var="rb"/>
 
 <t:welcomepage>

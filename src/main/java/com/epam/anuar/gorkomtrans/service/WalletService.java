@@ -30,8 +30,7 @@ public class WalletService {
         } finally {
             dao.close();
         }
-        Wallet wallet = new Wallet(walletId, account, Money.parse("KZT 0.00"));
-        return wallet;
+        return new Wallet(walletId, account, Money.parse("KZT 0.00"));
     }
 
     public void removeWallet(String account) throws ServiceException {

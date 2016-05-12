@@ -1,4 +1,4 @@
-package com.epam.anuar.gorkomtrans.util;
+package com.epam.anuar.gorkomtrans.validator;
 
 public class ViolationException extends Exception {
     public ViolationException() {

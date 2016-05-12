@@ -3,10 +3,6 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <fmt:setBundle basename="other-text" var="rb"/>
-<%--@elvariable id="euro" type="java.lang.String"--%>
-<%--@elvariable id="standard" type="java.lang.String"--%>
-<%--@elvariable id="nonStandardNumber" type="java.lang.String"--%>
-<%--@elvariable id="listError" type="java.util.List"--%>
 
 
 <t:authorizedpage>

@@ -3,7 +3,7 @@ package com.epam.anuar.gorkomtrans.action;
 import com.epam.anuar.gorkomtrans.entity.Contract;
 import com.epam.anuar.gorkomtrans.entity.User;
 import com.epam.anuar.gorkomtrans.service.*;
-import com.epam.anuar.gorkomtrans.util.Validator;
+import com.epam.anuar.gorkomtrans.validator.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,11 +18,10 @@ public class DeleteUserAction implements Action {
     public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) throws ActionException {
         Validator.checkAdmin(req);
         String id = req.getParameter("current-user");
-        UserService userService = new UserService();
-        ContractService contractService = new ContractService();
-        TechSpecService techSpecService = new TechSpecService();
-
         try {
+            UserService userService = new UserService();
+            ContractService contractService = new ContractService();
+            TechSpecService techSpecService = new TechSpecService();
             User user = userService.getUserById(id);
             String walletId = user.getWallet().getId().toString();
             List<Contract> contracts = contractService.getContractsByUserId(id);

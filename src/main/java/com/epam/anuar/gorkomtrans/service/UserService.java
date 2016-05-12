@@ -5,7 +5,7 @@ import com.epam.anuar.gorkomtrans.dao.DaoFactory;
 import com.epam.anuar.gorkomtrans.dao.UserDao;
 import com.epam.anuar.gorkomtrans.entity.User;
 import com.epam.anuar.gorkomtrans.entity.Wallet;
-import com.epam.anuar.gorkomtrans.util.ViolationException;
+import com.epam.anuar.gorkomtrans.validator.ViolationException;
 import org.joda.money.Money;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

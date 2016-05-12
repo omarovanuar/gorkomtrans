@@ -4,7 +4,7 @@ import com.epam.anuar.gorkomtrans.entity.Contract;
 import com.epam.anuar.gorkomtrans.entity.User;
 import com.epam.anuar.gorkomtrans.service.ContractService;
 import com.epam.anuar.gorkomtrans.service.ServiceException;
-import com.epam.anuar.gorkomtrans.util.Validator;
+import com.epam.anuar.gorkomtrans.validator.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,9 +23,9 @@ public class ShowUserContractsAction implements Action {
         if(req.getParameter("page") != null) page = Integer.parseInt(req.getParameter("page"));
 
         User user = (User) req.getSession(false).getAttribute("user");
-        ContractService contractService = new ContractService();
         List<Contract> contracts;
         try {
+            ContractService contractService = new ContractService();
             contracts = contractService.getUserContactsPerPage(user, page, recordsPerPage);
         } catch (ServiceException e) {
             log.warn("Services error: " + e.toString());

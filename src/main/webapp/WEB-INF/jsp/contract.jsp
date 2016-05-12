@@ -3,11 +3,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <fmt:setBundle basename="other-text" var="rb"/>
-<%--@elvariable id="contract" type="com.epam.anuar.gorkomtrans.entity.Contract"--%>
-<%--@elvariable id="provider" type="com.epam.anuar.gorkomtrans.entity.Provider"--%>
-<%--@elvariable id="status" type="java.lang.Integer"--%>
-<%--@elvariable id="user" type="com.epam.anuar.gorkomtrans.entity.User"--%>
-<%--@elvariable id="locale" type="java.lang.String"--%>
 
 <t:authorizedpage>
     <h2 align="center"><fmt:message key="contract.contract" bundle="${rb}"/> №${contract.id}</h2>

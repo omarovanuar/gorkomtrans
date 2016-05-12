@@ -3,8 +3,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <fmt:setBundle basename="other-text" var="rb"/>
-<%--@elvariable id="violations" type="java.util.List"--%>
-<%--@elvariable id="userParam" type="com.epam.anuar.gorkomtrans.entity.User"--%>
 
 <t:authorizedpage>
     <div id="personal-cabinet" align="left">

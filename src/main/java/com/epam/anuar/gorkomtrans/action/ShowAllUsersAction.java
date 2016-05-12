@@ -3,7 +3,7 @@ package com.epam.anuar.gorkomtrans.action;
 import com.epam.anuar.gorkomtrans.entity.User;
 import com.epam.anuar.gorkomtrans.service.ServiceException;
 import com.epam.anuar.gorkomtrans.service.UserService;
-import com.epam.anuar.gorkomtrans.util.Validator;
+import com.epam.anuar.gorkomtrans.validator.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

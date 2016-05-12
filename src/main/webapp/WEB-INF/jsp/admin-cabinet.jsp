@@ -3,11 +3,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <fmt:setBundle basename="other-text" var="rb"/>
-<%--@elvariable id="allUsers" type="java.util.List"--%>
-<%--@elvariable id="item" type="com.epam.anuar.gorkomtrans.entity.User"--%>
-<%--@elvariable id="noOfPages" type="java.lang.Integer"--%>
-<%--@elvariable id="currentPage" type="java.lang.Integer"--%>
-<%--@elvariable id="searchValue" type="java.lang.String"--%>
 
 <t:authorizedpage>
     <div>

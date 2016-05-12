@@ -4,7 +4,7 @@ import com.epam.anuar.gorkomtrans.entity.Contract;
 import com.epam.anuar.gorkomtrans.entity.Status;
 import com.epam.anuar.gorkomtrans.service.ContractService;
 import com.epam.anuar.gorkomtrans.service.ServiceException;
-import com.epam.anuar.gorkomtrans.util.Validator;
+import com.epam.anuar.gorkomtrans.validator.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

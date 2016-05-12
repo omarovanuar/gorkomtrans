@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.epam.anuar.gorkomtrans.action.ActionFunctions.getRegisterParameterNames;
-import static com.epam.anuar.gorkomtrans.action.ActionFunctions.showRegister;
 
 public class ShowRegisterAction implements Action {
     @Override
@@ -30,7 +29,11 @@ public class ShowRegisterAction implements Action {
         for (int i = 0; i < userParamList.size(); i++) {
             values.add(i, "");
         }
-        return showRegister(req, userParamList, userParamName, violations, values);
+        req.setAttribute("userParamList", userParamList);
+        req.setAttribute("userParamName", userParamName);
+        req.setAttribute("violations", violations);
+        req.setAttribute("values", values);
+        return new ActionResult("register");
     }
 
 

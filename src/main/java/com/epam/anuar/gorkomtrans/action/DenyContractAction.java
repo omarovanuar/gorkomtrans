@@ -4,7 +4,7 @@ import com.epam.anuar.gorkomtrans.entity.Contract;
 import com.epam.anuar.gorkomtrans.entity.Status;
 import com.epam.anuar.gorkomtrans.service.ContractService;
 import com.epam.anuar.gorkomtrans.service.ServiceException;
-import com.epam.anuar.gorkomtrans.util.Validator;
+import com.epam.anuar.gorkomtrans.validator.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +20,8 @@ public class DenyContractAction implements Action {
     public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) throws ActionException {
         Validator.checkAdminOrModer(req);
         Contract contract = (Contract) req.getSession(false).getAttribute("contract");
-        ContractService contractService = new ContractService();
         try {
+            ContractService contractService = new ContractService();
             contractService.updateContractStatus(contract.getId(), Status.DENIED);
         } catch (ServiceException e) {
             log.warn("Services error: " + e.toString());

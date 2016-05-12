@@ -3,9 +3,9 @@ package com.epam.anuar.gorkomtrans.action;
 import com.epam.anuar.gorkomtrans.entity.User;
 import com.epam.anuar.gorkomtrans.service.ServiceException;
 import com.epam.anuar.gorkomtrans.service.UserService;
-import com.epam.anuar.gorkomtrans.util.ViolationException;
-import com.epam.anuar.gorkomtrans.util.Validator;
-import com.epam.anuar.gorkomtrans.util.Violation;
+import com.epam.anuar.gorkomtrans.validator.ViolationException;
+import com.epam.anuar.gorkomtrans.validator.Validator;
+import com.epam.anuar.gorkomtrans.validator.Violation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,9 +17,9 @@ public class LoginAction implements Action {
 
     @Override
     public ActionResult execute(HttpServletRequest req, HttpServletResponse resp) throws ActionException {
-        UserService userService = new UserService();
         User user;
         try {
+            UserService userService = new UserService();
             user = userService.getLoginUser(req.getParameter("login"), req.getParameter("password"));
         } catch (ViolationException e) {
             Violation violation = Validator.InvalidLoginPass(req);

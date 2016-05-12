@@ -1,7 +1,7 @@
 package com.epam.anuar.gorkomtrans.action;
 
-import com.epam.anuar.gorkomtrans.util.Validator;
-import com.epam.anuar.gorkomtrans.util.Violation;
+import com.epam.anuar.gorkomtrans.validator.Validator;
+import com.epam.anuar.gorkomtrans.validator.Violation;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
